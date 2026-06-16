@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vertech TdF — Inteligencia Satelital</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/tabler-icons.min.css">
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header class="app-header">
+    <div class="header-inner">
+      <div class="header-logo">
+        <i class="ti ti-satellite"></i>
+        <span class="logo-text">Vertech <span class="logo-tdf">TdF</span></span>
+        <span class="header-live"><span class="live-dot"></span>En vivo</span>
+      </div>
+      <div class="header-meta">
+        <span class="header-tag">Innovatón Space 2025</span>
+        <span class="header-src">Sentinel · TROPOMI · Claude Vision</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- NAV -->
+  <nav class="main-nav">
+    <button class="nav-btn active" data-tab="agro">
+      <i class="ti ti-plant-2"></i><span>AgroTech</span>
+    </button>
+    <button class="nav-btn" data-tab="mar">
+      <i class="ti ti-waves"></i><span>Economía Azul</span>
+    </button>
+    <button class="nav-btn" data-tab="metano">
+      <i class="ti ti-flame"></i><span>Metano</span>
+    </button>
+    <button class="nav-btn" data-tab="imagen">
+      <i class="ti ti-upload"></i><span>Analizador</span>
+    </button>
+  </nav>
+
+  <!-- MAIN -->
+  <main class="main-content">
+
+    <!-- ── TAB AGROTECH ── -->
+    <section id="tab-agro" class="tab-panel active">
+      <div class="metrics-grid">
+        <div class="metric-card">
+          <div class="metric-label">NDVI promedio</div>
+          <div class="metric-value">0.61</div>
+          <div class="metric-sub">Pasturas moderadas</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-label">Superficie</div>
+          <div class="metric-value">3.400</div>
+          <div class="metric-sub">hectáreas analizadas</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-label">Zonas críticas</div>
+          <div class="metric-value danger">2</div>
+          <div class="metric-sub">Requieren acción</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-label">Última imagen</div>
+          <div class="metric-value small">Hoy</div>
+          <div class="metric-sub">Sentinel-2 · 10m</div>
+        </div>
+      </div>
+
+      <div class="map-container">
+        <canvas id="canvas-agro"></canvas>
+        <div class="map-tag"><div class="map-tag-title">Campo TdF</div><div class="map-tag-val">54°S — 68°O</div></div>
+        <div class="map-legend">
+          <div class="leg-row"><div class="leg-dot" style="background:#2d7a2d"></div>NDVI alto</div>
+          <div class="leg-row"><div class="leg-dot" style="background:#8db84e"></div>NDVI medio</div>
+          <div class="leg-row"><div class="leg-dot" style="background:#c8a838"></div>NDVI bajo</div>
+          <div class="leg-row"><div class="leg-dot" style="background:#a83228"></div>Crítico</div>
+        </div>
+      </div>
+
+      <div class="section-label">Índices NDVI por zona</div>
+      <div class="ndvi-rows">
+        <div class="ndvi-row"><span class="ndvi-lbl">Norte (pasturas)</span><div class="ndvi-track"><div class="ndvi-fill" style="width:73%;background:#2d7a2d"></div></div><span class="ndvi-val">0.73</span></div>
+        <div class="ndvi-row"><span class="ndvi-lbl">Centro</span><div class="ndvi-track"><div class="ndvi-fill" style="width:61%;background:#8db84e"></div></div><span class="ndvi-val">0.61</span></div>
+        <div class="ndvi-row"><span class="ndvi-lbl">Sur (forestal)</span><div class="ndvi-track"><div class="ndvi-fill" style="width:48%;background:#c8a838"></div></div><span class="ndvi-val">0.48</span></div>
+        <div class="ndvi-row"><span class="ndvi-lbl">Este (crítico)</span><div class="ndvi-track"><div class="ndvi-fill" style="width:22%;background:#a83228"></div></div><span class="ndvi-val">0.22</span></div>
+        <div class="ndvi-row"><span class="ndvi-lbl">Oeste (ovinos)</span><div class="ndvi-track"><div class="ndvi-fill" style="width:55%;background:#8db84e"></div></div><span class="ndvi-val">0.55</span></div>
+      </div>
+
+      <div class="section-label">Flota de drones</div>
+      <div class="drone-grid">
+        <div class="drone-card active-mission">
+          <div class="drone-top"><span class="drone-name">Dron A-01</span><span class="badge badge-fly">En vuelo</span></div>
+          <div class="drone-mission">Monitoreo Zona Este · 340 ha</div>
+          <div class="prog-track"><div class="prog-fill" style="width:64%;background:#1d9e75"></div></div>
+        </div>
+        <div class="drone-card">
+          <div class="drone-top"><span class="drone-name">Dron B-01</span><span class="badge badge-ok">Disponible</span></div>
+          <div class="drone-mission">Carga: fertilizante · 12 L</div>
+          <div class="prog-track"><div class="prog-fill" style="width:0%"></div></div>
+        </div>
+        <div class="drone-card">
+          <div class="drone-top"><span class="drone-name">Dron B-02</span><span class="badge badge-ok">Disponible</span></div>
+          <div class="drone-mission">Carga: semillas · 8 kg</div>
+          <div class="prog-track"><div class="prog-fill" style="width:0%"></div></div>
+        </div>
+        <div class="drone-card">
+          <div class="drone-top"><span class="drone-name">Dron A-02</span><span class="badge badge-std">Standby</span></div>
+          <div class="drone-mission">En base · Batería 100%</div>
+          <div class="prog-track"><div class="prog-fill" style="width:0%"></div></div>
+        </div>
+      </div>
+
+      <div class="section-label">Alertas del campo</div>
+      <div class="alerts">
+        <div class="alert alert-danger"><i class="ti ti-alert-triangle"></i><div><div class="alert-title">Estrés hídrico severo — Zona Este</div><div class="alert-desc">NDVI 0.22 · 340 ha · Humedad 18% · Requiere fumigación urgente</div><div class="alert-time">Hace 20 min · Sentinel-2</div></div></div>
+        <div class="alert alert-warn"><i class="ti ti-tree"></i><div><div class="alert-title">Cobertura forestal baja — Zona Sur</div><div class="alert-desc">NDVI 0.48 · 580 ha · Posible resiembra · Daño por viento patagónico</div><div class="alert-time">Hace 2 h · Sentinel-2</div></div></div>
+        <div class="alert alert-ok"><i class="ti ti-check"></i><div><div class="alert-title">Zona Norte en buen estado</div><div class="alert-desc">NDVI 0.73 · Pasturas óptimas para majada ovina</div><div class="alert-time">Hace 2 h · Sentinel-2</div></div></div>
+      </div>
+    </section>
+
+    <!-- ── TAB MAR ── -->
+    <section id="tab-mar" class="tab-panel">
+      <div class="metrics-grid">
+        <div class="metric-card"><div class="metric-label">Temperatura sup.</div><div class="metric-value">7.3°C</div><div class="metric-sub">+2.1°C sobre media</div></div>
+        <div class="metric-card"><div class="metric-label">Clorofila-a</div><div class="metric-value">2.8</div><div class="metric-sub">mg/m³ · alta productividad</div></div>
+        <div class="metric-card"><div class="metric-label">Embarcaciones</div><div class="metric-value">47</div><div class="metric-sub">Detectadas hoy</div></div>
+        <div class="metric-card"><div class="metric-label">Alertas</div><div class="metric-value danger">3</div><div class="metric-sub">Zonas de riesgo</div></div>
+      </div>
+      <div class="map-container">
+        <canvas id="canvas-mar"></canvas>
+        <div class="map-tag"><div class="map-tag-title">Mar Argentino</div><div class="map-tag-val">39°25'S — 67°48'O</div></div>
+        <div class="map-legend">
+          <div class="leg-row"><div class="leg-dot" style="background:#1d9e75"></div>Alta clorofila</div>
+          <div class="leg-row"><div class="leg-dot" style="background:#378add"></div>Embarcaciones</div>
+          <div class="leg-row"><div class="leg-dot" style="background:#e24b4a"></div>Anomalías</div>
+        </div>
+      </div>
+      <div class="section-label">Alertas oceanográficas</div>
+      <div class="alerts">
+        <div class="alert alert-danger"><i class="ti ti-alert-triangle"></i><div><div class="alert-title">Pesca en zona restringida</div><div class="alert-desc">3 embarcaciones en área de veda · zona norte ZEE</div><div class="alert-time">Hace 14 min · Sentinel-1 SAR</div></div></div>
+        <div class="alert alert-warn"><i class="ti ti-thermometer"></i><div><div class="alert-title">Anomalía térmica</div><div class="alert-desc">Temperatura sup. +2.1°C sobre media histórica</div><div class="alert-time">Hace 1 h · MODIS SST</div></div></div>
+        <div class="alert alert-info"><i class="ti ti-plant"></i><div><div class="alert-title">Bloom de fitoplancton activo</div><div class="alert-desc">Alta concentración clorofila-a en ZEE · favorable para pesca</div><div class="alert-time">Hace 3 h · Sentinel-3 OLCI</div></div></div>
+      </div>
+      <div class="section-label">Análisis IA</div>
+      <div class="ia-btns">
+        <button class="ia-btn" data-prompt="pesquero"><i class="ti ti-fish"></i> Actividad pesquera</button>
+        <button class="ia-btn" data-prompt="termico"><i class="ti ti-thermometer"></i> Estado térmico</button>
+        <button class="ia-btn" data-prompt="productividad"><i class="ti ti-chart-line"></i> Productividad marina</button>
+        <button class="ia-btn" data-prompt="economia"><i class="ti ti-coin"></i> Impacto económico</button>
+      </div>
+      <div class="ia-status" id="st-mar"></div>
+      <div class="ia-result" id="res-mar"></div>
+    </section>
+
+    <!-- ── TAB METANO ── -->
+    <section id="tab-metano" class="tab-panel">
+      <div class="metrics-grid">
+        <div class="metric-card"><div class="metric-label">CH₄ promedio</div><div class="metric-value">1847</div><div class="metric-sub">ppb · zona TdF</div></div>
+        <div class="metric-card"><div class="metric-label">Anomalías</div><div class="metric-value warn">7</div><div class="metric-sub">Zonas identificadas</div></div>
+        <div class="metric-card"><div class="metric-label">Pico detectado</div><div class="metric-value danger">2340</div><div class="metric-sub">ppb · Cuenca Austral</div></div>
+        <div class="metric-card"><div class="metric-label">Variación</div><div class="metric-value">+12%</div><div class="metric-sub">vs. semana anterior</div></div>
+      </div>
+      <div class="map-container">
+        <canvas id="canvas-metano"></canvas>
+        <div class="map-tag"><div class="map-tag-title">Emisiones CH₄</div><div class="map-tag-val">Cuenca Austral · TdF</div></div>
+        <div class="map-legend">
+          <div class="leg-row"><div class="leg-dot" style="background:#e24b4a"></div>Crítico &gt;2300 ppb</div>
+          <div class="leg-row"><div class="leg-dot" style="background:#ef9f27"></div>Moderado</div>
+          <div class="leg-row"><div class="leg-dot" style="background:#378add"></div>Normal</div>
+        </div>
+      </div>
+      <div class="section-label">Zonas de monitoreo</div>
+      <div class="zone-grid">
+        <div class="zone-card selected"><div class="zone-name">Cuenca Austral</div><div class="zone-meta">CH₄: 2340 ppb · Crítico</div></div>
+        <div class="zone-card"><div class="zone-name">Canal Beagle</div><div class="zone-meta">CH₄: 1680 ppb · Moderado</div></div>
+        <div class="zone-card"><div class="zone-name">Estrecho Magallanes</div><div class="zone-meta">CH₄: 1920 ppb · Moderado</div></div>
+        <div class="zone-card"><div class="zone-name">Zona Offshore</div><div class="zone-meta">CH₄: 1540 ppb · Normal</div></div>
+      </div>
+      <div class="section-label">Análisis IA</div>
+      <div class="ia-btns">
+        <button class="ia-btn" data-prompt="ch4riesgo"><i class="ti ti-alert-circle"></i> Nivel de riesgo</button>
+        <button class="ia-btn" data-prompt="ch4fuente"><i class="ti ti-search"></i> Fuentes probables</button>
+        <button class="ia-btn" data-prompt="ch4tendencia"><i class="ti ti-trending-up"></i> Tendencia 72h</button>
+        <button class="ia-btn" data-prompt="ch4accion"><i class="ti ti-list-check"></i> Plan de acción</button>
+      </div>
+      <div class="ia-status" id="st-metano"></div>
+      <div class="ia-result" id="res-metano"></div>
+    </section>
+
+    <!-- ── TAB ANALIZADOR ── -->
+    <section id="tab-imagen" class="tab-panel">
+      <div class="section-label">Tipo de análisis</div>
+      <div class="mode-grid">
+        <div class="mode-card selected" data-mode="campo"><i class="ti ti-plant-2"></i><div class="mode-name">AgroTech</div><div class="mode-sub">NDVI · pasturas</div></div>
+        <div class="mode-card" data-mode="mar"><i class="ti ti-waves"></i><div class="mode-name">Economía Azul</div><div class="mode-sub">Mar · clorofila</div></div>
+        <div class="mode-card" data-mode="metano"><i class="ti ti-flame"></i><div class="mode-name">Metano</div><div class="mode-sub">CH₄ · anomalías</div></div>
+      </div>
+
+      <div class="section-label">Subí una imagen satelital</div>
+      <div class="upload-area" id="drop-zone">
+        <input type="file" id="file-input" accept="image/*">
+        <i class="ti ti-cloud-upload upload-icon"></i>
+        <div class="upload-title">Arrastrá o hacé clic para subir</div>
+        <div class="upload-sub">GeoTIFF · PNG · JPEG · Sentinel · MODIS</div>
+        <div class="fmt-row">
+          <span class="fmt">GeoTIFF</span><span class="fmt">JP2</span><span class="fmt">PNG</span><span class="fmt">Sentinel-2</span><span class="fmt">TROPOMI</span>
+        </div>
+      </div>
+
+      <div class="section-label">O usá una imagen de demo</div>
+      <div class="sample-row">
+        <button class="sample-btn" data-demo="campo"><i class="ti ti-plant-2"></i> Campo TdF</button>
+        <button class="sample-btn" data-demo="mar"><i class="ti ti-waves"></i> Mar Argentino</button>
+        <button class="sample-btn" data-demo="metano"><i class="ti ti-flame"></i> CH₄ Cuenca Austral</button>
+      </div>
+
+      <div class="preview-wrap" id="preview-wrap">
+        <img id="preview-img" src="" alt="Imagen satelital cargada">
+        <span class="preview-tag" id="preview-tag">Demo</span>
+      </div>
+
+      <button class="analyze-btn" id="analyze-btn" disabled>
+        <i class="ti ti-brain"></i> Analizar con IA
+      </button>
+
+      <div class="ia-status" id="st-img"></div>
+
+      <div class="result-card" id="rc-metrics">
+        <div class="result-hdr"><i class="ti ti-chart-bar"></i> Índices detectados</div>
+        <div class="result-body"><div class="res-metrics" id="rm-grid"></div></div>
+      </div>
+      <div class="result-card" id="rc-diag">
+        <div class="result-hdr"><i class="ti ti-stethoscope"></i> Diagnóstico</div>
+        <div class="result-body" id="rd-text"></div>
+      </div>
+      <div class="result-card" id="rc-missions">
+        <div class="result-hdr"><i class="ti ti-drone"></i> Misiones sugeridas</div>
+        <div class="result-body"><div class="mission-list" id="rm-list"></div></div>
+      </div>
+
+      <div class="roadmap-note" id="roadmap-note">
+        <div class="roadmap-title"><i class="ti ti-rocket"></i> Opción B — roadmap</div>
+        <div class="roadmap-desc">Próxima versión: pipeline Python con <strong>rasterio + GDAL</strong> calculará índices espectrales pixel a pixel desde bandas Sentinel-2 y TROPOMI antes del análisis IA.</div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="app-footer">
+    <span>Vertech TdF · Tierra del Fuego, Argentina</span>
+    <span>Innovatón Space 2025 · Datos satelitales + IA</span>
+  </footer>
+
+  <script src="js/config.js"></script>
+  <script src="js/maps.js"></script>
+  <script src="js/prompts.js"></script>
+  <script src="js/analyzer.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

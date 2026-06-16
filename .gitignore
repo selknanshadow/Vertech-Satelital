@@ -1,0 +1,18 @@
+# Vertech TdF — .gitignore
+
+# No subir claves API reales
+# Acordate de reemplazar TU_API_KEY_AQUI en js/config.js
+
+# Sistema operativo
+.DS_Store
+Thumbs.db
+
+# Editores
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Temporales
+*.log
+*.tmp
