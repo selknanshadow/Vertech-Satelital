@@ -6,10 +6,26 @@
   <title>Vertech TdF — Inteligencia Satelital</title>
  <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/tabler-icons.min.css">
-</head>
+</head><script>
+window.addEventListener('load', function() {
+  if (!sessionStorage.getItem('vertech_api_key')) {
+    document.getElementById('api-screen').style.display = 'flex';
+  }
+});
+function activarApp() {
+  var key = document.getElementById('api-key-input').value.trim();
+  if (!key.startsWith('sk-ant-')) {
+    document.getElementById('api-error').style.display = 'block';
+    return;
+  }
+  sessionStorage.setItem('vertech_api_key', key);
+  CONFIG.ANTHROPIC_API_KEY = key;
+  document.getElementById('api-screen').style.display = 'none';
+}
+</script>
 <body>
 <!-- Pantalla de API key -->
-<div id="api-screen" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.85); z-index:999; display:flex; align-items:center; justify-content:center;">
+<div id="api-screen" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.85); z-index:999; display:flex; align-items:center; justify-content:center;">; z-index:999; display:flex; align-items:center; justify-content:center;">
   <div style="background:#fff; border-radius:12px; padding:2rem; max-width:420px; width:90%; text-align:center;">
     <div style="font-size:28px; margin-bottom:8px;">🛰️</div>
     <h2 style="font-size:18px; font-weight:600; margin-bottom:6px;">Vertech TdF</h2>
