@@ -3,8 +3,7 @@
 // Obtené una gratis en: https://console.anthropic.com
 
 const CONFIG = {
-  ANTHROPIC_API_KEY: curl https://api.anthropic.com/v1/messages \
-
+  ANTHROPIC_API_KEY: sessionStorage.getItem('vertech_api_key') || '',
   MODEL: 'claude-sonnet-4-6',
   MAX_TOKENS: 1000,
 };
