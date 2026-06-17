@@ -98,4 +98,47 @@ async function runImageAnalysis() {
     if (si < steps.length) stEl.innerHTML = `<span class="loader"></span> ${steps[si++]}`;
   }, 800);
 
-  const priColor = { alta:'#e24b4a', media:'#ef9f27',
+  const priColor = { alta:'#e24b4a', media:'#ef9f27', baja:'#1d9e75' };
+
+  try {
+    const r = await fetch(`${BACKEND_URL}/analizar-imagen`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        imagen_base64: currentImageData.split(',')[1],
+        tipo: currentImageMode,
+      }),
+    });
+    clearInterval(iv);
+    if (!r.ok) throw new Error(`Error ${r.status}`);
+    const parsed = await r.json();
+
+    stEl.innerHTML = '<i class="ti ti-check" style="color:#1d9e75"></i> Análisis completado';
+
+    document.getElementById('rm-grid').innerHTML = (parsed.indices || []).map(i =>
+      `<div class="res-metric">
+        <div class="rm-lbl">${i.label}</div>
+        <div class="rm-val">${i.value}</div>
+        <div class="rm-sub">${i.sub}</div>
+      </div>`
+    ).join('');
+    document.getElementById('rc-metrics').classList.add('show');
+    document.getElementById('rd-text').innerHTML = (parsed.diagnostico || '').replace(/\n/g,'<br>');
+    document.getElementById('rc-diag').classList.add('show');
+    document.getElementById('rm-list').innerHTML = (parsed.misiones || []).map(m =>
+      `<div class="mission-item">
+        <div class="mission-dot" style="background:${priColor[m.prioridad]||'#888'}"></div>
+        <div class="mission-text"><strong>${m.zona}</strong> — ${m.tarea}</div>
+        <span class="mission-pri pri-${m.prioridad}">${m.prioridad}</span>
+      </div>`
+    ).join('');
+    document.getElementById('rc-missions').classList.add('show');
+    document.getElementById('roadmap-note').classList.add('show');
+
+  } catch (err) {
+    clearInterval(iv);
+    stEl.innerHTML = '<i class="ti ti-x" style="color:#e24b4a"></i> Error al analizar. Intentá de nuevo.';
+    console.error(err);
+  }
+  btn.disabled = false;
+}
