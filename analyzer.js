@@ -1,25 +1,25 @@
 // ── Vertech TdF — Analizador de imágenes ──
-
+const BACKEND_URL = 'https://vertech-backend.onrender.com';
 let currentImageData = null;
 let currentImageMode = 'campo';
 
 // ── Llamada a la API de Anthropic ──
 async function callAnthropicAPI(messages, system = SYSTEM_PROMPT) {
-  const response = await fetch('https://api.anthropic.com/v1/messages', {
+  const response = await fetch(`${BACKEND_URL}/analizar`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
-      model: CONFIG.MODEL,
-      max_tokens: CONFIG.MAX_TOKENS,
-      system,
-      messages,
+      lat: -54.8,
+      lon: -68.3,
+      tipo: currentImageMode,
+      fecha: '',
+      zoom: 0.5
     }),
   });
-  if (!response.ok) throw new Error(`API error: ${response.status}`);
+  if (!response.ok) throw new Error(`Backend error: ${response.status}`);
   const data = await response.json();
-  return data.content?.find(b => b.type === 'text')?.text || '';
+  return JSON.stringify(data);
 }
-
 // ── Análisis de texto (Mar / Metano) ──
 async function runTextIA(promptKey, statusId, resultId) {
   const stEl = document.getElementById(statusId);
