@@ -9,25 +9,7 @@
 </head>
 <body>
 
-<div id="api-screen" style="position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:999;align-items:center;justify-content:center;display:none;">
-  <div style="background:#fff;border-radius:12px;padding:2rem;max-width:420px;width:90%;text-align:center;">
-    <div style="font-size:28px;margin-bottom:8px;">🛰️</div>
-    <h2 style="font-size:18px;font-weight:600;margin-bottom:6px;">Vertech TdF</h2>
-    <p style="font-size:13px;color:#5f5e5a;margin-bottom:1.2rem;line-height:1.6;">
-      Ingresá tu API key de Anthropic para activar el análisis satelital con IA.<br>
-      <a href="https://console.anthropic.com" target="_blank" style="color:#1d9e75;">Obtené una gratis aquí →</a>
-    </p>
-    <input id="api-key-input" type="password" placeholder="sk-ant-api03-..."
-      style="width:100%;padding:10px 12px;border:1px solid #d3d1c7;border-radius:8px;font-size:13px;margin-bottom:10px;outline:none;">
-    <button onclick="activarApp()"
-      style="width:100%;padding:11px;background:#1d9e75;color:#fff;border:none;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;">
-      Activar plataforma →
-    </button>
-    <p id="api-error" style="font-size:12px;color:#e24b4a;margin-top:8px;display:none;">
-      Ingresá una API key válida (comienza con sk-ant-)
-    </p>
-  </div>
-</div>
+
 
 <header class="app-header">
   <div class="header-inner">
@@ -221,23 +203,6 @@
 <script src="analyzer.js"></script>
 <script src="app.js"></script>
 
-<script>
-window.addEventListener('load', function() {
-  if (!sessionStorage.getItem('vertech_api_key')) {
-    document.getElementById('api-screen').style.display = 'flex';
-  }
-});
-function activarApp() {
-  var key = document.getElementById('api-key-input').value.trim();
-  if (!key.startsWith('sk-ant-')) {
-    document.getElementById('api-error').style.display = 'block';
-    return;
-  }
-  sessionStorage.setItem('vertech_api_key', key);
-  CONFIG.ANTHROPIC_API_KEY = key;
-  document.getElementById('api-screen').style.display = 'none';
-}
-</script>
 
 </body>
 </html>
