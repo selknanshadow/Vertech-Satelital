@@ -1,136 +1,187 @@
-/ ── Vertech — Analizador Integrado (Control de Calidad CONAE) ──
-const BACKEND_URL = 'https://vertech-backend.onrender.com';
+// ── Vertech TdF — Analizador IA (Control de Calidad CONAE) ──
+// Llama directo a la API de Anthropic — sin backend externo
+
 let mapaEnMemoriaBase64 = null;
 
 document.addEventListener("DOMContentLoaded", () => {
-  const dropZone = document.getElementById("drop-zone");
-  const fileInput = document.getElementById("file-input");
-  const previewWrap = document.getElementById("preview-wrap");
-  const previewImg = document.getElementById("preview-img");
-  const analyzeBtn = document.getElementById("analyze-btn");
+  const dropZone       = document.getElementById("drop-zone");
+  const fileInput      = document.getElementById("file-input");
+  const previewWrap    = document.getElementById("preview-wrap");
+  const previewImg     = document.getElementById("preview-img");
+  const analyzeBtn     = document.getElementById("analyze-btn");
   const backendSpinner = document.getElementById("backend-spinner");
   const resultsContainer = document.getElementById("results-container");
 
-  // Verificar la existencia de elementos críticos
   if (!fileInput || !dropZone || !analyzeBtn) return;
 
-  // 1. Eventos de apertura de archivos al hacer click
+  // ── 1. Abrir explorador al hacer click en la zona ──
   dropZone.addEventListener("click", () => fileInput.click());
 
-  // 2. Comportamiento Drag & Drop (Arrastrar y Soltar)
+  // ── 2. Drag & Drop ──
   dropZone.addEventListener("dragover", (e) => {
     e.preventDefault();
     dropZone.style.borderColor = "var(--blue)";
-    dropZone.style.background = "rgba(55, 138, 221, 0.05)";
+    dropZone.style.background  = "rgba(55, 138, 221, 0.08)";
   });
 
   dropZone.addEventListener("dragleave", () => {
     dropZone.style.borderColor = "rgba(45, 61, 87, 0.6)";
-    dropZone.style.background = "rgba(255, 255, 255, 0.01)";
+    dropZone.style.background  = "rgba(255, 255, 255, 0.01)";
   });
 
   dropZone.addEventListener("drop", (e) => {
     e.preventDefault();
     dropZone.style.borderColor = "rgba(45, 61, 87, 0.6)";
-    dropZone.style.background = "rgba(255, 255, 255, 0.01)";
-    
+    dropZone.style.background  = "rgba(255, 255, 255, 0.01)";
     if (e.dataTransfer.files.length > 0) {
-      procesarArchivoMapa(e.dataTransfer.files[0]);
+      procesarArchivo(e.dataTransfer.files[0]);
     }
   });
 
-  // 3. Evento por selección tradicional en explorador
+  // ── 3. Selección tradicional ──
   fileInput.addEventListener("change", (e) => {
-    if (e.target.files.length > 0) {
-      procesarArchivoMapa(e.target.files[0]);
-    }
+    if (e.target.files.length > 0) procesarArchivo(e.target.files[0]);
   });
 
-  // 4. Leer archivo y pasarlo a Base64 para visualización y Backend
-  function procesarArchivoMapa(file) {
+  // ── 4. Leer archivo → Base64 ──
+  function procesarArchivo(file) {
     if (!file.type.startsWith("image/")) {
-      alert("Formato no válido. Por favor, suba una exportación de mapa en formato de imagen (PNG, JPEG).");
+      alert("Formato no válido. Subí una imagen del mapa (PNG o JPEG).");
       return;
     }
-
     const reader = new FileReader();
     reader.onload = (e) => {
       mapaEnMemoriaBase64 = e.target.result;
-      
-      // Ajustar UI con previsualización activa
-      previewImg.src = mapaEnMemoriaBase64;
+      previewImg.src           = mapaEnMemoriaBase64;
       previewWrap.style.display = "block";
-      dropZone.style.padding = "20px"; // Compactar zona de carga
-      
-      // Habilitar botón de acción y limpiar estados previos
-      analyzeBtn.disabled = false;
+      dropZone.style.padding   = "1rem";
+      analyzeBtn.disabled      = false;
       if (resultsContainer) resultsContainer.style.display = "none";
     };
     reader.readAsDataURL(file);
   }
 
-  // 5. Ejecutar la Auditoría Automática (Llamado al Servidor)
+  // ── 5. Ejecutar Auditoría → Claude Vision directo ──
   analyzeBtn.addEventListener("click", async () => {
     if (!mapaEnMemoriaBase64) return;
 
+    // Verificar que haya API key en sessionStorage
+    const apiKey = CONFIG.ANTHROPIC_API_KEY;
+    if (!apiKey) {
+      alert("No se encontró la clave de API de Anthropic.\nIngresala en el campo de configuración al iniciar la aplicación.");
+      return;
+    }
+
     analyzeBtn.disabled = true;
     if (resultsContainer) resultsContainer.style.display = "none";
-    if (backendSpinner) backendSpinner.classList.remove("hidden");
+    if (backendSpinner)   backendSpinner.classList.remove("hidden");
 
-    // Feedback secuencial simulando la revisión local en el servidor de CONAE
-    const pasosAuditoria = [
-      "Leyendo archivo de mapa temático...",
+    // Feedback secuencial mientras procesa
+    const pasos = [
+      "Leyendo mapa temático...",
       "Verificando layout y coordenadas...",
-      "Validando consistencia de simbología y leyendas...",
-      "Analizando presencia de marcas institucionales y logos...",
-      "Procesando reporte final del asistente..."
+      "Validando simbología y leyendas...",
+      "Analizando marcas institucionales y logos...",
+      "Generando reporte final..."
     ];
-    
     let pasoActual = 0;
-    const infoSpinner = backendSpinner.querySelector("span");
-    
-    const intervalPasos = setInterval(() => {
-      if (pasoActual < pasosAuditoria.length && infoSpinner) {
-        infoSpinner.textContent = pasosAuditoria[pasoActual++];
+    const infoSpan = backendSpinner.querySelector("span");
+    const intervalo = setInterval(() => {
+      if (pasoActual < pasos.length && infoSpan) {
+        infoSpan.textContent = pasos[pasoActual++];
       }
     }, 900);
 
+    // Solo el base64 puro (sin el prefijo data:image/...;base64,)
+    const base64puro = mapaEnMemoriaBase64.split(',')[1];
+    const mediaType  = mapaEnMemoriaBase64.split(';')[0].split(':')[1]; // image/png, image/jpeg, etc.
+
+    const prompt = `Sos un experto en cartografía técnica e institucional argentina.
+Analizá esta imagen de mapa temático y devolvé ÚNICAMENTE un objeto JSON válido, sin texto adicional, sin bloques de código, sin explicaciones.
+
+El JSON debe tener exactamente estas tres claves:
+{
+  "errores_criticos": "...",
+  "sugerencias": "...",
+  "validacion": "..."
+}
+
+Criterios de evaluación:
+- errores_criticos: Listá omisiones graves: falta de escala gráfica o numérica, falta de flecha de norte, ausencia de coordenadas o grilla, leyenda incompleta o ausente, logos institucionales faltantes (CONAE, provincia, organismo autor). Si no hay errores, escribí "Ningún error crítico detectado."
+- sugerencias: Mejoras recomendadas sobre tipografía, jerarquía visual, contraste de colores, legibilidad de rótulos, densidad de información. Si no hay sugerencias, escribí "El mapa cumple con los estándares técnicos. No se requieren ajustes."
+- validacion: Confirmá qué elementos están correctamente presentes: logos validados, metadatos completos, proyección cartográfica indicada, fuentes de datos citadas.
+
+Respondé solo con el JSON, nada más.`;
+
     try {
-      const response = await fetch(`${BACKEND_URL}/analizar-imagen`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      const response = await fetch("https://api.anthropic.com/v1/messages", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "x-api-key": apiKey,
+          "anthropic-version": "2023-06-01",
+          "anthropic-dangerous-direct-browser-calls": "true"
+        },
         body: JSON.stringify({
-          imagen_base64: mapaEnMemoriaBase64.split(',')[1],
-          tipo: 'conae_control_calidad' // Indicador de contexto para el prompt del backend
-        }),
+          model: CONFIG.MODEL,
+          max_tokens: CONFIG.MAX_TOKENS,
+          messages: [
+            {
+              role: "user",
+              content: [
+                {
+                  type: "image",
+                  source: {
+                    type: "base64",
+                    media_type: mediaType,
+                    data: base64puro
+                  }
+                },
+                {
+                  type: "text",
+                  text: prompt
+                }
+              ]
+            }
+          ]
+        })
       });
 
-      clearInterval(intervalPasos);
+      clearInterval(intervalo);
       if (backendSpinner) backendSpinner.classList.add("hidden");
 
-      if (!response.ok) throw new Error(`HTTP Error ${response.status}`);
+      if (!response.ok) {
+        const errData = await response.json().catch(() => ({}));
+        throw new Error(errData?.error?.message || `HTTP ${response.status}`);
+      }
+
       const data = await response.json();
+      const texto = data.content?.[0]?.text || "";
 
-      // Renderizar los resultados procesados en las tarjetas del HTML
-      document.getElementById("res-criticos").innerHTML = data.errores_criticos || 
-        `<span style="color:#39d353;"><i class="ti ti-circle-check"></i> Ningún error crítico ni omisión cartográfica detectada.</span>`;
-      
-      document.getElementById("res-sugerencias").innerHTML = data.sugerencias || 
-        `El mapa cumple con los estándares técnicos mínimos. No se requieren ajustes adicionales.`;
-      
-      document.getElementById("res-validacion").innerHTML = data.validacion || 
-        `<span style="color:#39d353;">Logos oficiales de CONAE y Unidad de Emergencias validados correctamente.</span>`;
+      // Limpiar posibles bloques ```json que el modelo agregue igual
+      const textoLimpio = texto.replace(/```json|```/g, "").trim();
+      const resultado = JSON.parse(textoLimpio);
 
-      // Mostrar contenedor general de resultados
+      document.getElementById("res-criticos").innerHTML =
+        resultado.errores_criticos || '<span style="color:var(--green)"><i class="ti ti-circle-check"></i> Ningún error crítico detectado.</span>';
+
+      document.getElementById("res-sugerencias").innerHTML =
+        resultado.sugerencias || "El mapa cumple con los estándares técnicos. No se requieren ajustes.";
+
+      document.getElementById("res-validacion").innerHTML =
+        resultado.validacion || '<span style="color:var(--green)">Elementos institucionales validados correctamente.</span>';
+
       if (resultsContainer) resultsContainer.style.display = "grid";
 
     } catch (err) {
-      clearInterval(intervalPasos);
+      clearInterval(intervalo);
       if (backendSpinner) backendSpinner.classList.add("hidden");
-      alert("Error en el servidor local de auditoría. Verifique la conexión con el nodo.");
-      console.error(err);
+
+      // Mostrar el error real en consola y un mensaje claro al usuario
+      console.error("Error al analizar imagen:", err);
+      alert(`Error al ejecutar la auditoría:\n${err.message}\n\nVerificá que tu clave de API de Anthropic sea válida.`);
     }
-    
+
     analyzeBtn.disabled = false;
   });
 });
