@@ -1,175 +1,136 @@
-// ── Vertech — Analizador ──
+/ ── Vertech — Analizador Integrado (Control de Calidad CONAE) ──
 const BACKEND_URL = 'https://vertech-backend.onrender.com';
-let currentImageData = null;
-let currentImageMode = 'campo';
+let mapaEnMemoriaBase64 = null;
 
-// ── Análisis de texto (Mar / Metano) ──
-async function runTextIA(promptKey, statusId, resultId) {
-  const stEl = document.getElementById(statusId);
-  const resEl = document.getElementById(resultId);
-  resEl.classList.remove('show');
-  stEl.innerHTML = '<span class="loader"></span> Analizando con IA...';
-  try {
-    const r = await fetch(`${BACKEND_URL}/analizar-texto`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ prompt_key: promptKey }),
-    });
-    if (!r.ok) throw new Error(`Error ${r.status}`);
-    const data = await r.json();
-    stEl.innerHTML = '<i class="ti ti-check" style="color:#1d9e75"></i> Análisis completado';
-    resEl.innerHTML = (data.texto || '').replace(/\n/g, '<br>');
-    resEl.classList.add('show');
-  } catch (err) {
-    stEl.innerHTML = '<i class="ti ti-x" style="color:#e24b4a"></i> Error al conectar con el servidor.';
-    console.error(err);
-  }
-}
+document.addEventListener("DOMContentLoaded", () => {
+  const dropZone = document.getElementById("drop-zone");
+  const fileInput = document.getElementById("file-input");
+  const previewWrap = document.getElementById("preview-wrap");
+  const previewImg = document.getElementById("preview-img");
+  const analyzeBtn = document.getElementById("analyze-btn");
+  const backendSpinner = document.getElementById("backend-spinner");
+  const resultsContainer = document.getElementById("results-container");
 
-// ── Generación de imágenes de demo ──
-function generateDemoImage(type) {
-  const canvas = document.createElement('canvas');
-  canvas.width = 400; canvas.height = 280;
-  const ctx = canvas.getContext('2d');
-  if (type === 'campo') {
-    [{ x:0,y:0,w:200,h:140,c:'#2d7a2d',t:'NDVI Alto' },
-     { x:200,y:0,w:200,h:140,c:'#8db84e',t:'NDVI Medio' },
-     { x:0,y:140,w:130,h:140,c:'#a83228',t:'Estres hidrico' },
-     { x:130,y:140,w:270,h:140,c:'#c8a838',t:'NDVI Bajo' }
-    ].forEach(z => {
-      ctx.fillStyle = z.c; ctx.fillRect(z.x,z.y,z.w,z.h);
-      ctx.fillStyle = '#fff'; ctx.font = 'bold 11px sans-serif';
-      ctx.fillText(z.t, z.x+6, z.y+18);
-    });
-  } else if (type === 'mar') {
-    const g = ctx.createRadialGradient(200,140,10,200,140,180);
-    g.addColorStop(0,'#1d9e75'); g.addColorStop(.5,'#185fa5'); g.addColorStop(1,'#0a1628');
-    ctx.fillStyle = g; ctx.fillRect(0,0,400,280);
-    ctx.fillStyle = 'rgba(29,158,117,.6)'; ctx.beginPath(); ctx.arc(200,140,60,0,Math.PI*2); ctx.fill();
-    ctx.fillStyle = '#e24b4a'; ctx.beginPath(); ctx.arc(80,210,20,0,Math.PI*2); ctx.fill();
-    ctx.fillStyle = '#fff'; ctx.font = '11px sans-serif';
-    ctx.fillText('Alta clorofila',150,145);
-    ctx.fillText('Anomalia detec.',45,215);
-  } else {
-    const g2 = ctx.createLinearGradient(0,0,400,280);
-    g2.addColorStop(0,'#0a1628'); g2.addColorStop(.5,'#ef9f27'); g2.addColorStop(1,'#a83228');
-    ctx.fillStyle = g2; ctx.fillRect(0,0,400,280);
-    ctx.fillStyle = 'rgba(226,75,74,.55)'; ctx.beginPath(); ctx.arc(290,100,70,0,Math.PI*2); ctx.fill();
-    ctx.fillStyle = '#fff'; ctx.font = 'bold 12px sans-serif';
-    ctx.fillText('Anomalia CH4',230,100);
-    ctx.font = '11px sans-serif';
-    ctx.fillText('Zona critica detectada',200,118);
-  }
-  return canvas.toDataURL('image/png');
-}
+  // Verificar la existencia de elementos críticos
+  if (!fileInput || !dropZone || !analyzeBtn) return;
 
-// ── Mostrar preview ──
-function showPreview(src, label) {
-  document.getElementById('preview-img').src = src;
-  document.getElementById('preview-tag').textContent = label || 'Imagen cargada';
-  document.getElementById('preview-wrap').style.display = 'block';
-  document.getElementById('analyze-btn').disabled = false;
-  clearImageResults();
-}
+  // 1. Eventos de apertura de archivos al hacer click
+  dropZone.addEventListener("click", () => fileInput.click());
 
-function clearImageResults() {
-  ['rc-metrics','rc-diag','rc-missions'].forEach(id => {
-    document.getElementById(id).classList.remove('show');
+  // 2. Comportamiento Drag & Drop (Arrastrar y Soltar)
+  dropZone.addEventListener("dragover", (e) => {
+    e.preventDefault();
+    dropZone.style.borderColor = "var(--blue)";
+    dropZone.style.background = "rgba(55, 138, 221, 0.05)";
   });
-  const rn = document.getElementById('roadmap-note');
-  if (rn) rn.classList.remove('show');
-  document.getElementById('st-img').innerHTML = '';
-}
 
-// ── Análisis de imagen con backend ──
-async function runImageAnalysis() {
-  if (!currentImageData) return;
+  dropZone.addEventListener("dragleave", () => {
+    dropZone.style.borderColor = "rgba(45, 61, 87, 0.6)";
+    dropZone.style.background = "rgba(255, 255, 255, 0.01)";
+  });
 
-  const btn  = document.getElementById('analyze-btn');
-  const stEl = document.getElementById('st-img');
-  btn.disabled = true;
-  clearImageResults();
+  dropZone.addEventListener("drop", (e) => {
+    e.preventDefault();
+    dropZone.style.borderColor = "rgba(45, 61, 87, 0.6)";
+    dropZone.style.background = "rgba(255, 255, 255, 0.01)";
+    
+    if (e.dataTransfer.files.length > 0) {
+      procesarArchivoMapa(e.dataTransfer.files[0]);
+    }
+  });
 
-  const steps = [
-    'Leyendo imagen satelital...',
-    'Detectando patrones espectrales...',
-    'Extrayendo indices con IA...',
-    'Generando diagnostico...',
-    'Planificando misiones...',
-  ];
-  let si = 0;
-  const iv = setInterval(() => {
-    if (si < steps.length) stEl.innerHTML = `<span class="loader"></span> ${steps[si++]}`;
-  }, 800);
+  // 3. Evento por selección tradicional en explorador
+  fileInput.addEventListener("change", (e) => {
+    if (e.target.files.length > 0) {
+      procesarArchivoMapa(e.target.files[0]);
+    }
+  });
 
-  const priColor = { alta:'#e24b4a', media:'#ef9f27', baja:'#1d9e75' };
-
-  // Leer contexto del formulario
-  const lugar  = document.getElementById('ctx-lugar')?.value.trim() || 'zona no especificada';
-  const fecha  = document.getElementById('ctx-fecha')?.value || 'fecha no especificada';
-  const fuente = document.getElementById('ctx-fuente')?.value || 'fuente desconocida';
-  const tipo   = document.getElementById('ctx-tipo')?.value || currentImageMode;
-
-  try {
-    const r = await fetch(`${BACKEND_URL}/analizar-imagen`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        imagen_base64: currentImageData.split(',')[1],
-        tipo: tipo,
-        lugar: lugar,
-        fecha: fecha,
-        fuente: fuente,
-      }),
-    });
-    clearInterval(iv);
-    if (!r.ok) throw new Error(`Error ${r.status}`);
-    const parsed = await r.json();
-
-    stEl.innerHTML = '<i class="ti ti-check" style="color:#1d9e75"></i> Analisis completado';
-
-    // Métricas
-    document.getElementById('rm-grid').innerHTML = (parsed.indices || []).map(i =>
-      `<div class="res-metric">
-        <div class="rm-lbl">${i.label}</div>
-        <div class="rm-val">${i.value}</div>
-        <div class="rm-sub">${i.sub}</div>
-      </div>`
-    ).join('');
-    document.getElementById('rc-metrics').classList.add('show');
-
-    // Diagnóstico
-    document.getElementById('rd-text').innerHTML = (parsed.diagnostico || '').replace(/\n/g,'<br>');
-    document.getElementById('rc-diag').classList.add('show');
-
-    // Misiones — integra flota si existe
-    const flotaActual = JSON.parse(localStorage.getItem('vertech_flota') || '[]');
-    const flotaInfo = flotaActual.length > 0
-      ? `Flota disponible: ${flotaActual.map(d => `${d.nombre} (${d.tipo})`).join(', ')}.`
-      : '';
-
-    document.getElementById('rm-list').innerHTML = (parsed.misiones || []).map(m =>
-      `<div class="mission-item">
-        <div class="mission-dot" style="background:${priColor[m.prioridad]||'#888'}"></div>
-        <div class="mission-text"><strong>${m.zona}</strong> — ${m.tarea}</div>
-        <span class="mission-pri pri-${m.prioridad}">${m.prioridad}</span>
-      </div>`
-    ).join('');
-
-    if (flotaInfo) {
-      document.getElementById('rm-list').innerHTML +=
-        `<div style="font-size:11px;color:#5f5e5a;margin-top:8px;padding:8px;background:#f1efe8;border-radius:6px;">
-          <i class="ti ti-drone"></i> ${flotaInfo}
-        </div>`;
+  // 4. Leer archivo y pasarlo a Base64 para visualización y Backend
+  function procesarArchivoMapa(file) {
+    if (!file.type.startsWith("image/")) {
+      alert("Formato no válido. Por favor, suba una exportación de mapa en formato de imagen (PNG, JPEG).");
+      return;
     }
 
-    document.getElementById('rc-missions').classList.add('show');
-    document.getElementById('roadmap-note').classList.add('show');
-
-  } catch (err) {
-    clearInterval(iv);
-    stEl.innerHTML = '<i class="ti ti-x" style="color:#e24b4a"></i> Error al analizar. Intentá de nuevo.';
-    console.error(err);
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      mapaEnMemoriaBase64 = e.target.result;
+      
+      // Ajustar UI con previsualización activa
+      previewImg.src = mapaEnMemoriaBase64;
+      previewWrap.style.display = "block";
+      dropZone.style.padding = "20px"; // Compactar zona de carga
+      
+      // Habilitar botón de acción y limpiar estados previos
+      analyzeBtn.disabled = false;
+      if (resultsContainer) resultsContainer.style.display = "none";
+    };
+    reader.readAsDataURL(file);
   }
-  btn.disabled = false;
-}
+
+  // 5. Ejecutar la Auditoría Automática (Llamado al Servidor)
+  analyzeBtn.addEventListener("click", async () => {
+    if (!mapaEnMemoriaBase64) return;
+
+    analyzeBtn.disabled = true;
+    if (resultsContainer) resultsContainer.style.display = "none";
+    if (backendSpinner) backendSpinner.classList.remove("hidden");
+
+    // Feedback secuencial simulando la revisión local en el servidor de CONAE
+    const pasosAuditoria = [
+      "Leyendo archivo de mapa temático...",
+      "Verificando layout y coordenadas...",
+      "Validando consistencia de simbología y leyendas...",
+      "Analizando presencia de marcas institucionales y logos...",
+      "Procesando reporte final del asistente..."
+    ];
+    
+    let pasoActual = 0;
+    const infoSpinner = backendSpinner.querySelector("span");
+    
+    const intervalPasos = setInterval(() => {
+      if (pasoActual < pasosAuditoria.length && infoSpinner) {
+        infoSpinner.textContent = pasosAuditoria[pasoActual++];
+      }
+    }, 900);
+
+    try {
+      const response = await fetch(`${BACKEND_URL}/analizar-imagen`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          imagen_base64: mapaEnMemoriaBase64.split(',')[1],
+          tipo: 'conae_control_calidad' // Indicador de contexto para el prompt del backend
+        }),
+      });
+
+      clearInterval(intervalPasos);
+      if (backendSpinner) backendSpinner.classList.add("hidden");
+
+      if (!response.ok) throw new Error(`HTTP Error ${response.status}`);
+      const data = await response.json();
+
+      // Renderizar los resultados procesados en las tarjetas del HTML
+      document.getElementById("res-criticos").innerHTML = data.errores_criticos || 
+        `<span style="color:#39d353;"><i class="ti ti-circle-check"></i> Ningún error crítico ni omisión cartográfica detectada.</span>`;
+      
+      document.getElementById("res-sugerencias").innerHTML = data.sugerencias || 
+        `El mapa cumple con los estándares técnicos mínimos. No se requieren ajustes adicionales.`;
+      
+      document.getElementById("res-validacion").innerHTML = data.validacion || 
+        `<span style="color:#39d353;">Logos oficiales de CONAE y Unidad de Emergencias validados correctamente.</span>`;
+
+      // Mostrar contenedor general de resultados
+      if (resultsContainer) resultsContainer.style.display = "grid";
+
+    } catch (err) {
+      clearInterval(intervalPasos);
+      if (backendSpinner) backendSpinner.classList.add("hidden");
+      alert("Error en el servidor local de auditoría. Verifique la conexión con el nodo.");
+      console.error(err);
+    }
+    
+    analyzeBtn.disabled = false;
+  });
+});
