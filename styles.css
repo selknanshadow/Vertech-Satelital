@@ -59,11 +59,14 @@ body {
   align-items: center; 
   gap: 12px; 
 }
+
 .main-logo { 
-  height: 40px; 
-  width: auto; 
+  height: 40px !important; /* Forzamos que no pase de este alto */
+  width: auto !important;   /* Mantiene la proporción perfecta del dron */
+  max-width: 180px;        /* Evita desbordes */
   object-fit: contain; 
-}
+  display: block;
+}}
 .header-live { 
   display: flex; 
   align-items: center; 
