@@ -90,11 +90,89 @@
       </section>
 
       <section id="tab-mar" class="tab-panel">
-        <h2 class="panel-title">Vigilancia Marítima y Economía Azul</h2>
-        </section>
+        <h2 class="panel-title">Vigilancia Marítima y Economía Azul — Canal Beagle y Atlántico Sur</h2>
+        
+        <div class="dashboard-grid">
+          <div class="metrics-sidebar">
+            <div class="metric-card"><div class="metric-label">Buques Detectados</div><div class="metric-value">14</div><div class="metric-sub">Monitoreo SAR activo</div></div>
+            <div class="metric-card"><div class="metric-label">Pesqueros ribereños</div><div class="metric-value">6</div><div class="metric-sub">Zonas autorizadas</div></div>
+            <div class="metric-card"><div class="metric-label">Alertas de Intrusión</div><div class="metric-value">0</div><div class="metric-sub">Sin novedades críticas</div></div>
+            <div class="metric-card"><div class="metric-label">Temperatura Mar</div><div class="metric-value small">6.2 °C</div><div class="metric-sub">Promedio estacional</div></div>
+          </div>
+
+          <div class="main-display">
+            <div class="map-container">
+              <canvas id="canvas-mar"></canvas>
+              <div class="map-tag"><div class="map-tag-title">Zona Atlántica TdF</div><div class="map-tag-val">Radar de Apertura Sintética (SAR)</div></div>
+              <div class="map-legend">
+                <div class="leg-row"><div class="leg-dot" style="background:#378add"></div>Buque comercial</div>
+                <div class="leg-row"><div class="leg-dot" style="background:#1d9e75"></div>Pesquero validado</div>
+                <div class="leg-row"><div class="leg-dot" style="background:#e24b4a"></div>Traza no identificada</div>
+              </div>
+            </div>
+
+            <div class="section-label">Estado de Puertos y Accesos</div>
+            <div class="ndvi-rows">
+              <div class="ndvi-row"><span class="ndvi-lbl">Puerto Río Grande</span><div class="ndvi-track"><div class="ndvi-fill" style="width:100%;background:#1d9e75"></div></div><span class="ndvi-val">OK</span></div>
+              <div class="ndvi-row"><span class="ndvi-lbl">Canal Beagle</span><div class="ndvi-track"><div class="ndvi-fill" style="width:85%;background:#378add"></div></div><span class="ndvi-val">Fluido</span></div>
+            </div>
+          </div>
+
+          <div class="side-panel">
+            <div class="section-label">Sistemas Activos</div>
+            <div class="drone-grid">
+              <div class="drone-card active-mission"><div class="drone-top"><span class="drone-name">Recepción AIS</span><span class="badge badge-ok">Online</span></div><div class="drone-mission">Satélites en órbita polar</div></div>
+            </div>
+
+            <div class="section-label">Alertas Marítimas</div>
+            <div class="alerts">
+              <div class="alert alert-info"><i class="ti ti-ship"></i><div><div class="alert-title">Alerta de Oleaje</div><div class="alert-desc">Frente costero · Olas > 3.5m</div></div></div>
+            </div>
+          </div>
+        </div>
+      </section>
 
       <section id="tab-metano" class="tab-panel">
-        <h2 class="panel-title">Monitoreo Atmosférico de CH4 (Metano)</h2>
+        <h2 class="panel-title">Monitoreo Atmosférico de CH₄ (Metano) — Emisiones Regionales</h2>
+        
+        <div class="dashboard-grid">
+          <div class="metrics-sidebar">
+            <div class="metric-card"><div class="metric-label">Concentración CH₄</div><div class="metric-value">1890</div><div class="metric-sub">ppb (Partes por billón)</div></div>
+            <div class="metric-card"><div class="metric-label">Desviación Estándar</div><div class="metric-value warn">+12</div><div class="metric-sub">Respecto a media global</div></div>
+            <div class="metric-card"><div class="metric-label">Focos Activos</div><div class="metric-value">1</div><div class="metric-sub">Bajo observación</div></div>
+            <div class="metric-card"><div class="metric-label">Sensor Principal</div><div class="metric-value small">TROPOMI</div><div class="metric-sub">Sentinel-5P</div></div>
+          </div>
+
+          <div class="main-display">
+            <div class="map-container">
+              <canvas id="canvas-metano"></canvas>
+              <div class="map-tag"><div class="map-tag-title">Columna Total CH₄</div><div class="map-tag-val">Mol / m²</div></div>
+              <div class="map-legend">
+                <div class="leg-row"><div class="leg-dot" style="background:#1d9e75"></div>Nivel Base</div>
+                <div class="leg-row"><div class="leg-dot" style="background:#ef9f27"></div>Emisión Moderada</div>
+                <div class="leg-row"><div class="leg-dot" style="background:#e24b4a"></div>Pluma de Emisión</div>
+              </div>
+            </div>
+
+            <div class="section-label">Historial de Dispersión (Últimas 24hs)</div>
+            <div class="ndvi-rows">
+              <div class="ndvi-row"><span class="ndvi-lbl">Zona Industrial</span><div class="ndvi-track"><div class="ndvi-fill" style="width:45%;background:#1d9e75"></div></div><span class="ndvi-val">Normal</span></div>
+              <div class="ndvi-row"><span class="ndvi-lbl">Turberas / Áreas Nat.</span><div class="ndvi-track"><div class="ndvi-fill" style="width:78%;background:#ef9f27"></div></div><span class="ndvi-val">Alta</span></div>
+            </div>
+          </div>
+
+          <div class="side-panel">
+            <div class="section-label">Análisis de Pluma</div>
+            <div class="drone-grid">
+              <div class="drone-card"><div class="drone-top"><span class="drone-name">Modelado IFS</span><span class="badge badge-std">Procesado</span></div><div class="drone-mission">Vector de vientos corregido</div></div>
+            </div>
+
+            <div class="section-label">Alertas Atmosféricas</div>
+            <div class="alerts">
+              <div class="alert alert-warn"><i class="ti ti-wind"></i><div><div class="alert-title">Emisión en Turberas</div><div class="alert-desc">Liberación natural por temperatura</div></div></div>
+            </div>
+          </div>
+        </div>
       </section>
 
       <section id="tab-imagen" class="tab-panel">
