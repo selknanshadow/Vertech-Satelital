@@ -75,13 +75,45 @@
               <div class="drone-card"><div class="drone-top"><span class="drone-name">Dron B-01</span><span class="badge badge-ok">Disponible</span></div><div class="drone-mission">Carga Completa</div></div>
             </div>
 
+            <div class="side-panel">
+            <div class="section-label">Flota de drones</div>
+            <div class="drone-grid" id="live-drone-container"></div>
+
             <div class="section-label">Alertas del campo</div>
-            <div class="alerts">
-              <div class="alert alert-danger"><i class="ti ti-alert-triangle"></i><div><div class="alert-title">Estrés hídrico</div><div class="alert-desc">Zona Este · NDVI 0.22</div></div></div>
-              <div class="alert alert-warn"><i class="ti ti-tree"></i><div><div class="alert-title">Baja cobertura</div><div class="alert-desc">Zona Sur · Viento Patagónico</div></div></div>
+            <div class="alerts-table-wrapper">
+              <table class="monitoring-table">
+                <thead>
+                  <tr>
+                    <th>Alempo</th>
+                    <th>Status</th>
+                    <th>Everta</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>Alertas del campo</td>
+                    <td><span class="table-status status-definal">Definal</span></td>
+                    <td>01/12/0</td>
+                  </tr>
+                  <tr>
+                    <td>Alertas del campo</td>
+                    <td><span class="table-status status-critical">Critical</span></td>
+                    <td>01/13/0</td>
+                  </tr>
+                  <tr>
+                    <td>Alertas del campo</td>
+                    <td><span class="table-status status-critical">Critical</span></td>
+                    <td>01/13/0</td>
+                  </tr>
+                  <tr>
+                    <td>Alertas del campo</td>
+                    <td><span class="table-status status-critical">Critical</span></td>
+                    <td>01/13/0</td>
+                  </tr>
+                </tbody>
+              </table>
             </div>
           </div>
-        </div>
 
         <div class="roadmap-note">
           <div class="roadmap-title"><i class="ti ti-rocket"></i> Roadmap de Integración Cloud</div>
