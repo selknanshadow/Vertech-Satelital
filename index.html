@@ -15,7 +15,6 @@
         <img src="logo.png" alt="Vertech TdF Logo" class="main-logo">
         <span class="header-live"><span class="live-dot"></span>En vivo</span>
       </div>
-      
       <div class="header-meta">
         <div class="meta-text">
           <span class="header-tag">Innovatón Space 2025</span>
@@ -27,7 +26,7 @@
   </header>
 
   <div class="dashboard-layout">
-    
+
     <aside class="sidebar-nav">
       <button class="nav-btn active" data-tab="agro"><i class="ti ti-plant-2"></i><span>AgroTech</span></button>
       <button class="nav-btn" data-tab="mar"><i class="ti ti-waves"></i><span>Economía Azul</span></button>
@@ -37,9 +36,10 @@
 
     <main class="main-content">
 
+      <!-- ══ TAB AGROTECH ══ -->
       <section id="tab-agro" class="tab-panel active">
         <h2 class="panel-title">AgroTech & Cloud Computing — Monitoreo Satelital</h2>
-        
+
         <div class="dashboard-grid">
           <div class="metrics-sidebar">
             <div class="metric-card"><div class="metric-label">NDVI promedio</div><div class="metric-value">0.61</div><div class="metric-sub">Pasturas moderadas</div></div>
@@ -76,33 +76,13 @@
             <div class="alerts-table-wrapper">
               <table class="monitoring-table">
                 <thead>
-                  <tr>
-                    <th>Alempo</th>
-                    <th>Status</th>
-                    <th>Everta</th>
-                  </tr>
+                  <tr><th>Alerta</th><th>Estado</th><th>Fecha</th></tr>
                 </thead>
                 <tbody>
-                  <tr>
-                    <td>Alertas del campo</td>
-                    <td><span class="table-status status-definal">Definal</span></td>
-                    <td>01/12/0</td>
-                  </tr>
-                  <tr>
-                    <td>Alertas del campo</td>
-                    <td><span class="table-status status-critical">Critical</span></td>
-                    <td>01/13/0</td>
-                  </tr>
-                  <tr>
-                    <td>Alertas del campo</td>
-                    <td><span class="table-status status-critical">Critical</span></td>
-                    <td>01/13/0</td>
-                  </tr>
-                  <tr>
-                    <td>Alertas del campo</td>
-                    <td><span class="table-status status-critical">Critical</span></td>
-                    <td>01/13/0</td>
-                  </tr>
+                  <tr><td>Humedad suelo baja — Z3</td><td><span class="table-status status-warn">Advertencia</span></td><td>18/06/26</td></tr>
+                  <tr><td>NDVI crítico — Zona Sur</td><td><span class="table-status status-critical">Crítico</span></td><td>18/06/26</td></tr>
+                  <tr><td>Helada tardía detectada</td><td><span class="table-status status-critical">Crítico</span></td><td>17/06/26</td></tr>
+                  <tr><td>Cobertura pastura — Z2</td><td><span class="table-status status-ok">Normal</span></td><td>16/06/26</td></tr>
                 </tbody>
               </table>
             </div>
@@ -115,9 +95,10 @@
         </div>
       </section>
 
+      <!-- ══ TAB MAR ══ -->
       <section id="tab-mar" class="tab-panel">
         <h2 class="panel-title">Vigilancia Marítima y Economía Azul</h2>
-        
+
         <div class="dashboard-grid">
           <div class="metrics-sidebar">
             <div class="metric-card"><div class="metric-label">Buques Detectados</div><div class="metric-value">14</div><div class="metric-sub">Monitoreo SAR Activo</div></div>
@@ -139,8 +120,8 @@
 
             <div class="section-label">Estado de Puertos y Accesos</div>
             <div class="ndvi-rows">
-              <div class="ndvi-row"><span class="ndvi-lbl">Puerto</span><div class="ndvi-track"><div class="ndvi-fill" style="width:100%;background:#1d9e75"></div></div><span class="ndvi-val">OK</span></div>
-              <div class="ndvi-row"><span class="ndvi-lbl">Oceano</span><div class="ndvi-track"><div class="ndvi-fill" style="width:85%;background:#378add"></div></div><span class="ndvi-val">Fluido</span></div>
+              <div class="ndvi-row"><span class="ndvi-lbl">Puerto Ushuaia</span><div class="ndvi-track"><div class="ndvi-fill" style="width:100%;background:#1d9e75"></div></div><span class="ndvi-val">OK</span></div>
+              <div class="ndvi-row"><span class="ndvi-lbl">Canal Beagle</span><div class="ndvi-track"><div class="ndvi-fill" style="width:85%;background:#378add"></div></div><span class="ndvi-val">Fluido</span></div>
             </div>
           </div>
 
@@ -152,28 +133,12 @@
             <div class="alerts-table-wrapper">
               <table class="monitoring-table">
                 <thead>
-                  <tr>
-                    <th>Incidente</th>
-                    <th>Status</th>
-                    <th>Everta</th>
-                  </tr>
+                  <tr><th>Incidente</th><th>Estado</th><th>Fecha</th></tr>
                 </thead>
                 <tbody>
-                  <tr>
-                    <td>Validación AIS</td>
-                    <td><span class="table-status status-definal">Definal</span></td>
-                    <td>02/10/0</td>
-                  </tr>
-                  <tr>
-                    <td>Traza sin transpondedor</td>
-                    <td><span class="table-status status-critical">Critical</span></td>
-                    <td>02/11/0</td>
-                  </tr>
-                  <tr>
-                    <td>Frente de Oleaje Extremo</td>
-                    <td><span class="table-status status-critical">Critical</span></td>
-                    <td>02/11/0</td>
-                  </tr>
+                  <tr><td>Validación AIS</td><td><span class="table-status status-ok">Normal</span></td><td>15/06/26</td></tr>
+                  <tr><td>Traza sin transpondedor</td><td><span class="table-status status-critical">Crítico</span></td><td>16/06/26</td></tr>
+                  <tr><td>Frente de Oleaje Extremo</td><td><span class="table-status status-warn">Advertencia</span></td><td>16/06/26</td></tr>
                 </tbody>
               </table>
             </div>
@@ -181,9 +146,10 @@
         </div>
       </section>
 
+      <!-- ══ TAB METANO ══ -->
       <section id="tab-metano" class="tab-panel">
         <h2 class="panel-title">Monitoreo Atmosférico de CH₄ (Metano) — Emisiones Regionales</h2>
-        
+
         <div class="dashboard-grid">
           <div class="metrics-sidebar">
             <div class="metric-card"><div class="metric-label">Concentración CH₄</div><div class="metric-value">1890</div><div class="metric-sub">ppb (Partes por billón)</div></div>
@@ -206,7 +172,7 @@
             <div class="section-label">Historial de Dispersión (Últimas 24hs)</div>
             <div class="ndvi-rows">
               <div class="ndvi-row"><span class="ndvi-lbl">Zona Urbana</span><div class="ndvi-track"><div class="ndvi-fill" style="width:45%;background:#1d9e75"></div></div><span class="ndvi-val">Normal</span></div>
-              <div class="ndvi-row"><span class="ndvi-lbl"> Áreas Nat.</span><div class="ndvi-track"><div class="ndvi-fill" style="width:78%;background:#ef9f27"></div></div><span class="ndvi-val">Alta</span></div>
+              <div class="ndvi-row"><span class="ndvi-lbl">Áreas Nat.</span><div class="ndvi-track"><div class="ndvi-fill" style="width:78%;background:#ef9f27"></div></div><span class="ndvi-val">Alta</span></div>
             </div>
           </div>
 
@@ -218,20 +184,21 @@
 
             <div class="section-label">Alertas Atmosféricas</div>
             <div class="alerts">
-              <div class="alert alert-warn"><i class="ti ti-wind"></i><div><div class="alert-title">Emisión natural</div><div class="alert-desc">Liberación natural por temperatura</div></div></div>
+              <div class="alert alert-warn"><i class="ti ti-wind"></i><div><div class="alert-title">Emisión natural</div><div class="alert-desc">Liberación natural por temperatura estacional</div></div></div>
             </div>
           </div>
         </div>
       </section>
 
+      <!-- ══ TAB ANALIZADOR IA ══ -->
       <section id="tab-imagen" class="tab-panel">
-        <h2 class="panel-title">Asistente IA — Control de Calidad de Cartografía de Emergencia (Local & Seguro)</h2>
-        
+        <h2 class="panel-title">Asistente IA — Control de Calidad de Cartografía de Emergencia</h2>
+
         <div class="dashboard-grid">
           <div class="metrics-sidebar">
             <div class="metric-card"><div class="metric-label">Tiempo de Revisión</div><div class="metric-value text-success">-42%</div><div class="metric-sub">Meta del proyecto lograda</div></div>
-            <div class="metric-card"><div class="metric-label">Precisión del Filtro</div><div class="metric-value">98.4%</div><div class="metric-sub">Modelos locales validados</div></div>
-            <div class="metric-card"><div class="metric-label">Entorno de Ejecución</div><div class="metric-value small" style="color: var(--amber);">CONAE Local Node</div><div class="metric-sub">100% Seguro · Air-gapped</div></div>
+            <div class="metric-card"><div class="metric-label">Precisión del Filtro</div><div class="metric-value">98.4%</div><div class="metric-sub">Modelos validados</div></div>
+            <div class="metric-card"><div class="metric-label">Motor de Análisis</div><div class="metric-value small" style="color: var(--blue);">Claude Vision</div><div class="metric-sub">Anthropic API · Seguro</div></div>
             <div class="metric-card"><div class="metric-label">Estándar de Control</div><div class="metric-value small">SIG-Emergencias</div><div class="metric-sub">Revisión de capas y logos</div></div>
           </div>
 
@@ -240,18 +207,20 @@
               <input type="file" id="file-input" accept="image/*">
               <i class="ti ti-map-2 upload-icon" style="color: var(--blue);"></i>
               <div class="upload-title">Arrastrá o cargá el mapa temático para control de calidad</div>
-              <div class="upload-sub">Formatos admitidos: PDF Export · GeoTIFF · PNG · JPEG</div>
+              <div class="upload-sub">Formatos admitidos: PNG · JPEG · GeoTIFF Export</div>
             </div>
 
             <div class="preview-wrap" id="preview-wrap" style="display:none; margin-bottom:1.25rem;">
               <img id="preview-img" src="" alt="Mapa de emergencia en revisión">
             </div>
 
-            <button class="analyze-btn" id="analyze-btn" disabled><i class="ti ti-shield-check"></i> Ejecutar Auditoría de Calidad</button>
+            <button class="analyze-btn" id="analyze-btn" disabled>
+              <i class="ti ti-shield-check"></i> Ejecutar Auditoría de Calidad
+            </button>
 
             <div id="backend-spinner" class="backend-spinner hidden">
               <div class="spinner"></div>
-              <span>Analizando capas, consistencia de leyendas, rotulación y metadatos institucionales...</span>
+              <span>Iniciando análisis...</span>
             </div>
           </div>
 
@@ -263,31 +232,31 @@
               <div class="drone-card active-mission"><div class="drone-top"><span class="drone-name">Identidad e Integridad</span><span class="badge badge-ok">Activo</span></div><div class="drone-mission">Logos CONAE y marcas institucionales</div></div>
             </div>
 
-            <div class="section-label">Directiva de Seguridad</div>
+            <div class="section-label">Directiva de Procesamiento</div>
             <div class="alerts">
               <div class="alert alert-info">
                 <i class="ti ti-lock"></i>
                 <div>
-                  <div class="alert-title">Datos Sensibles Protegidos</div>
-                  <div class="alert-desc">Este nodo procesa la información de manera local. Los mapas de emergencias no se envían a servidores externos.</div>
+                  <div class="alert-title">Análisis vía Claude Vision</div>
+                  <div class="alert-desc">Las imágenes se procesan mediante la API de Anthropic. No se almacenan en servidores de terceros ni se registran en bases de datos externas.</div>
                 </div>
               </div>
             </div>
           </div>
         </div>
 
-        <div class="results-layout-grid" id="results-container" style="display: none; margin-top: 1.5rem;">
+        <div class="results-layout-grid" id="results-container" style="display:none; margin-top:1.5rem;">
           <div class="result-card">
             <div class="result-hdr"><i class="ti ti-alert-triangle" style="color:var(--red);"></i> Errores Críticos / Omisiones</div>
-            <div class="result-body" id="res-criticos">Ninguno detectado.</div>
+            <div class="result-body" id="res-criticos"></div>
           </div>
           <div class="result-card">
             <div class="result-hdr"><i class="ti ti-edit" style="color:var(--amber);"></i> Sugerencias de Mejora</div>
-            <div class="result-body" id="res-sugerencias">Alineación de leyenda o revisión de textos.</div>
+            <div class="result-body" id="res-sugerencias"></div>
           </div>
           <div class="result-card">
-            <div class="result-hdr"><i class="ti ti-circle-check" style="color:var(--green);"></i> Validation</div>
-            <div class="result-body" id="res-validacion">Logos correctos y metadatos validados.</div>
+            <div class="result-hdr"><i class="ti ti-circle-check" style="color:var(--green);"></i> Validación</div>
+            <div class="result-body" id="res-validacion"></div>
           </div>
         </div>
       </section>
