@@ -3,524 +3,376 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Vertech — Análisis Satelital IA</title>
+  <title>Vertech TdF — Inteligencia Satelital</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/tabler-icons.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <style>
-    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-    :root{
-      --bg:#080d14;--surface:#0f1824;--card:#141f2e;--border:#1e2e42;--border-hi:#2a4060;
-      --blue:#3b82f6;--blue-dim:rgba(59,130,246,.12);
-      --green:#10b981;--green-dim:rgba(16,185,129,.12);
-      --amber:#f59e0b;--amber-dim:rgba(245,158,11,.12);
-      --red:#ef4444;--red-dim:rgba(239,68,68,.12);
-      --text:#e2e8f0;--muted:#64748b;--white:#f8fafc;
-      --radius:8px;--radius-lg:14px;
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --void: #02060d;
+      --deep: #050d1a;
+      --panel: #071220;
+      --border: #0d2440;
+      --border-hi: #1a3d6b;
+      --green: #00e5a0;
+      --cyan: #00d4ff;
+      --red: #ff3d3d;
+      --amber: #ffb300;
+      --text: #8eb4d4;
+      --text-hi: #c8e0f4;
+      --white: #e8f4ff;
+      --mono: 'Share Tech Mono', monospace;
+      --sans: 'Inter', system-ui, sans-serif;
     }
-    body{font-family:system-ui,-apple-system,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);font-size:13px;line-height:1.5;min-height:100vh;display:flex;flex-direction:column}
+    body {
+      font-family: var(--sans);
+      background: var(--void);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+    }
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(33,150,243,.008) 2px, rgba(33,150,243,.008) 4px);
+      pointer-events: none;
+      z-index: 0;
+    }
 
     /* ── HEADER ── */
-    header{background:var(--surface);border-bottom:1px solid var(--border);padding:.65rem 1.5rem;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50}
-    .hdr-l{display:flex;align-items:center;gap:12px}
-    .hdr-logo{height:36px;width:auto;object-fit:contain}
-    .hdr-brand{display:flex;flex-direction:column;line-height:1.15}
-    .brand-main{font-size:14px;font-weight:700;color:var(--white)}
-    .brand-main span{color:var(--amber)}
-    .brand-sub{font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
-    .hdr-r{display:flex;align-items:center;gap:10px}
-    .hdr-badge{font-size:9px;font-weight:600;color:var(--amber);background:var(--amber-dim);border:1px solid rgba(245,158,11,.25);padding:2px 9px;border-radius:20px;text-transform:uppercase;letter-spacing:.04em}
-    .hdr-flag{height:28px;border-radius:3px;border:1px solid var(--border);object-fit:contain}
+    header {
+      background: var(--deep);
+      border-bottom: 1px solid var(--border);
+      padding: .7rem 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: relative;
+      z-index: 10;
+    }
+    .hdr-left { display: flex; align-items: center; gap: 16px; }
+    .brand-name { font-family: var(--mono); font-size: 15px; color: var(--white); letter-spacing: .12em; }
+    .brand-name span { color: var(--amber); }
+    .brand-sub { font-size: 9px; color: var(--text); letter-spacing: .18em; text-transform: uppercase; margin-top: 2px; }
+    .hdr-right { display: flex; align-items: center; gap: 12px; }
+    .badge-innovaton {
+      font-family: var(--mono);
+      font-size: 9px;
+      color: var(--amber);
+      background: rgba(255,179,0,.08);
+      border: 1px solid rgba(255,179,0,.2);
+      padding: 3px 10px;
+      border-radius: 3px;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+    .hdr-flag { height: 30px; border-radius: 3px; border: 1px solid var(--border-hi); }
 
-    /* ── LAYOUT ── */
-    .app-body{display:flex;flex:1;min-height:0}
+    /* ── HERO ── */
+    .hero {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 3rem 2rem;
+      position: relative;
+      z-index: 1;
+      text-align: center;
+    }
 
-    /* Sidebar */
-    .sidebar{width:68px;background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;align-items:center;padding:.75rem 0;gap:4px;flex-shrink:0}
-    .nav-btn{width:52px;padding:8px 4px 6px;color:var(--muted);border:none;border-radius:var(--radius);background:none;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:3px;transition:all .15s}
-    .nav-btn .ti{font-size:20px}
-    .nav-btn span{font-size:8px;text-align:center;line-height:1.1}
-    .nav-btn:hover{color:var(--white);background:rgba(255,255,255,.04)}
-    .nav-btn.active{color:var(--blue);background:rgba(59,130,246,.1)}
+    .hero-eyebrow {
+      font-family: var(--mono);
+      font-size: 10px;
+      color: var(--text);
+      letter-spacing: .22em;
+      text-transform: uppercase;
+      margin-bottom: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .hero-eyebrow::before,
+    .hero-eyebrow::after { content: '——'; opacity: .3; }
 
-    /* Main */
-    .main-area{flex:1;overflow-y:auto;padding:1.25rem}
+    .hero-title {
+      font-family: var(--mono);
+      font-size: clamp(28px, 5vw, 52px);
+      font-weight: 400;
+      color: var(--white);
+      letter-spacing: .06em;
+      line-height: 1.15;
+      margin-bottom: .5rem;
+    }
+    .hero-title span { color: var(--amber); }
 
-    /* ── UPLOAD PANEL ── */
-    .upload-panel{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1.25rem;margin-bottom:1.25rem}
-    .upload-panel-title{font-size:12px;font-weight:600;color:var(--white);margin-bottom:.75rem;display:flex;align-items:center;gap:6px}
-    .upload-panel-title .ti{color:var(--blue);font-size:15px}
-    .upload-controls{display:grid;grid-template-columns:1fr 1fr auto;gap:10px;align-items:end}
-    .field-group{display:flex;flex-direction:column;gap:4px}
-    .field-label{font-size:10px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
-    .field-input{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:8px 12px;font-size:12px;color:var(--white);outline:none;transition:border-color .2s;width:100%}
-    .field-input:focus{border-color:var(--blue)}
-    .field-input::placeholder{color:var(--muted)}
-    .upload-zone-mini{border:1.5px dashed var(--border-hi);border-radius:var(--radius);padding:8px 16px;text-align:center;cursor:pointer;background:var(--card);position:relative;transition:all .2s;white-space:nowrap}
-    .upload-zone-mini:hover,.upload-zone-mini.drag-over{border-color:var(--blue);background:var(--blue-dim)}
-    .upload-zone-mini input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
-    .upload-zone-mini-text{font-size:11px;font-weight:600;color:var(--blue);display:flex;align-items:center;gap:5px;pointer-events:none}
+    .hero-sub {
+      font-family: var(--mono);
+      font-size: 12px;
+      color: var(--text);
+      letter-spacing: .12em;
+      margin-bottom: 3rem;
+    }
 
-    /* Modo cards */
-    .mode-row{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:.75rem}
-    .mode-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:8px 10px;text-align:center;cursor:pointer;transition:all .15s;user-select:none}
-    .mode-card:hover{border-color:var(--border-hi)}
-    .mode-card.selected{border-color:var(--blue);background:var(--blue-dim)}
-    .mode-card .ti{font-size:17px;color:var(--muted);display:block;margin-bottom:2px}
-    .mode-card.selected .ti{color:var(--blue)}
-    .mode-label{font-size:11px;font-weight:600;color:var(--text);display:block}
-    .mode-sub{font-size:9px;color:var(--muted);display:block}
+    /* ── MÓDULOS ── */
+    .modules {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      max-width: 900px;
+      width: 100%;
+      margin: 0 auto;
+    }
 
-    .btn-analyze{width:100%;padding:10px;background:var(--blue);border:none;border-radius:var(--radius);font-size:13px;font-weight:600;color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:7px;transition:background .2s}
-    .btn-analyze:hover:not(:disabled){background:#2563eb}
-    .btn-analyze:disabled{background:var(--border);color:var(--muted);cursor:not-allowed}
+    .module-card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 2rem 1.5rem;
+      text-decoration: none;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 12px;
+      position: relative;
+      overflow: hidden;
+      transition: border-color .2s, transform .2s;
+    }
+    .module-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      opacity: .6;
+      transition: opacity .2s;
+    }
+    .module-card::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      transition: opacity .3s;
+    }
+    .module-card:hover { transform: translateY(-2px); }
+    .module-card:hover::before { opacity: 1; }
+    .module-card:hover::after { opacity: 1; }
 
-    /* Preview mini */
-    .preview-mini{display:none;align-items:center;gap:10px;padding:8px 12px;background:var(--card);border:1px solid var(--border);border-radius:var(--radius);margin-bottom:.75rem}
-    .preview-mini.visible{display:flex}
-    .preview-mini img{height:48px;width:72px;object-fit:cover;border-radius:4px;border:1px solid var(--border)}
-    .preview-mini-info{flex:1;min-width:0}
-    .preview-mini-name{font-size:11px;font-weight:600;color:var(--white);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-    .preview-mini-sub{font-size:10px;color:var(--muted)}
-    .btn-change-img{background:none;border:1px solid var(--border);border-radius:var(--radius);color:var(--muted);font-size:10px;padding:3px 8px;cursor:pointer;transition:all .15s;white-space:nowrap}
-    .btn-change-img:hover{border-color:var(--blue);color:var(--blue)}
+    /* AgroTech — verde */
+    .card-agro::before { background: var(--green); }
+    .card-agro::after { background: radial-gradient(ellipse at top, rgba(0,229,160,.06) 0%, transparent 70%); }
+    .card-agro:hover { border-color: rgba(0,229,160,.3); }
+    .card-agro .mod-icon { color: var(--green); }
+    .card-agro .mod-accent { color: var(--green); }
 
-    /* Spinner */
-    .spinner-box{display:none;align-items:center;gap:10px;padding:10px 14px;background:var(--blue-dim);border:1px dashed rgba(59,130,246,.35);border-radius:var(--radius);margin-bottom:1rem;font-size:12px;color:#93c5fd}
-    .spinner-box.visible{display:flex}
-    .spin{width:14px;height:14px;border:2px solid rgba(147,197,253,.2);border-top-color:#93c5fd;border-radius:50%;animation:spin .8s linear infinite;flex-shrink:0}
-    @keyframes spin{to{transform:rotate(360deg)}}
+    /* Mar — cyan */
+    .card-mar::before { background: var(--cyan); }
+    .card-mar::after { background: radial-gradient(ellipse at top, rgba(0,212,255,.06) 0%, transparent 70%); }
+    .card-mar:hover { border-color: rgba(0,212,255,.3); }
+    .card-mar .mod-icon { color: var(--cyan); }
+    .card-mar .mod-accent { color: var(--cyan); }
 
-    /* ── DASHBOARD ── */
-    #dashboard{display:none}
-    #dashboard.visible{display:block}
+    /* CH4 — rojo */
+    .card-ch4::before { background: var(--red); }
+    .card-ch4::after { background: radial-gradient(ellipse at top, rgba(255,61,61,.06) 0%, transparent 70%); }
+    .card-ch4:hover { border-color: rgba(255,61,61,.3); }
+    .card-ch4 .mod-icon { color: var(--red); }
+    .card-ch4 .mod-accent { color: var(--red); }
 
-    /* Zona header */
-    .dash-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem}
-    .dash-zona{display:flex;align-items:center;gap:8px}
-    .dash-zona-label{font-size:11px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.04em}
-    .dash-zona-name{font-size:16px;font-weight:700;color:var(--white)}
-    .dash-badge{font-size:10px;font-weight:600;padding:2px 9px;border-radius:4px;text-transform:uppercase;letter-spacing:.04em}
-    .badge-campo{background:var(--green-dim);color:var(--green)}
-    .badge-mar{background:var(--blue-dim);color:var(--blue)}
-    .badge-metano{background:var(--red-dim);color:var(--red)}
+    .mod-icon { font-size: 28px; position: relative; z-index: 1; }
+    .mod-code {
+      font-family: var(--mono);
+      font-size: 9px;
+      letter-spacing: .16em;
+      text-transform: uppercase;
+      opacity: .5;
+      position: relative;
+      z-index: 1;
+    }
+    .mod-title {
+      font-family: var(--mono);
+      font-size: 15px;
+      color: var(--white);
+      letter-spacing: .08em;
+      position: relative;
+      z-index: 1;
+    }
+    .mod-desc {
+      font-size: 11px;
+      color: var(--text);
+      line-height: 1.6;
+      position: relative;
+      z-index: 1;
+    }
+    .mod-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+      position: relative;
+      z-index: 1;
+      margin-top: 4px;
+    }
+    .mod-tag {
+      font-family: var(--mono);
+      font-size: 8px;
+      letter-spacing: .08em;
+      padding: 2px 6px;
+      border-radius: 2px;
+      border: 1px solid;
+      opacity: .7;
+    }
+    .mod-enter {
+      font-family: var(--mono);
+      font-size: 9px;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      margin-top: auto;
+      position: relative;
+      z-index: 1;
+      opacity: .5;
+      transition: opacity .2s;
+    }
+    .module-card:hover .mod-enter { opacity: 1; }
 
-    /* Métricas */
-    .metrics-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin-bottom:1rem}
-    .metric-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:10px 12px}
-    .metric-label{font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;margin-bottom:2px}
-    .metric-value{font-size:20px;font-weight:700;color:var(--white);line-height:1.1}
-    .metric-value.c-green{color:var(--green)}
-    .metric-value.c-blue{color:var(--blue)}
-    .metric-value.c-red{color:var(--red)}
-    .metric-value.c-amber{color:var(--amber)}
-    .metric-sub{font-size:9px;color:var(--muted);margin-top:1px}
+    /* ── INFO STRIP ── */
+    .info-strip {
+      max-width: 900px;
+      width: 100%;
+      margin: 2rem auto 0;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+    }
+    .info-item {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 10px 14px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .info-item .ti { font-size: 18px; color: var(--text); opacity: .5; }
+    .info-lbl { font-size: 9px; color: var(--text); text-transform: uppercase; letter-spacing: .06em; }
+    .info-val { font-family: var(--mono); font-size: 11px; color: var(--text-hi); margin-top: 1px; }
 
-    /* Grilla central */
-    .dash-grid{display:grid;grid-template-columns:1fr 220px 240px;gap:10px;margin-bottom:1rem}
+    /* ── FOOTER ── */
+    footer {
+      background: var(--deep);
+      border-top: 1px solid var(--border);
+      padding: .5rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      font-family: var(--mono);
+      font-size: 9px;
+      color: var(--text);
+      letter-spacing: .06em;
+      position: relative;
+      z-index: 1;
+    }
 
-    /* Preview imagen grande */
-    .img-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden}
-    .img-card-hdr{padding:8px 12px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
-    .img-card-title{font-size:11px;font-weight:600;color:var(--white)}
-    .img-card-sub{font-size:10px;color:var(--muted)}
-    .img-card img{display:block;width:100%;max-height:280px;object-fit:cover}
-
-    /* NDVI barras */
-    .ndvi-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:12px;display:flex;flex-direction:column;gap:8px}
-    .ndvi-card-title{font-size:10px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;margin-bottom:2px}
-    .ndvi-row{display:flex;flex-direction:column;gap:3px}
-    .ndvi-top{display:flex;justify-content:space-between;align-items:baseline}
-    .ndvi-zone{font-size:11px;color:var(--text);font-weight:500}
-    .ndvi-estado{font-size:9px;color:var(--muted)}
-    .ndvi-val{font-size:11px;font-weight:700;color:var(--white)}
-    .ndvi-track{height:5px;background:var(--bg);border-radius:3px;overflow:hidden}
-    .ndvi-fill{height:100%;border-radius:3px;transition:width .8s ease}
-
-    /* Alertas + misiones */
-    .side-col{display:flex;flex-direction:column;gap:10px}
-    .panel-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden}
-    .panel-hdr{padding:8px 12px;border-bottom:1px solid var(--border);font-size:10px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;display:flex;align-items:center;gap:6px}
-    .panel-hdr .ti{font-size:13px}
-    .panel-body{padding:10px 12px;display:flex;flex-direction:column;gap:7px}
-
-    .alert-row{display:flex;align-items:flex-start;gap:8px;padding:7px 10px;border-radius:var(--radius);background:var(--surface)}
-    .alert-row .ti{font-size:15px;flex-shrink:0;margin-top:1px}
-    .alert-row.t-ok .ti{color:var(--green)}
-    .alert-row.t-warn .ti{color:var(--amber)}
-    .alert-row.t-critical .ti{color:var(--red)}
-    .alert-row.t-ok{border-left:2px solid var(--green)}
-    .alert-row.t-warn{border-left:2px solid var(--amber)}
-    .alert-row.t-critical{border-left:2px solid var(--red)}
-    .alert-title{font-size:11px;font-weight:600;color:var(--white)}
-    .alert-desc{font-size:10px;color:var(--muted);margin-top:1px}
-
-    .mision-row{display:flex;align-items:flex-start;gap:8px;padding:6px 0;border-bottom:1px solid rgba(30,46,66,.6)}
-    .mision-row:last-child{border-bottom:none}
-    .mision-badge{font-size:8px;font-weight:700;padding:2px 5px;border-radius:3px;white-space:nowrap;flex-shrink:0;margin-top:1px}
-    .mb-alta{background:var(--red-dim);color:var(--red)}
-    .mb-media{background:var(--amber-dim);color:var(--amber)}
-    .mb-baja{background:var(--green-dim);color:var(--green)}
-    .mision-info{}
-    .mision-zona{font-size:10px;font-weight:600;color:var(--text)}
-    .mision-tarea{font-size:10px;color:var(--muted)}
-
-    /* Diagnóstico */
-    .diag-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden}
-    .diag-hdr{padding:8px 12px;border-bottom:1px solid var(--border);font-size:10px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;display:flex;align-items:center;gap:6px}
-    .diag-hdr .ti{font-size:13px;color:var(--blue)}
-    .diag-body{padding:12px;font-size:12px;color:var(--text);line-height:1.7}
-
-    /* Footer */
-    footer{background:var(--surface);border-top:1px solid var(--border);padding:.6rem 1.5rem;display:flex;justify-content:space-between;font-size:10px;color:var(--muted)}
-
-    @media(max-width:1100px){.metrics-grid{grid-template-columns:repeat(3,1fr)}.dash-grid{grid-template-columns:1fr 1fr}}
-    @media(max-width:768px){.sidebar{display:none}.upload-controls{grid-template-columns:1fr}.metrics-grid{grid-template-columns:repeat(2,1fr)}.dash-grid{grid-template-columns:1fr}.mode-row{grid-template-columns:1fr}}
+    @media(max-width: 768px) {
+      .modules { grid-template-columns: 1fr; }
+      .info-strip { grid-template-columns: repeat(2, 1fr); }
+      .hero-title { font-size: 28px; }
+    }
   </style>
 </head>
 <body>
 
 <header>
-  <div class="hdr-l">
-    <img src="logo.png" alt="Vertech" class="hdr-logo">
-    <div class="hdr-brand">
-      <span class="brand-main">VERTECH <span>TdF</span></span>
-      <span class="brand-sub">Inteligencia Satelital</span>
+  <div class="hdr-left">
+    <img src="logo2.png" alt="Vertech TdF" style="height:38px;width:auto;object-fit:contain;">
+    <div>
+      <div class="brand-name">VERTECH <span>TdF</span></div>
+      <div class="brand-sub">Earth Observation Intelligence</div>
     </div>
   </div>
-  <div class="hdr-r">
-    <span class="hdr-badge">Innovatón Space 2025</span>
+  <div class="hdr-right">
+    <span class="badge-innovaton">Innovatón Space 2025</span>
     <img src="Bandera.png" alt="Tierra del Fuego" class="hdr-flag">
   </div>
 </header>
 
-<div class="app-body">
+<div class="hero">
 
-  <!-- Sidebar -->
-  <aside class="sidebar">
-    <button class="nav-btn active" data-mode="campo"><i class="ti ti-plant-2"></i><span>Agro</span></button>
-    <button class="nav-btn" data-mode="mar"><i class="ti ti-waves"></i><span>Mar</span></button>
-    <button class="nav-btn" data-mode="metano"><i class="ti ti-flame"></i><span>CH₄</span></button>
-  </aside>
+  <div class="hero-eyebrow">Earth Observation · AI Analysis · Real Time</div>
+  <h1 class="hero-title">INTELIGENCIA<br><span>SATELITAL</span></h1>
+  <p class="hero-sub">Subí una imagen satelital · Seleccioná el módulo · Claude Vision analiza</p>
 
-  <div class="main-area">
+  <div class="modules">
 
-    <!-- Panel de carga -->
-    <div class="upload-panel">
-      <div class="upload-panel-title"><i class="ti ti-satellite"></i> Análisis Satelital con IA — Subí una imagen para comenzar</div>
-
-      <div class="mode-row">
-        <div class="mode-card selected" data-mode="campo">
-          <i class="ti ti-plant-2"></i>
-          <span class="mode-label">AgroTech</span>
-          <span class="mode-sub">NDVI · Vegetación · Campo</span>
-        </div>
-        <div class="mode-card" data-mode="mar">
-          <i class="ti ti-waves"></i>
-          <span class="mode-label">Economía Azul</span>
-          <span class="mode-sub">SST · Clorofila · Mar</span>
-        </div>
-        <div class="mode-card" data-mode="metano">
-          <i class="ti ti-flame"></i>
-          <span class="mode-label">Metano CH₄</span>
-          <span class="mode-sub">TROPOMI · Emisiones</span>
-        </div>
+    <a href="agro.html" class="module-card card-agro">
+      <i class="ti ti-plant-2 mod-icon"></i>
+      <div class="mod-code">MÓDULO 01</div>
+      <div class="mod-title">AgroTech</div>
+      <div class="mod-desc">Análisis de vegetación, índices NDVI, detección de sequía, estrés hídrico y dimensionamiento de cultivos.</div>
+      <div class="mod-tags">
+        <span class="mod-tag mod-accent" style="border-color:rgba(0,229,160,.3);color:#00e5a0">NDVI</span>
+        <span class="mod-tag mod-accent" style="border-color:rgba(0,229,160,.3);color:#00e5a0">Sequía</span>
+        <span class="mod-tag mod-accent" style="border-color:rgba(0,229,160,.3);color:#00e5a0">Sentinel-2</span>
       </div>
+      <div class="mod-enter mod-accent">INGRESAR →</div>
+    </a>
 
-      <div class="upload-controls">
-        <div class="field-group">
-          <label class="field-label">Ubicación (opcional)</label>
-          <input type="text" id="lugar-input" class="field-input" placeholder="Ej: Patagonia, Mar del Norte, Siberia...">
-        </div>
-        <div class="field-group">
-          <label class="field-label">Fuente / Sensor</label>
-          <input type="text" id="fuente-input" class="field-input" placeholder="Ej: Sentinel-2, Landsat, TROPOMI...">
-        </div>
-        <div class="field-group">
-          <label class="field-label">Imagen satelital</label>
-          <div class="upload-zone-mini" id="drop-zone">
-            <input type="file" id="file-input" accept="image/*">
-            <div class="upload-zone-mini-text"><i class="ti ti-cloud-upload"></i> Subir imagen</div>
-          </div>
-        </div>
+    <a href="mar.html" class="module-card card-mar">
+      <i class="ti ti-waves mod-icon"></i>
+      <div class="mod-code">MÓDULO 02</div>
+      <div class="mod-title">Economía Azul</div>
+      <div class="mod-desc">Vigilancia marítima, detección de pesca ilegal, estado de mareas, temperatura superficial y productividad marina.</div>
+      <div class="mod-tags">
+        <span class="mod-tag" style="border-color:rgba(0,212,255,.3);color:#00d4ff">SAR</span>
+        <span class="mod-tag" style="border-color:rgba(0,212,255,.3);color:#00d4ff">Pesca Ilegal</span>
+        <span class="mod-tag" style="border-color:rgba(0,212,255,.3);color:#00d4ff">Mareas</span>
       </div>
-    </div>
+      <div class="mod-enter" style="color:var(--cyan)">INGRESAR →</div>
+    </a>
 
-    <!-- Preview mini -->
-    <div class="preview-mini" id="preview-mini">
-      <img id="preview-thumb" src="" alt="">
-      <div class="preview-mini-info">
-        <div class="preview-mini-name" id="preview-name">—</div>
-        <div class="preview-mini-sub" id="preview-sub">—</div>
+    <a href="ch4.html" class="module-card card-ch4">
+      <i class="ti ti-flame mod-icon"></i>
+      <div class="mod-code">MÓDULO 03</div>
+      <div class="mod-title">Metano CH₄</div>
+      <div class="mod-desc">Detección de fugas, plumas de emisión, concentración atmosférica y alertas ambientales para autoridades.</div>
+      <div class="mod-tags">
+        <span class="mod-tag" style="border-color:rgba(255,61,61,.3);color:#ff3d3d">TROPOMI</span>
+        <span class="mod-tag" style="border-color:rgba(255,61,61,.3);color:#ff3d3d">Fugas</span>
+        <span class="mod-tag" style="border-color:rgba(255,61,61,.3);color:#ff3d3d">Sentinel-5P</span>
       </div>
-      <button class="btn-change-img" id="btn-change"><i class="ti ti-refresh"></i> Cambiar</button>
-      <button class="btn-analyze" id="btn-analyze" style="width:auto;padding:8px 18px" disabled>
-        <i class="ti ti-brain"></i> Analizar
-      </button>
-    </div>
-
-    <!-- Spinner -->
-    <div class="spinner-box" id="spinner">
-      <div class="spin"></div>
-      <span id="spinner-text">Procesando imagen satelital...</span>
-    </div>
-
-    <!-- Dashboard -->
-    <div id="dashboard">
-
-      <!-- Header zona -->
-      <div class="dash-header">
-        <div class="dash-zona">
-          <div>
-            <div class="dash-zona-label">Área analizada</div>
-            <div class="dash-zona-name" id="dash-zona">—</div>
-          </div>
-          <span class="dash-badge badge-campo" id="dash-tipo-badge">AgroTech</span>
-        </div>
-        <div style="font-size:11px;color:var(--muted)">Análisis generado por Claude Vision · <span id="dash-fecha"></span></div>
-      </div>
-
-      <!-- Métricas -->
-      <div class="metrics-grid" id="metrics-grid">
-        <!-- generado por JS -->
-      </div>
-
-      <!-- Grilla central -->
-      <div class="dash-grid">
-
-        <!-- Imagen -->
-        <div class="img-card">
-          <div class="img-card-hdr">
-            <span class="img-card-title" id="img-card-title">Imagen satelital</span>
-            <span class="img-card-sub" id="img-card-sub">—</span>
-          </div>
-          <img id="dash-img" src="" alt="Imagen analizada">
-        </div>
-
-        <!-- NDVI / Índices por zona -->
-        <div class="ndvi-card">
-          <div class="ndvi-card-title" id="ndvi-title">Índices por zona</div>
-          <div id="ndvi-rows"><!-- generado por JS --></div>
-        </div>
-
-        <!-- Alertas + Misiones -->
-        <div class="side-col">
-          <div class="panel-card">
-            <div class="panel-hdr"><i class="ti ti-alert-triangle"></i> Alertas</div>
-            <div class="panel-body" id="alertas-body"><!-- generado --></div>
-          </div>
-          <div class="panel-card">
-            <div class="panel-hdr"><i class="ti ti-drone"></i> Misiones recomendadas</div>
-            <div class="panel-body" id="misiones-body"><!-- generado --></div>
-          </div>
-        </div>
-
-      </div>
-
-      <!-- Diagnóstico -->
-      <div class="diag-card">
-        <div class="diag-hdr"><i class="ti ti-file-description"></i> Diagnóstico técnico</div>
-        <div class="diag-body" id="diag-body">—</div>
-      </div>
-
-    </div>
+      <div class="mod-enter" style="color:var(--red)">INGRESAR →</div>
+    </a>
 
   </div>
+
+  <div class="info-strip">
+    <div class="info-item">
+      <i class="ti ti-satellite"></i>
+      <div><div class="info-lbl">Fuente de datos</div><div class="info-val">Copernicus / ESA</div></div>
+    </div>
+    <div class="info-item">
+      <i class="ti ti-brain"></i>
+      <div><div class="info-lbl">Motor IA</div><div class="info-val">Claude Vision</div></div>
+    </div>
+    <div class="info-item">
+      <i class="ti ti-world"></i>
+      <div><div class="info-lbl">Cobertura</div><div class="info-val">Global · Sin restricción</div></div>
+    </div>
+    <div class="info-item">
+      <i class="ti ti-lock"></i>
+      <div><div class="info-lbl">Procesamiento</div><div class="info-val">Backend Seguro</div></div>
+    </div>
+  </div>
+
 </div>
 
 <footer>
-  <span>Vertech TdF · Río Grande, Tierra del Fuego, Argentina</span>
-  <span>Innovatón Space 2025 · Sentinel · TROPOMI · Claude Vision</span>
+  <span>VERTECH TdF · RÍO GRANDE, TIERRA DEL FUEGO, ARGENTINA</span>
+  <span>INNOVATÓN SPACE 2025 · SENTINEL · TROPOMI · CLAUDE VISION</span>
 </footer>
 
-<script>
-  const BACKEND = 'https://vertech-backend.onrender.com';
-
-  let imageBase64 = null, imageMediaType = 'image/jpeg', currentMode = 'campo';
-
-  // ── Navegación sidebar ──
-  document.querySelectorAll('.sidebar .nav-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-      document.querySelectorAll('.sidebar .nav-btn').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      setMode(btn.dataset.mode);
-    });
-  });
-
-  // ── Modo cards ──
-  document.querySelectorAll('.mode-card').forEach(card => {
-    card.addEventListener('click', () => {
-      document.querySelectorAll('.mode-card').forEach(c => c.classList.remove('selected'));
-      card.classList.add('selected');
-      setMode(card.dataset.mode);
-    });
-  });
-
-  function setMode(mode) {
-    currentMode = mode;
-    document.querySelectorAll('.mode-card').forEach(c => c.classList.toggle('selected', c.dataset.mode === mode));
-    document.querySelectorAll('.sidebar .nav-btn').forEach(b => b.classList.toggle('active', b.dataset.mode === mode));
-  }
-
-  // ── Upload ──
-  const dropZone   = document.getElementById('drop-zone');
-  const fileInput  = document.getElementById('file-input');
-  const previewMini = document.getElementById('preview-mini');
-  const previewThumb = document.getElementById('preview-thumb');
-  const previewName = document.getElementById('preview-name');
-  const previewSub  = document.getElementById('preview-sub');
-  const btnChange  = document.getElementById('btn-change');
-  const btnAnalyze = document.getElementById('btn-analyze');
-  const spinner    = document.getElementById('spinner');
-  const spinnerTxt = document.getElementById('spinner-text');
-  const dashboard  = document.getElementById('dashboard');
-
-  dropZone.addEventListener('click', e => { if(e.target!==fileInput) fileInput.click(); });
-  dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('drag-over'); });
-  dropZone.addEventListener('dragleave', () => dropZone.classList.remove('drag-over'));
-  dropZone.addEventListener('drop', e => { e.preventDefault(); dropZone.classList.remove('drag-over'); if(e.dataTransfer.files[0]) cargarArchivo(e.dataTransfer.files[0]); });
-  fileInput.addEventListener('change', e => { if(e.target.files[0]) cargarArchivo(e.target.files[0]); });
-  btnChange.addEventListener('click', () => { fileInput.value=''; fileInput.click(); });
-
-  function cargarArchivo(file) {
-    if(!file.type.startsWith('image/')) { alert('Seleccioná una imagen (PNG, JPEG, etc.)'); return; }
-    const reader = new FileReader();
-    reader.onload = e => {
-      const dataUrl = e.target.result;
-      imageBase64    = dataUrl.split(',')[1];
-      imageMediaType = file.type || 'image/jpeg';
-      previewThumb.src = dataUrl;
-      previewName.textContent = file.name;
-      previewSub.textContent  = (file.size/1024).toFixed(0) + ' KB · ' + file.type;
-      previewMini.classList.add('visible');
-      btnAnalyze.disabled = false;
-      dashboard.classList.remove('visible');
-    };
-    reader.readAsDataURL(file);
-  }
-
-  // ── Pasos spinner ──
-  const PASOS = {
-    campo:  ['Leyendo imagen satelital...','Detectando índices de vegetación...','Identificando zonas críticas...','Generando diagnóstico agronómico...'],
-    mar:    ['Leyendo imagen SAR...','Analizando temperatura superficial...','Detectando actividad marina...','Generando diagnóstico oceanográfico...'],
-    metano: ['Leyendo datos TROPOMI...','Calculando concentración CH₄...','Identificando plumas de emisión...','Generando diagnóstico atmosférico...']
-  };
-
-  // ── Analizar ──
-  btnAnalyze.addEventListener('click', async () => {
-    if(!imageBase64) return;
-    btnAnalyze.disabled = true;
-    dashboard.classList.remove('visible');
-    spinner.classList.add('visible');
-
-    const pasos = PASOS[currentMode];
-    let paso = 0;
-    const intervalo = setInterval(() => { if(paso<pasos.length) spinnerTxt.textContent = pasos[paso++]; }, 950);
-
-    try {
-      const lugar  = document.getElementById('lugar-input').value.trim();
-      const fuente = document.getElementById('fuente-input').value.trim() || 'Imagen satelital';
-
-      const res = await fetch(`${BACKEND}/analizar-imagen`, {
-        method: 'POST',
-        headers: {'Content-Type':'application/json'},
-        body: JSON.stringify({
-          imagen_base64: imageBase64,
-          media_type: imageMediaType,
-          tipo: currentMode,
-          lugar: lugar,
-          fuente: fuente
-        })
-      });
-
-      clearInterval(intervalo);
-      spinner.classList.remove('visible');
-
-      if(!res.ok) {
-        const err = await res.json().catch(()=>({}));
-        throw new Error(err?.detail || `Error HTTP ${res.status}`);
-      }
-
-      const data = await res.json();
-      renderDashboard(data, lugar, fuente);
-
-    } catch(err) {
-      clearInterval(intervalo);
-      spinner.classList.remove('visible');
-      console.error(err);
-      alert(`Error al analizar:\n${err.message}`);
-    }
-
-    btnAnalyze.disabled = false;
-  });
-
-  // ── Render Dashboard ──
-  function renderDashboard(data, lugar, fuente) {
-    // Header
-    document.getElementById('dash-zona').textContent = data.zona || lugar || 'Zona analizada';
-    document.getElementById('dash-fecha').textContent = new Date().toLocaleDateString('es-AR', {day:'2-digit',month:'short',year:'numeric'});
-
-    const badge = document.getElementById('dash-tipo-badge');
-    badge.textContent = currentMode === 'campo' ? 'AgroTech' : currentMode === 'mar' ? 'Economía Azul' : 'Metano CH₄';
-    badge.className = `dash-badge badge-${currentMode}`;
-
-    // Imagen
-    document.getElementById('dash-img').src = previewThumb.src;
-    document.getElementById('img-card-title').textContent = data.zona || 'Imagen analizada';
-    document.getElementById('img-card-sub').textContent = fuente;
-
-    // Métricas
-    const colorMap = { green:'c-green', blue:'c-blue', red:'c-red', amber:'c-amber', neutral:'' };
-    const grid = document.getElementById('metrics-grid');
-    grid.innerHTML = (data.metricas || []).map(m => `
-      <div class="metric-card">
-        <div class="metric-label">${m.label}</div>
-        <div class="metric-value ${colorMap[m.color]||''}">${m.value}</div>
-        <div class="metric-sub">${m.sub}</div>
-      </div>`).join('');
-
-    // NDVI / Índices por zona
-    const ndviTitle = currentMode === 'campo' ? 'NDVI por zona' : currentMode === 'mar' ? 'Productividad por sector' : 'CH₄ por zona';
-    document.getElementById('ndvi-title').textContent = ndviTitle;
-    const ndviColors = { campo:'#10b981', mar:'#3b82f6', metano:'#ef4444' };
-    const ndviColor = ndviColors[currentMode];
-    document.getElementById('ndvi-rows').innerHTML = (data.zonas_ndvi || []).map(z => `
-      <div class="ndvi-row">
-        <div class="ndvi-top">
-          <div>
-            <span class="ndvi-zone">${z.zona}</span>
-            <span class="ndvi-estado"> · ${z.estado}</span>
-          </div>
-          <span class="ndvi-val">${z.ndvi}</span>
-        </div>
-        <div class="ndvi-track"><div class="ndvi-fill" style="width:${z.pct||50}%;background:${ndviColor}"></div></div>
-      </div>`).join('');
-
-    // Alertas
-    const alertIcons = { ok:'ti-circle-check', warn:'ti-alert-triangle', critical:'ti-alert-octagon' };
-    document.getElementById('alertas-body').innerHTML = (data.alertas || []).map(a => `
-      <div class="alert-row t-${a.tipo||'warn'}">
-        <i class="ti ${alertIcons[a.tipo]||'ti-alert-triangle'}"></i>
-        <div>
-          <div class="alert-title">${a.titulo}</div>
-          <div class="alert-desc">${a.desc}</div>
-        </div>
-      </div>`).join('');
-
-    // Misiones
-    document.getElementById('misiones-body').innerHTML = (data.misiones || []).map(m => `
-      <div class="mision-row">
-        <span class="mision-badge mb-${(m.prioridad||'MEDIA').toLowerCase()}">${m.prioridad}</span>
-        <div class="mision-info">
-          <div class="mision-zona">${m.zona}</div>
-          <div class="mision-tarea">${m.tarea}</div>
-        </div>
-      </div>`).join('');
-
-    // Diagnóstico
-    document.getElementById('diag-body').textContent = data.diagnostico || '—';
-
-    dashboard.classList.add('visible');
-    dashboard.scrollIntoView({behavior:'smooth', block:'start'});
-  }
-</script>
 </body>
 </html>
