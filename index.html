@@ -1,338 +1,753 @@
-!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Vertech TdF — Inteligencia Satelital</title>
-  <link rel="stylesheet" href="styles.css">
+  <title>Vertech TdF — Análisis Satelital IA</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/tabler-icons.min.css">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:         #080d14;
+      --surface:    #0f1824;
+      --card:       #141f2e;
+      --border:     #1e2e42;
+      --border-hi:  #2a4060;
+      --blue:       #3b82f6;
+      --blue-dim:   rgba(59,130,246,.12);
+      --green:      #10b981;
+      --green-dim:  rgba(16,185,129,.12);
+      --amber:      #f59e0b;
+      --amber-dim:  rgba(245,158,11,.12);
+      --red:        #ef4444;
+      --red-dim:    rgba(239,68,68,.12);
+      --text:       #e2e8f0;
+      --muted:      #64748b;
+      --subtle:     #334155;
+      --white:      #f8fafc;
+      --radius:     8px;
+      --radius-lg:  14px;
+    }
+
+    body {
+      font-family: 'SF Pro Display', system-ui, -apple-system, 'Segoe UI', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      font-size: 14px;
+      line-height: 1.5;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ── HEADER ── */
+    header {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 0.75rem 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
+    .hdr-left {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .hdr-logo {
+      height: 38px;
+      width: auto;
+      object-fit: contain;
+    }
+    .hdr-brand {
+      display: flex;
+      flex-direction: column;
+      line-height: 1.15;
+    }
+    .brand-main {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--white);
+      letter-spacing: .02em;
+    }
+    .brand-main span { color: var(--amber); }
+    .brand-sub {
+      font-size: 10px;
+      color: var(--muted);
+      letter-spacing: .06em;
+      text-transform: uppercase;
+    }
+    .hdr-right {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .hdr-badge {
+      font-size: 10px;
+      font-weight: 600;
+      color: var(--amber);
+      background: var(--amber-dim);
+      border: 1px solid rgba(245,158,11,.25);
+      padding: 3px 10px;
+      border-radius: 20px;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+    }
+    .hdr-flag {
+      height: 32px;
+      border-radius: 4px;
+      border: 1px solid var(--border);
+      object-fit: contain;
+    }
+
+    /* ── MAIN LAYOUT ── */
+    main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 2.5rem 1.5rem 3rem;
+      max-width: 860px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    /* ── HERO ── */
+    .hero {
+      text-align: center;
+      margin-bottom: 2.5rem;
+    }
+    .hero-eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--blue);
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      margin-bottom: 1rem;
+      background: var(--blue-dim);
+      border: 1px solid rgba(59,130,246,.2);
+      padding: 4px 12px;
+      border-radius: 20px;
+    }
+    .hero-title {
+      font-size: 32px;
+      font-weight: 700;
+      color: var(--white);
+      line-height: 1.15;
+      margin-bottom: 0.75rem;
+      letter-spacing: -.01em;
+    }
+    .hero-title em {
+      font-style: normal;
+      color: var(--blue);
+    }
+    .hero-desc {
+      font-size: 15px;
+      color: var(--muted);
+      max-width: 520px;
+      margin: 0 auto;
+      line-height: 1.65;
+    }
+
+    /* ── UPLOAD ZONE ── */
+    .upload-zone {
+      width: 100%;
+      border: 2px dashed var(--border-hi);
+      border-radius: var(--radius-lg);
+      padding: 3rem 2rem;
+      text-align: center;
+      cursor: pointer;
+      background: var(--surface);
+      position: relative;
+      transition: border-color .2s, background .2s;
+      margin-bottom: 1.25rem;
+    }
+    .upload-zone:hover,
+    .upload-zone.drag-over {
+      border-color: var(--blue);
+      background: var(--blue-dim);
+    }
+    .upload-zone input[type="file"] {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      opacity: 0;
+      cursor: pointer;
+      z-index: 2;
+    }
+    .upload-icon {
+      font-size: 40px;
+      color: var(--blue);
+      display: block;
+      margin-bottom: 1rem;
+      pointer-events: none;
+    }
+    .upload-title {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--white);
+      margin-bottom: 0.4rem;
+      pointer-events: none;
+    }
+    .upload-sub {
+      font-size: 12px;
+      color: var(--muted);
+      pointer-events: none;
+    }
+    .upload-sub strong {
+      color: var(--text);
+    }
+
+    /* ── PREVIEW ── */
+    .preview-box {
+      width: 100%;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      background: #050a10;
+      margin-bottom: 1.25rem;
+      display: none;
+      position: relative;
+    }
+    .preview-box img {
+      display: block;
+      width: 100%;
+      max-height: 360px;
+      object-fit: contain;
+    }
+    .preview-label {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      background: rgba(8,13,20,.85);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 4px 10px;
+      font-size: 11px;
+      color: var(--muted);
+      backdrop-filter: blur(4px);
+    }
+    .preview-label strong { color: var(--text); }
+    .preview-change {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: rgba(8,13,20,.85);
+      border: 1px solid var(--border-hi);
+      border-radius: 6px;
+      padding: 4px 10px;
+      font-size: 11px;
+      color: var(--blue);
+      cursor: pointer;
+      backdrop-filter: blur(4px);
+      transition: border-color .15s;
+    }
+    .preview-change:hover { border-color: var(--blue); }
+
+    /* ── TIPO DE ANÁLISIS ── */
+    .mode-row {
+      width: 100%;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin-bottom: 1.25rem;
+    }
+    .mode-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 12px 10px;
+      text-align: center;
+      cursor: pointer;
+      transition: all .15s;
+      user-select: none;
+    }
+    .mode-card:hover { border-color: var(--border-hi); }
+    .mode-card.selected {
+      border-color: var(--blue);
+      background: var(--blue-dim);
+    }
+    .mode-card .ti {
+      font-size: 20px;
+      color: var(--muted);
+      display: block;
+      margin-bottom: 4px;
+    }
+    .mode-card.selected .ti { color: var(--blue); }
+    .mode-card-label {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text);
+      display: block;
+    }
+    .mode-card-sub {
+      font-size: 10px;
+      color: var(--muted);
+      display: block;
+      margin-top: 1px;
+    }
+
+    /* ── BOTÓN ── */
+    .btn-analyze {
+      width: 100%;
+      padding: 14px;
+      background: var(--blue);
+      border: none;
+      border-radius: var(--radius);
+      font-size: 14px;
+      font-weight: 600;
+      color: #fff;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: background .2s, opacity .2s;
+      margin-bottom: 1.25rem;
+    }
+    .btn-analyze:hover:not(:disabled) { background: #2563eb; }
+    .btn-analyze:disabled {
+      background: var(--border);
+      color: var(--muted);
+      cursor: not-allowed;
+    }
+
+    /* ── SPINNER ── */
+    .spinner-box {
+      width: 100%;
+      display: none;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 18px;
+      background: var(--blue-dim);
+      border: 1px dashed rgba(59,130,246,.35);
+      border-radius: var(--radius);
+      margin-bottom: 1.25rem;
+      font-size: 13px;
+      color: #93c5fd;
+    }
+    .spinner-box.visible { display: flex; }
+    .spin {
+      width: 16px; height: 16px;
+      border: 2px solid rgba(147,197,253,.25);
+      border-top-color: #93c5fd;
+      border-radius: 50%;
+      animation: spin .8s linear infinite;
+      flex-shrink: 0;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── RESULTADOS ── */
+    .results {
+      width: 100%;
+      display: none;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .results.visible { display: flex; }
+
+    .result-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 4px;
+    }
+    .result-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--white);
+      letter-spacing: .01em;
+    }
+    .result-badge {
+      font-size: 10px;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 4px;
+      text-transform: uppercase;
+      letter-spacing: .04em;
+    }
+    .badge-ok     { background: var(--green-dim); color: var(--green); }
+    .badge-warn   { background: var(--amber-dim); color: var(--amber); }
+    .badge-error  { background: var(--red-dim);   color: var(--red);   }
+    .badge-info   { background: var(--blue-dim);  color: var(--blue);  }
+
+    .result-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+    }
+    .result-card-hdr {
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: rgba(255,255,255,.015);
+    }
+    .result-card-hdr .ti { font-size: 18px; }
+    .result-card-body {
+      padding: 14px 16px;
+      font-size: 13px;
+      color: var(--text);
+      line-height: 1.7;
+      white-space: pre-wrap;
+    }
+
+    /* Separador de sección resultados */
+    .results-divider {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      margin: 4px 0;
+    }
+    .results-divider::before,
+    .results-divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      background: var(--surface);
+      border-top: 1px solid var(--border);
+      padding: 0.75rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 600px) {
+      main { padding: 1.5rem 1rem 2rem; }
+      .hero-title { font-size: 24px; }
+      .mode-row { grid-template-columns: 1fr; }
+      header { padding: 0.6rem 1rem; }
+      .hdr-badge { display: none; }
+    }
+  </style>
 </head>
 <body>
- 
-  <!-- ══ HEADER ══ -->
-  <header class="app-header">
-    <div class="header-inner">
-      <div class="header-logo">
-        <img src="logo.png" alt="Vertech TdF Logo" class="main-logo">
-        <div class="header-brand">
-          <span class="brand-name">VERTECH <span class="brand-tdf">TdF</span></span>
-          <span class="brand-sub">— Inteligencia Satelital</span>
-        </div>
-        <span class="header-live"><span class="live-dot"></span>En vivo</span>
-      </div>
-      <div class="header-meta">
-        <div class="meta-text">
-          <span class="header-tag">Innovatón Space 2025</span>
-          <span class="header-src">Provincial: <strong>Tierra del Fuego</strong></span>
-          <span class="header-src">Sentinel · TROPOMI · Claude Vision</span>
-        </div>
-        <img src="bandera.png" alt="Provincia de Tierra del Fuego" class="tdf-flag">
-      </div>
+
+<header>
+  <div class="hdr-left">
+    <img src="logo.png" alt="Vertech TdF" class="hdr-logo">
+    <div class="hdr-brand">
+      <span class="brand-main">VERTECH <span>TdF</span></span>
+      <span class="brand-sub">Inteligencia Satelital</span>
     </div>
- 
-    <!-- Tabs horizontales -->
-    <nav class="tab-nav">
-      <div class="tab-nav-inner">
-        <div class="tab-nav-sidebar-spacer"></div>
-        <div class="tab-nav-tabs">
-          <button class="tab-btn active" data-tab="agro"><i class="ti ti-plant-2"></i> AgroTech</button>
-          <button class="tab-btn" data-tab="mar"><i class="ti ti-waves"></i> Mar</button>
-          <button class="tab-btn" data-tab="metano"><i class="ti ti-flame"></i> Metano</button>
-          <button class="tab-btn" data-tab="imagen"><i class="ti ti-shield-check"></i> Analizador</button>
+  </div>
+  <div class="hdr-right">
+    <span class="hdr-badge">Innovatón Space 2025</span>
+    <img src="bandera.png" alt="Tierra del Fuego" class="hdr-flag">
+  </div>
+</header>
+
+<main>
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-eyebrow">
+      <i class="ti ti-satellite"></i>
+      Sentinel · TROPOMI · Claude Vision
+    </div>
+    <h1 class="hero-title">Análisis satelital con <em>IA</em></h1>
+    <p class="hero-desc">
+      Subí cualquier imagen satelital de Tierra del Fuego — campo, mar o atmósfera —
+      y Claude Vision genera un diagnóstico técnico en segundos.
+    </p>
+  </div>
+
+  <!-- TIPO DE ANÁLISIS -->
+  <div class="mode-row" id="mode-row">
+    <div class="mode-card selected" data-mode="campo">
+      <i class="ti ti-plant-2"></i>
+      <span class="mode-card-label">AgroTech</span>
+      <span class="mode-card-sub">NDVI · Pasturas · Drones</span>
+    </div>
+    <div class="mode-card" data-mode="mar">
+      <i class="ti ti-waves"></i>
+      <span class="mode-card-label">Economía Azul</span>
+      <span class="mode-card-sub">SST · Clorofila · Buques</span>
+    </div>
+    <div class="mode-card" data-mode="metano">
+      <i class="ti ti-flame"></i>
+      <span class="mode-card-label">Metano CH₄</span>
+      <span class="mode-card-sub">TROPOMI · Cuenca Austral</span>
+    </div>
+  </div>
+
+  <!-- UPLOAD -->
+  <div class="upload-zone" id="drop-zone">
+    <input type="file" id="file-input" accept="image/*">
+    <i class="ti ti-cloud-upload upload-icon"></i>
+    <div class="upload-title">Arrastrá la imagen acá o hacé click para seleccionar</div>
+    <div class="upload-sub">PNG · JPEG · GeoTIFF export — <strong>Sentinel-2 · SAR · TROPOMI</strong></div>
+  </div>
+
+  <!-- PREVIEW -->
+  <div class="preview-box" id="preview-box">
+    <img id="preview-img" src="" alt="Imagen cargada">
+    <div class="preview-label">Imagen cargada · <strong id="preview-name">—</strong></div>
+    <div class="preview-change" id="btn-change">Cambiar imagen</div>
+  </div>
+
+  <!-- BOTÓN -->
+  <button class="btn-analyze" id="btn-analyze" disabled>
+    <i class="ti ti-brain"></i> Analizar con Claude Vision
+  </button>
+
+  <!-- SPINNER -->
+  <div class="spinner-box" id="spinner">
+    <div class="spin"></div>
+    <span id="spinner-text">Procesando imagen satelital...</span>
+  </div>
+
+  <!-- RESULTADOS -->
+  <div class="results" id="results">
+
+    <div class="results-divider">Diagnóstico IA</div>
+
+    <div class="result-card">
+      <div class="result-card-hdr">
+        <i class="ti ti-chart-bar" style="color:var(--blue)"></i>
+        <div class="result-header" style="flex:1">
+          <span class="result-title">Índices detectados</span>
+          <span class="result-badge badge-info">Métricas</span>
         </div>
       </div>
-    </nav>
-  </header>
- 
-  <!-- ══ DASHBOARD ══ -->
-  <div class="dashboard-layout">
- 
-    <!-- Sidebar iconos -->
-    <aside class="sidebar-nav">
-      <button class="nav-btn active" data-tab="agro"><i class="ti ti-plant-2"></i><span>AgroTech</span></button>
-      <button class="nav-btn" data-tab="mar"><i class="ti ti-waves"></i><span>Mar</span></button>
-      <button class="nav-btn" data-tab="metano"><i class="ti ti-flame"></i><span>Metano</span></button>
-      <button class="nav-btn" data-tab="imagen"><i class="ti ti-shield-check"></i><span>Analizador</span></button>
-    </aside>
- 
-    <main class="main-content">
- 
-      <!-- ══ TAB AGROTECH ══ -->
-      <section id="tab-agro" class="tab-panel active">
- 
-        <!-- Fila superior: métricas -->
-        <div class="metrics-row">
-          <div class="metric-card"><div class="metric-label">NDVI promedio</div><div class="metric-value">0.61</div><div class="metric-sub">Pasturas moderadas</div></div>
-          <div class="metric-card"><div class="metric-label">Superficie</div><div class="metric-value">3,400</div><div class="metric-sub">hectáreas</div></div>
-          <div class="metric-card"><div class="metric-label">Zonas Críticas</div><div class="metric-value danger">2</div><div class="metric-sub">Critical Zones</div></div>
-          <div class="metric-card"><div class="metric-label">Zonas Críticas</div><div class="metric-value danger">2</div><div class="metric-sub">Critical Zones</div></div>
-          <div class="metric-card"><div class="metric-label">Hectáreas</div><div class="metric-value">360</div><div class="metric-sub">monitoreadas</div></div>
-          <div class="metric-card"><div class="metric-label">Probabilidad</div><div class="metric-value">3,20</div><div class="metric-sub">índice compuesto</div></div>
-          <div class="metric-card"><div class="metric-label">Drones activos</div><div class="metric-value">28</div><div class="metric-sub">en operación</div></div>
-          <div class="metric-card"><div class="metric-label">Sat. imágenes</div><div class="metric-value">132</div><div class="metric-sub">Sentinel-2 · 10m</div></div>
+      <div class="result-card-body" id="res-indices">—</div>
+    </div>
+
+    <div class="result-card">
+      <div class="result-card-hdr">
+        <i class="ti ti-file-description" style="color:var(--amber)"></i>
+        <div class="result-header" style="flex:1">
+          <span class="result-title">Diagnóstico técnico</span>
+          <span class="result-badge badge-warn" id="badge-diag">Análisis</span>
         </div>
- 
-        <!-- Fila central: mapa + tablas -->
-        <div class="center-grid">
- 
-          <!-- NDVI table + mapa -->
-          <div class="map-column">
-            <div class="map-header">
-              <span class="map-title">Campo TdF</span>
-              <span class="map-coords">GPS coordenadas: 54°S — 68°O</span>
-            </div>
-            <div class="map-container">
-              <canvas id="canvas-agro"></canvas>
-              <div class="map-controls">
-                <button class="map-ctrl-btn"><i class="ti ti-plus"></i></button>
-                <button class="map-ctrl-btn"><i class="ti ti-minus"></i></button>
-                <button class="map-ctrl-btn"><i class="ti ti-settings"></i></button>
-                <button class="map-ctrl-btn"><i class="ti ti-arrows-maximize"></i></button>
-              </div>
-              <div class="map-legend">
-                <div class="leg-title">Índices NDVI por zona</div>
-                <div class="leg-row"><div class="leg-dot" style="background:#2d7a2d"></div>0.61 – 0.71</div>
-                <div class="leg-row"><div class="leg-dot" style="background:#8db84e"></div>0.61 – 0.60</div>
-                <div class="leg-row"><div class="leg-dot" style="background:#c8a838"></div>0.61 – 0.68</div>
-                <div class="leg-row"><div class="leg-dot" style="background:#a83228"></div>&gt;0.76</div>
-              </div>
-              <div class="map-legenda-box">
-                <div class="leg-title">Legenda</div>
-                <div class="leg-row"><div class="leg-square" style="background:#c8a838"></div>Marge</div>
-                <div class="leg-row"><div class="leg-square" style="background:#2d7a2d"></div>Campo NDVI</div>
-                <div class="leg-row"><div class="leg-square" style="background:#ef9f27"></div>Critical Zone</div>
-                <div class="leg-row"><div class="leg-square" style="background:#a83228"></div>Critical Zone</div>
-              </div>
-            </div>
-          </div>
- 
-          <!-- Tabla NDVI -->
-          <div class="data-column">
-            <div class="section-label">Índices NDVI por zona</div>
-            <table class="data-table">
-              <thead><tr><th>Zona</th><th>NDVI</th><th>Promedio</th></tr></thead>
-              <tbody>
-                <tr><td>Zona 1</td><td>0.61</td><td class="val-right">0.62</td></tr>
-                <tr><td>Zona 2</td><td>0.61</td><td class="val-right">0.63</td></tr>
-                <tr><td>Zona 3</td><td>0.63</td><td class="val-right">0.62</td></tr>
-                <tr><td>Zona 4</td><td>0.63</td><td class="val-right">0.63</td></tr>
-                <tr><td>Zona 5</td><td>0.61</td><td class="val-right">0.59</td></tr>
-              </tbody>
-            </table>
-          </div>
- 
-          <!-- Flota de drones -->
-          <div class="data-column">
-            <div class="section-label">Flota de drones</div>
-            <table class="data-table">
-              <thead><tr><th>Drones</th><th>Destinación</th></tr></thead>
-              <tbody>
-                <tr>
-                  <td><div class="drone-row"><i class="ti ti-drone drone-icon"></i><div><div class="drone-name">Drones 1</div><div class="drone-sub">2027 drones</div></div></div></td>
-                  <td>1,400 hectáreas</td>
-                </tr>
-                <tr>
-                  <td><div class="drone-row"><i class="ti ti-drone drone-icon"></i><div><div class="drone-name">Drones 2</div><div class="drone-sub">2027 drones</div></div></div></td>
-                  <td>1/60 hectáreas</td>
-                </tr>
-                <tr>
-                  <td><div class="drone-row"><i class="ti ti-drone drone-icon"></i><div><div class="drone-name">Flota AB</div><div class="drone-sub">—</div></div></div></td>
-                  <td>5 áreas</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
- 
-          <!-- Alertas del campo -->
-          <div class="data-column">
-            <div class="section-label">Alertas del campo</div>
-            <table class="monitoring-table">
-              <thead><tr><th>Alerta</th><th>Estado</th><th>Fecha</th></tr></thead>
-              <tbody>
-                <tr><td>Humedad suelo baja — Z3</td><td><span class="table-status status-ok">Normal</span></td><td>18/06/26</td></tr>
-                <tr><td>NDVI crítico — Zona Sur</td><td><span class="table-status status-critical">Crítico</span></td><td>18/06/26</td></tr>
-                <tr><td>Helada tardía detectada</td><td><span class="table-status status-critical">Crítico</span></td><td>17/06/26</td></tr>
-                <tr><td>Cobertura pastura — Z2</td><td><span class="table-status status-critical">Crítico</span></td><td>16/06/26</td></tr>
-              </tbody>
-            </table>
-          </div>
- 
+      </div>
+      <div class="result-card-body" id="res-diagnostico">—</div>
+    </div>
+
+    <div class="result-card">
+      <div class="result-card-hdr">
+        <i class="ti ti-drone" style="color:var(--green)"></i>
+        <div class="result-header" style="flex:1">
+          <span class="result-title">Misiones recomendadas</span>
+          <span class="result-badge badge-ok">Acción</span>
         </div>
- 
-        <!-- Roadmap -->
-        <div class="roadmap-note">
-          <div class="roadmap-title"><i class="ti ti-rocket"></i> Roadmap</div>
-          <ul class="roadmap-list">
-            <li>Futuras integraciones en varítmen integracional con Python-GDAL</li>
-            <li>Integraciones IA futura source en Python-GDAL</li>
-            <li>Integraciones con Python-GDAL en partners fizarios</li>
-          </ul>
-        </div>
- 
-      </section>
- 
-      <!-- ══ TAB MAR ══ -->
-      <section id="tab-mar" class="tab-panel">
-        <div class="metrics-row">
-          <div class="metric-card"><div class="metric-label">Buques Detectados</div><div class="metric-value">14</div><div class="metric-sub">SAR Activo</div></div>
-          <div class="metric-card"><div class="metric-label">Pesqueros Ribereños</div><div class="metric-value">6</div><div class="metric-sub">Zonas autorizadas</div></div>
-          <div class="metric-card"><div class="metric-label">Alertas de Intrusión</div><div class="metric-value danger">0</div><div class="metric-sub">Sin novedades</div></div>
-          <div class="metric-card"><div class="metric-label">Temperatura Mar</div><div class="metric-value small">6.2 °C</div><div class="metric-sub">Promedio estacional</div></div>
-        </div>
-        <div class="center-grid">
-          <div class="map-column">
-            <div class="map-header"><span class="map-title">Mar Argentino — SAR</span><span class="map-coords">Canal Beagle · Estrecho de Magallanes</span></div>
-            <div class="map-container">
-              <canvas id="canvas-mar"></canvas>
-              <div class="map-legend">
-                <div class="leg-row"><div class="leg-dot" style="background:#378add"></div>Buque Comercial</div>
-                <div class="leg-row"><div class="leg-dot" style="background:#1d9e75"></div>Pesquero Validado</div>
-                <div class="leg-row"><div class="leg-dot" style="background:#e24b4a"></div>Traza No Identificada</div>
-              </div>
-            </div>
-          </div>
-          <div class="data-column">
-            <div class="section-label">Estado de Puertos</div>
-            <table class="data-table">
-              <thead><tr><th>Puerto</th><th>Estado</th></tr></thead>
-              <tbody>
-                <tr><td>Puerto Ushuaia</td><td><span class="table-status status-ok">OK</span></td></tr>
-                <tr><td>Canal Beagle</td><td><span class="table-status status-ok">Fluido</span></td></tr>
-              </tbody>
-            </table>
-          </div>
-          <div class="data-column">
-            <div class="section-label">Alertas de Tráfico Marítimo</div>
-            <table class="monitoring-table">
-              <thead><tr><th>Incidente</th><th>Estado</th><th>Fecha</th></tr></thead>
-              <tbody>
-                <tr><td>Validación AIS</td><td><span class="table-status status-ok">Normal</span></td><td>15/06/26</td></tr>
-                <tr><td>Traza sin transpondedor</td><td><span class="table-status status-critical">Crítico</span></td><td>16/06/26</td></tr>
-                <tr><td>Frente de Oleaje Extremo</td><td><span class="table-status status-warn">Advertencia</span></td><td>16/06/26</td></tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </section>
- 
-      <!-- ══ TAB METANO ══ -->
-      <section id="tab-metano" class="tab-panel">
-        <div class="metrics-row">
-          <div class="metric-card"><div class="metric-label">Concentración CH₄</div><div class="metric-value">1890</div><div class="metric-sub">ppb</div></div>
-          <div class="metric-card"><div class="metric-label">Desviación</div><div class="metric-value warn">+12</div><div class="metric-sub">Respecto a media global</div></div>
-          <div class="metric-card"><div class="metric-label">Focos Activos</div><div class="metric-value">1</div><div class="metric-sub">Bajo observación</div></div>
-          <div class="metric-card"><div class="metric-label">Sensor</div><div class="metric-value small">TROPOMI</div><div class="metric-sub">Sentinel-5P</div></div>
-        </div>
-        <div class="center-grid">
-          <div class="map-column">
-            <div class="map-header"><span class="map-title">CH₄ — Cuenca Austral</span><span class="map-coords">Columna Total · Mol / m²</span></div>
-            <div class="map-container">
-              <canvas id="canvas-metano"></canvas>
-              <div class="map-legend">
-                <div class="leg-row"><div class="leg-dot" style="background:#1d9e75"></div>Nivel Base</div>
-                <div class="leg-row"><div class="leg-dot" style="background:#ef9f27"></div>Emisión Moderada</div>
-                <div class="leg-row"><div class="leg-dot" style="background:#e24b4a"></div>Pluma de Emisión</div>
-              </div>
-            </div>
-          </div>
-          <div class="data-column">
-            <div class="section-label">Dispersión (Últimas 24hs)</div>
-            <table class="data-table">
-              <thead><tr><th>Zona</th><th>Estado</th></tr></thead>
-              <tbody>
-                <tr><td>Zona Urbana</td><td><span class="table-status status-ok">Normal</span></td></tr>
-                <tr><td>Áreas Naturales</td><td><span class="table-status status-warn">Alta</span></td></tr>
-              </tbody>
-            </table>
-          </div>
-          <div class="data-column">
-            <div class="section-label">Alertas Atmosféricas</div>
-            <table class="monitoring-table">
-              <thead><tr><th>Alerta</th><th>Estado</th><th>Fecha</th></tr></thead>
-              <tbody>
-                <tr><td>Emisión natural por temperatura</td><td><span class="table-status status-warn">Advertencia</span></td><td>18/06/26</td></tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </section>
- 
-      <!-- ══ TAB ANALIZADOR IA ══ -->
-      <section id="tab-imagen" class="tab-panel">
-        <div class="metrics-row">
-          <div class="metric-card"><div class="metric-label">Tiempo de Revisión</div><div class="metric-value" style="color:var(--green)">-42%</div><div class="metric-sub">Meta lograda</div></div>
-          <div class="metric-card"><div class="metric-label">Precisión</div><div class="metric-value">98.4%</div><div class="metric-sub">Modelos validados</div></div>
-          <div class="metric-card"><div class="metric-label">Motor IA</div><div class="metric-value small" style="color:var(--blue)">Claude Vision</div><div class="metric-sub">Anthropic API</div></div>
-          <div class="metric-card"><div class="metric-label">Estándar</div><div class="metric-value small">SIG-Emergencias</div><div class="metric-sub">Capas y logos</div></div>
-        </div>
- 
-        <div class="center-grid">
-          <div class="map-column" style="grid-column: span 2;">
-            <div class="upload-area" id="drop-zone">
-              <input type="file" id="file-input" accept="image/*">
-              <i class="ti ti-map-2 upload-icon"></i>
-              <div class="upload-title">Arrastrá o cargá el mapa temático</div>
-              <div class="upload-sub">PNG · JPEG · GeoTIFF Export</div>
-            </div>
-            <div class="preview-wrap" id="preview-wrap" style="display:none;">
-              <img id="preview-img" src="" alt="Mapa en revisión">
-            </div>
-            <button class="analyze-btn" id="analyze-btn" disabled>
-              <i class="ti ti-shield-check"></i> Ejecutar Auditoría de Calidad
-            </button>
-            <div id="backend-spinner" class="backend-spinner hidden">
-              <div class="spinner"></div>
-              <span>Iniciando análisis...</span>
-            </div>
-          </div>
- 
-          <div class="data-column">
-            <div class="section-label">Parámetros de Inspección</div>
-            <table class="data-table">
-              <tbody>
-                <tr><td><i class="ti ti-circle-check" style="color:var(--green)"></i> Layout Cartográfico</td><td><span class="table-status status-ok">Activo</span></td></tr>
-                <tr><td><i class="ti ti-circle-check" style="color:var(--green)"></i> Simbología y Leyenda</td><td><span class="table-status status-ok">Activo</span></td></tr>
-                <tr><td><i class="ti ti-circle-check" style="color:var(--green)"></i> Identidad e Integridad</td><td><span class="table-status status-ok">Activo</span></td></tr>
-              </tbody>
-            </table>
-            <div class="alert alert-info" style="margin-top:1rem;">
-              <i class="ti ti-lock"></i>
-              <div>
-                <div class="alert-title">Análisis vía Claude Vision</div>
-                <div class="alert-desc">Las imágenes se procesan mediante la API de Anthropic. No se almacenan en servidores de terceros.</div>
-              </div>
-            </div>
-          </div>
-        </div>
- 
-        <div class="results-layout-grid" id="results-container" style="display:none; margin-top:1.5rem;">
-          <div class="result-card">
-            <div class="result-hdr"><i class="ti ti-alert-triangle" style="color:var(--red)"></i> Errores Críticos</div>
-            <div class="result-body" id="res-criticos"></div>
-          </div>
-          <div class="result-card">
-            <div class="result-hdr"><i class="ti ti-edit" style="color:var(--amber)"></i> Sugerencias</div>
-            <div class="result-body" id="res-sugerencias"></div>
-          </div>
-          <div class="result-card">
-            <div class="result-hdr"><i class="ti ti-circle-check" style="color:var(--green)"></i> Validación</div>
-            <div class="result-body" id="res-validacion"></div>
-          </div>
-        </div>
-      </section>
- 
-    </main>
+      </div>
+      <div class="result-card-body" id="res-misiones">—</div>
+    </div>
+
   </div>
- 
-  <footer class="app-footer">
-    <span>Vertech TdF — Inteligencia Satelital</span>
-    <span>AgroTech &amp; Cloud: Betails | Tierra del Fuego</span>
-  </footer>
- 
-  <script src="config.js"></script>
-  <script src="maps.js"></script>
-  <script src="prompts.js"></script>
-  <script src="analyzer.js"></script>
-  <script src="app.js"></script>
+
+</main>
+
+<footer>
+  <span>Vertech TdF · Río Grande, Tierra del Fuego, Argentina</span>
+  <span>Innovatón Space 2025 · Sentinel · TROPOMI · Claude Vision</span>
+</footer>
+
+<script src="config.js"></script>
+<script>
+  // ── Estado ──
+  let imageBase64 = null;
+  let imageMediaType = 'image/png';
+  let currentMode = 'campo';
+
+  const dropZone   = document.getElementById('drop-zone');
+  const fileInput  = document.getElementById('file-input');
+  const previewBox = document.getElementById('preview-box');
+  const previewImg = document.getElementById('preview-img');
+  const previewName = document.getElementById('preview-name');
+  const btnChange  = document.getElementById('btn-change');
+  const btnAnalyze = document.getElementById('btn-analyze');
+  const spinner    = document.getElementById('spinner');
+  const spinnerTxt = document.getElementById('spinner-text');
+  const results    = document.getElementById('results');
+
+  // ── Selección de modo ──
+  document.querySelectorAll('.mode-card').forEach(card => {
+    card.addEventListener('click', () => {
+      document.querySelectorAll('.mode-card').forEach(c => c.classList.remove('selected'));
+      card.classList.add('selected');
+      currentMode = card.dataset.mode;
+    });
+  });
+
+  // ── Click en zona de carga ──
+  dropZone.addEventListener('click', (e) => {
+    if (e.target !== fileInput) fileInput.click();
+  });
+
+  // ── Drag & drop ──
+  dropZone.addEventListener('dragover', (e) => {
+    e.preventDefault();
+    dropZone.classList.add('drag-over');
+  });
+  dropZone.addEventListener('dragleave', () => dropZone.classList.remove('drag-over'));
+  dropZone.addEventListener('drop', (e) => {
+    e.preventDefault();
+    dropZone.classList.remove('drag-over');
+    const file = e.dataTransfer.files[0];
+    if (file) cargarArchivo(file);
+  });
+
+  // ── Selección tradicional ──
+  fileInput.addEventListener('change', (e) => {
+    const file = e.target.files[0];
+    if (file) cargarArchivo(file);
+  });
+
+  // ── Cambiar imagen ──
+  btnChange.addEventListener('click', () => {
+    fileInput.value = '';
+    fileInput.click();
+  });
+
+  // ── Cargar archivo ──
+  function cargarArchivo(file) {
+    if (!file.type.startsWith('image/')) {
+      alert('Seleccioná una imagen (PNG, JPEG, etc.)');
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const dataUrl = e.target.result;
+      imageBase64 = dataUrl.split(',')[1];
+      imageMediaType = file.type || 'image/png';
+
+      previewImg.src = dataUrl;
+      previewName.textContent = file.name;
+      previewBox.style.display = 'block';
+      dropZone.style.display = 'none';
+      btnAnalyze.disabled = false;
+      results.classList.remove('visible');
+    };
+    reader.readAsDataURL(file);
+  }
+
+  // ── Prompts por modo ──
+  const PROMPTS = {
+    campo: `Sos un experto en teledetección agrícola y pasturas de Patagonia austral.
+Analizá esta imagen satelital de un campo o zona de vegetación en Tierra del Fuego y respondé ÚNICAMENTE con un JSON válido sin backticks:
+{
+  "indices": "Lista los índices detectados: NDVI estimado, cobertura vegetal %, humedad estimada, zonas críticas identificadas. Cada uno en una línea.",
+  "diagnostico": "5-6 oraciones técnicas: estado del campo, zonas de estrés hídrico o vegetal, distribución de cobertura, tendencias y riesgos detectados.",
+  "misiones": "3 misiones de dron recomendadas, cada una en una línea con formato: [PRIORIDAD] Zona X — Tarea específica."
+}`,
+    mar: `Sos un experto en oceanografía y economía azul del Mar Argentino y Canal Beagle.
+Analizá esta imagen satelital marina y respondé ÚNICAMENTE con un JSON válido sin backticks:
+{
+  "indices": "Temperatura superficial estimada, productividad marina (clorofila), turbidez, cantidad de embarcaciones detectadas. Cada uno en una línea.",
+  "diagnostico": "5-6 oraciones técnicas: estado oceanográfico, productividad biológica, condiciones para pesca, anomalías detectadas, riesgos.",
+  "misiones": "3 acciones de monitoreo recomendadas, cada una en línea con formato: [PRIORIDAD] Zona — Acción específica."
+}`,
+    metano: `Sos un experto en monitoreo atmosférico de metano (CH₄) en la Cuenca Austral y Tierra del Fuego.
+Analizá esta imagen TROPOMI/Sentinel-5P y respondé ÚNICAMENTE con un JSON válido sin backticks:
+{
+  "indices": "Concentración CH₄ estimada (ppb), zonas de emisión, anomalías sobre umbral, nivel de riesgo. Cada uno en una línea.",
+  "diagnostico": "5-6 oraciones técnicas: nivel de riesgo, fuentes probables de emisión, dispersión, tendencia, umbrales de alarma.",
+  "misiones": "3 acciones urgentes recomendadas, cada una en línea con formato: [PRIORIDAD] Zona — Acción específica."
+}`
+  };
+
+  // ── Pasos del spinner ──
+  const PASOS = {
+    campo:   ['Leyendo imagen satelital...','Detectando índices NDVI...','Identificando zonas críticas...','Generando reporte agronómico...'],
+    mar:     ['Leyendo imagen SAR...','Analizando temperatura superficial...','Detectando embarcaciones...','Generando reporte oceanográfico...'],
+    metano:  ['Leyendo datos TROPOMI...','Calculando concentración CH₄...','Identificando plumas de emisión...','Generando reporte atmosférico...']
+  };
+
+  // ── Analizar ──
+  btnAnalyze.addEventListener('click', async () => {
+    if (!imageBase64) return;
+
+    const apiKey = (typeof CONFIG !== 'undefined') ? CONFIG.ANTHROPIC_API_KEY : '';
+    if (!apiKey) {
+      alert('No se encontró la clave de API de Anthropic.\nIngresala al iniciar la aplicación.');
+      return;
+    }
+
+    btnAnalyze.disabled = true;
+    results.classList.remove('visible');
+    spinner.classList.add('visible');
+
+    // Pasos animados
+    const pasos = PASOS[currentMode] || PASOS.campo;
+    let paso = 0;
+    const intervalo = setInterval(() => {
+      if (paso < pasos.length) spinnerTxt.textContent = pasos[paso++];
+    }, 950);
+
+    try {
+      const res = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-api-key': apiKey,
+          'anthropic-version': '2023-06-01',
+          'anthropic-dangerous-direct-browser-calls': 'true'
+        },
+        body: JSON.stringify({
+          model: CONFIG.MODEL || 'claude-sonnet-4-6',
+          max_tokens: 1200,
+          messages: [{
+            role: 'user',
+            content: [
+              { type: 'image', source: { type: 'base64', media_type: imageMediaType, data: imageBase64 } },
+              { type: 'text',  text: PROMPTS[currentMode] }
+            ]
+          }]
+        })
+      });
+
+      clearInterval(intervalo);
+      spinner.classList.remove('visible');
+
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        throw new Error(err?.error?.message || `Error HTTP ${res.status}`);
+      }
+
+      const data = await res.json();
+      const texto = (data.content?.[0]?.text || '').replace(/```json|```/g, '').trim();
+      const json = JSON.parse(texto);
+
+      document.getElementById('res-indices').textContent    = json.indices    || '—';
+      document.getElementById('res-diagnostico').textContent = json.diagnostico || '—';
+      document.getElementById('res-misiones').textContent   = json.misiones   || '—';
+
+      results.classList.add('visible');
+      results.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+    } catch (err) {
+      clearInterval(intervalo);
+      spinner.classList.remove('visible');
+      console.error(err);
+      alert(`Error al analizar la imagen:\n${err.message}`);
+    }
+
+    btnAnalyze.disabled = false;
+  });
+</script>
 </body>
 </html>
