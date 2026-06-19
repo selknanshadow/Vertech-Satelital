@@ -1,0 +1,752 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vertech TdF — AgroTech</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/tabler-icons.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --void:     #02060d;
+      --deep:     #050d1a;
+      --panel:    #071220;
+      --card:     #0a1828;
+      --border:   #0d2440;
+      --border-hi:#1a3d6b;
+      --green:    #00e5a0;
+      --green-dim:rgba(0,229,160,.08);
+      --green-glow:rgba(0,229,160,.25);
+      --blue:     #2196f3;
+      --blue-dim: rgba(33,150,243,.08);
+      --amber:    #ffb300;
+      --amber-dim:rgba(255,179,0,.08);
+      --red:      #ff3d3d;
+      --red-dim:  rgba(255,61,61,.08);
+      --cyan:     #00d4ff;
+      --text:     #8eb4d4;
+      --text-hi:  #c8e0f4;
+      --white:    #e8f4ff;
+      --mono:     'Share Tech Mono', monospace;
+      --sans:     'Inter', system-ui, sans-serif;
+    }
+
+    body {
+      font-family: var(--sans);
+      background: var(--void);
+      color: var(--text);
+      font-size: 12px;
+      line-height: 1.4;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+    }
+
+    /* Línea de escaneo sutil */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,229,160,.012) 2px, rgba(0,229,160,.012) 4px);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* ── HEADER ── */
+    header {
+      background: var(--deep);
+      border-bottom: 1px solid var(--border);
+      padding: .6rem 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      flex-shrink: 0;
+    }
+    .hdr-left { display: flex; align-items: center; gap: 16px; }
+    .hdr-logo { height: 36px; width: auto; object-fit: contain; }
+    .hdr-brand { display: flex; flex-direction: column; line-height: 1.1; }
+    .brand-name {
+      font-family: var(--mono);
+      font-size: 14px;
+      color: var(--white);
+      letter-spacing: .12em;
+    }
+    .brand-name span { color: var(--green); }
+    .brand-sub {
+      font-size: 9px;
+      color: var(--text);
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      margin-top: 2px;
+    }
+    .hdr-nav { display: flex; gap: 2px; }
+    .nav-link {
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: .1em;
+      color: var(--text);
+      text-decoration: none;
+      padding: 5px 14px;
+      border-radius: 3px;
+      border: 1px solid transparent;
+      transition: all .15s;
+      text-transform: uppercase;
+    }
+    .nav-link:hover { color: var(--white); border-color: var(--border-hi); }
+    .nav-link.active {
+      color: var(--green);
+      border-color: var(--green);
+      background: var(--green-dim);
+    }
+    .hdr-right { display: flex; align-items: center; gap: 12px; }
+    .hdr-status {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-family: var(--mono);
+      font-size: 10px;
+      color: var(--green);
+      letter-spacing: .08em;
+    }
+    .status-dot {
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      background: var(--green);
+      box-shadow: 0 0 8px var(--green-glow);
+      animation: blink 2s ease-in-out infinite;
+    }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:.3} }
+    .hdr-flag { height: 30px; border-radius: 3px; border: 1px solid var(--border-hi); }
+
+    /* ── MAIN ── */
+    .main { flex: 1; padding: 1rem 1.5rem; display: flex; flex-direction: column; gap: 10px; position: relative; z-index: 1; }
+
+    /* ── UPLOAD BAR ── */
+    .upload-bar {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: .75rem 1rem;
+      display: grid;
+      grid-template-columns: 1fr 1fr auto auto;
+      gap: 10px;
+      align-items: end;
+    }
+    .field { display: flex; flex-direction: column; gap: 4px; }
+    .field-lbl {
+      font-family: var(--mono);
+      font-size: 9px;
+      color: var(--text);
+      letter-spacing: .12em;
+      text-transform: uppercase;
+    }
+    .field-input {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      padding: 6px 10px;
+      font-size: 11px;
+      font-family: var(--mono);
+      color: var(--white);
+      outline: none;
+      transition: border-color .2s;
+      letter-spacing: .04em;
+    }
+    .field-input:focus { border-color: var(--green); }
+    .field-input::placeholder { color: var(--border-hi); }
+
+    .upload-btn {
+      background: var(--card);
+      border: 1px dashed var(--border-hi);
+      border-radius: 3px;
+      padding: 6px 14px;
+      font-family: var(--mono);
+      font-size: 10px;
+      color: var(--green);
+      cursor: pointer;
+      position: relative;
+      transition: all .15s;
+      letter-spacing: .08em;
+      white-space: nowrap;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      height: 29px;
+    }
+    .upload-btn:hover { border-color: var(--green); background: var(--green-dim); }
+    .upload-btn input { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
+
+    .run-btn {
+      background: var(--green);
+      border: none;
+      border-radius: 3px;
+      padding: 6px 18px;
+      font-family: var(--mono);
+      font-size: 10px;
+      font-weight: 600;
+      color: var(--void);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      letter-spacing: .1em;
+      transition: all .15s;
+      white-space: nowrap;
+      height: 29px;
+    }
+    .run-btn:hover { box-shadow: 0 0 16px var(--green-glow); }
+    .run-btn:disabled { background: var(--border); color: var(--text); cursor: not-allowed; box-shadow: none; }
+
+    /* Preview strip */
+    .preview-strip {
+      display: none;
+      align-items: center;
+      gap: 10px;
+      padding: 6px 10px;
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 3px;
+    }
+    .preview-strip.visible { display: flex; }
+    .preview-strip img { height: 36px; width: 54px; object-fit: cover; border-radius: 2px; border: 1px solid var(--border-hi); }
+    .preview-fname { font-family: var(--mono); font-size: 10px; color: var(--text-hi); flex: 1; }
+    .btn-swap {
+      font-family: var(--mono); font-size: 9px; color: var(--text);
+      background: none; border: 1px solid var(--border); border-radius: 3px;
+      padding: 3px 8px; cursor: pointer; letter-spacing: .06em;
+    }
+    .btn-swap:hover { border-color: var(--border-hi); color: var(--text-hi); }
+
+    /* Spinner */
+    .proc-bar {
+      display: none;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 12px;
+      background: var(--green-dim);
+      border: 1px solid rgba(0,229,160,.2);
+      border-radius: 3px;
+      font-family: var(--mono);
+      font-size: 10px;
+      color: var(--green);
+      letter-spacing: .06em;
+    }
+    .proc-bar.visible { display: flex; }
+    .proc-spin {
+      width: 12px; height: 12px;
+      border: 2px solid rgba(0,229,160,.2);
+      border-top-color: var(--green);
+      border-radius: 50%;
+      animation: spin .7s linear infinite;
+      flex-shrink: 0;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── SECTION LABEL ── */
+    .section-eyebrow {
+      font-family: var(--mono);
+      font-size: 9px;
+      color: var(--text);
+      letter-spacing: .2em;
+      text-transform: uppercase;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 2px 0;
+    }
+    .section-eyebrow::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+    /* ── MÉTRICAS PRINCIPALES ── */
+    .metrics-row { display: grid; grid-template-columns: repeat(6, 1fr); gap: 8px; }
+    .met {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 10px 12px;
+      position: relative;
+      overflow: hidden;
+    }
+    .met::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: var(--green);
+      opacity: .4;
+    }
+    .met.accent-red::before { background: var(--red); }
+    .met.accent-amber::before { background: var(--amber); }
+    .met.accent-blue::before { background: var(--blue); }
+    .met-lbl {
+      font-family: var(--mono);
+      font-size: 8px;
+      color: var(--text);
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      margin-bottom: 4px;
+    }
+    .met-val {
+      font-family: var(--mono);
+      font-size: 22px;
+      font-weight: 400;
+      color: var(--green);
+      line-height: 1;
+      margin-bottom: 3px;
+    }
+    .met-val.red   { color: var(--red); }
+    .met-val.amber { color: var(--amber); }
+    .met-val.blue  { color: var(--blue); }
+    .met-val.white { color: var(--white); }
+    .met-sub { font-size: 9px; color: var(--text); line-height: 1.3; }
+
+    /* ── GRILLA CENTRAL ── */
+    .center-grid { display: grid; grid-template-columns: 1fr 220px 260px; gap: 8px; }
+
+    /* Imagen */
+    .img-panel {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      overflow: hidden;
+      position: relative;
+    }
+    .img-panel-hdr {
+      padding: 6px 10px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: rgba(0,0,0,.3);
+    }
+    .img-panel-title { font-family: var(--mono); font-size: 10px; color: var(--text-hi); letter-spacing: .08em; }
+    .img-panel-sub   { font-size: 9px; color: var(--text); font-family: var(--mono); }
+    .img-panel img { display: block; width: 100%; height: 270px; object-fit: cover; }
+
+    /* Overlay de coordenadas */
+    .img-overlay {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      padding: 8px 10px;
+      background: linear-gradient(transparent, rgba(2,6,13,.9));
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+    }
+    .img-coord { font-family: var(--mono); font-size: 9px; color: var(--cyan); letter-spacing: .08em; }
+    .img-legend { display: flex; flex-direction: column; gap: 3px; align-items: flex-end; }
+    .img-leg-row { display: flex; align-items: center; gap: 5px; font-family: var(--mono); font-size: 8px; color: var(--text-hi); }
+    .img-leg-dot { width: 6px; height: 6px; border-radius: 50%; }
+
+    /* Barras NDVI */
+    .ndvi-panel {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .ndvi-panel-title { font-family: var(--mono); font-size: 9px; color: var(--text); letter-spacing: .12em; text-transform: uppercase; }
+    .ndvi-item { display: flex; flex-direction: column; gap: 4px; }
+    .ndvi-item-top { display: flex; justify-content: space-between; }
+    .ndvi-item-zone { font-size: 10px; color: var(--text-hi); font-weight: 500; }
+    .ndvi-item-status { font-size: 9px; color: var(--text); font-family: var(--mono); }
+    .ndvi-item-val { font-family: var(--mono); font-size: 11px; color: var(--green); font-weight: 600; }
+    .ndvi-track { height: 4px; background: var(--void); border-radius: 2px; overflow: hidden; }
+    .ndvi-fill { height: 100%; border-radius: 2px; transition: width 1s ease; position: relative; }
+    .ndvi-fill::after {
+      content: '';
+      position: absolute;
+      right: 0; top: 0; bottom: 0;
+      width: 3px;
+      background: white;
+      opacity: .6;
+    }
+
+    /* Panel derecho */
+    .right-col { display: flex; flex-direction: column; gap: 8px; }
+    .panel {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+    .panel-hdr {
+      padding: 6px 10px;
+      border-bottom: 1px solid var(--border);
+      font-family: var(--mono);
+      font-size: 9px;
+      color: var(--text);
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(0,0,0,.2);
+    }
+    .panel-hdr .ti { font-size: 12px; }
+    .panel-body { padding: 8px; display: flex; flex-direction: column; gap: 5px; }
+
+    .alerta {
+      padding: 6px 8px;
+      border-radius: 3px;
+      border-left: 2px solid var(--border);
+      background: rgba(0,0,0,.2);
+    }
+    .alerta.ok     { border-left-color: var(--green); }
+    .alerta.warn   { border-left-color: var(--amber); }
+    .alerta.critical { border-left-color: var(--red); }
+    .alerta-title { font-size: 10px; font-weight: 600; color: var(--white); margin-bottom: 2px; }
+    .alerta-desc  { font-size: 9px; color: var(--text); line-height: 1.4; }
+
+    .mision {
+      display: flex;
+      gap: 7px;
+      padding: 5px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .mision:last-child { border-bottom: none; }
+    .mision-prioridad {
+      font-family: var(--mono);
+      font-size: 8px;
+      font-weight: 700;
+      padding: 2px 5px;
+      border-radius: 2px;
+      white-space: nowrap;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+    .p-alta   { background: var(--red-dim);   color: var(--red);   border: 1px solid rgba(255,61,61,.2);   }
+    .p-media  { background: var(--amber-dim); color: var(--amber); border: 1px solid rgba(255,179,0,.2);  }
+    .p-baja   { background: var(--green-dim); color: var(--green); border: 1px solid rgba(0,229,160,.2); }
+    .mision-zona  { font-size: 10px; font-weight: 600; color: var(--text-hi); }
+    .mision-tarea { font-size: 9px; color: var(--text); line-height: 1.4; margin-top: 1px; }
+
+    /* ── DIAGNÓSTICO ── */
+    .diag-panel {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+    .diag-hdr {
+      padding: 6px 12px;
+      border-bottom: 1px solid var(--border);
+      font-family: var(--mono);
+      font-size: 9px;
+      color: var(--green);
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(0,229,160,.04);
+    }
+    .diag-body {
+      padding: 12px 14px;
+      font-size: 11px;
+      color: var(--text-hi);
+      line-height: 1.8;
+      font-style: italic;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      background: var(--deep);
+      border-top: 1px solid var(--border);
+      padding: .4rem 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      font-family: var(--mono);
+      font-size: 9px;
+      color: var(--text);
+      letter-spacing: .06em;
+      flex-shrink: 0;
+    }
+
+    @media(max-width:1100px){ .metrics-row{grid-template-columns:repeat(3,1fr)} .center-grid{grid-template-columns:1fr 1fr} }
+    @media(max-width:768px){ .upload-bar{grid-template-columns:1fr} .metrics-row{grid-template-columns:repeat(2,1fr)} .center-grid{grid-template-columns:1fr} }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="hdr-left">
+    <img src="logo2.png" alt="Vertech TdF" style="height:38px;width:auto;object-fit:contain;">
+    <div class="hdr-brand">
+      <span class="brand-name">VERTECH <span>TdF</span></span>
+      <span class="brand-sub">Earth Observation Intelligence</span>
+    </div>
+  </div>
+
+  <nav class="hdr-nav">
+    <a href="agro.html" class="nav-link active">AgroTech</a>
+    <a href="mar.html"  class="nav-link">Economía Azul</a>
+    <a href="ch4.html"  class="nav-link">Metano CH₄</a>
+  </nav>
+
+  <div class="hdr-right">
+    <div class="hdr-status"><span class="status-dot"></span> SISTEMA ACTIVO</div>
+    <img src="Bandera.png" alt="TdF" class="hdr-flag">
+  </div>
+</header>
+
+<div class="main">
+
+  <!-- Upload bar -->
+  <div class="upload-bar">
+    <div class="field">
+      <label class="field-lbl">Ubicación / Región</label>
+      <input type="text" id="lugar" class="field-input" placeholder="Ej: Patagonia, Iowa, Pampas...">
+    </div>
+    <div class="field">
+      <label class="field-lbl">Sensor / Fuente</label>
+      <input type="text" id="fuente" class="field-input" placeholder="Ej: Sentinel-2, Landsat-9...">
+    </div>
+    <div class="field">
+      <label class="field-lbl">Imagen Satelital</label>
+      <div class="upload-btn" id="drop-zone">
+        <input type="file" id="file-input" accept="image/*">
+        <i class="ti ti-cloud-upload"></i> CARGAR RASTER
+      </div>
+    </div>
+    <div class="field">
+      <label class="field-lbl">&nbsp;</label>
+      <button class="run-btn" id="btn-run" disabled>
+        <i class="ti ti-cpu"></i> PROCESAR
+      </button>
+    </div>
+  </div>
+
+  <!-- Preview -->
+  <div class="preview-strip" id="preview-strip">
+    <img id="prev-thumb" src="" alt="">
+    <span class="preview-fname" id="prev-name">—</span>
+    <button class="btn-swap" id="btn-swap">↺ REEMPLAZAR</button>
+  </div>
+
+  <!-- Spinner -->
+  <div class="proc-bar" id="proc-bar">
+    <div class="proc-spin"></div>
+    <span id="proc-txt">Ejecutando algoritmos espectrales sobre la matriz...</span>
+  </div>
+
+  <!-- Eyebrow -->
+  <div class="section-eyebrow">MÓDULO AGRONÓMICO — NDVI / COBERTURA VEGETAL / SEQUÍA</div>
+
+  <!-- Métricas -->
+  <div class="metrics-row" id="met-row">
+    <div class="met"><div class="met-lbl">NDVI promedio</div><div class="met-val" id="m0">—</div><div class="met-sub" id="ms0">Salud vegetal</div></div>
+    <div class="met"><div class="met-lbl">Cobertura vegetal</div><div class="met-val white" id="m1">—</div><div class="met-sub" id="ms1">% superficie</div></div>
+    <div class="met accent-amber"><div class="met-lbl">Estrés hídrico</div><div class="met-val amber" id="m2">—</div><div class="met-sub" id="ms2">Déficit de agua</div></div>
+    <div class="met accent-red"><div class="met-lbl">Sequía detectada</div><div class="met-val red" id="m3">—</div><div class="met-sub" id="ms3">Indicador aridez</div></div>
+    <div class="met accent-blue"><div class="met-lbl">Superficie cultivo</div><div class="met-val blue" id="m4">—</div><div class="met-sub" id="ms4">Área estimada</div></div>
+    <div class="met"><div class="met-lbl">Estado general</div><div class="met-val" id="m5">—</div><div class="met-sub" id="ms5">Clasificación IA</div></div>
+  </div>
+
+  <!-- Centro -->
+  <div class="center-grid">
+
+    <!-- Imagen -->
+    <div class="img-panel">
+      <div class="img-panel-hdr">
+        <span class="img-panel-title" id="img-title">IMAGEN SATELITAL — AGROTECH</span>
+        <span class="img-panel-sub" id="img-sub">Aguardando carga</span>
+      </div>
+      <img id="sat-img" src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='600' height='270'><rect width='600' height='270' fill='%230a1828'/><text x='50%' y='50%' fill='%230d2440' font-size='14' font-family='monospace' text-anchor='middle' dominant-baseline='middle'>[ AWAITING RASTER INPUT ]</text></svg>" alt="">
+      <div class="img-overlay">
+        <span class="img-coord" id="img-coord">GPS: — · —</span>
+        <div class="img-legend">
+          <div class="img-leg-row"><div class="img-leg-dot" style="background:#00e5a0"></div>NDVI Óptimo</div>
+          <div class="img-leg-row"><div class="img-leg-dot" style="background:#ffb300"></div>Estrés</div>
+          <div class="img-leg-row"><div class="img-leg-dot" style="background:#ff3d3d"></div>Crítico</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- NDVI barras -->
+    <div class="ndvi-panel">
+      <div class="ndvi-panel-title">Índices por zona</div>
+      <div id="ndvi-rows">
+        <div style="color:var(--text);font-family:var(--mono);font-size:9px;padding:20px 0;text-align:center">[ ESPERANDO ANÁLISIS ]</div>
+      </div>
+    </div>
+
+    <!-- Derecha -->
+    <div class="right-col">
+      <div class="panel">
+        <div class="panel-hdr"><i class="ti ti-alert-triangle"></i> ALERTAS DEL CAMPO</div>
+        <div class="panel-body" id="alertas-body">
+          <div style="color:var(--text);font-family:var(--mono);font-size:9px;padding:8px 0">[ ESPERANDO ANÁLISIS ]</div>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="panel-hdr"><i class="ti ti-drone"></i> MISIONES RECOMENDADAS</div>
+        <div class="panel-body" id="misiones-body">
+          <div style="color:var(--text);font-family:var(--mono);font-size:9px;padding:8px 0">[ ESPERANDO ANÁLISIS ]</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Diagnóstico -->
+  <div class="diag-panel">
+    <div class="diag-hdr"><i class="ti ti-file-description"></i> DIAGNÓSTICO TÉCNICO AGRONÓMICO</div>
+    <div class="diag-body" id="diag-body">Cargá una imagen satelital de campo o vegetación y ejecutá el procesamiento para obtener el diagnóstico técnico generado por Claude Vision.</div>
+  </div>
+
+</div>
+
+<footer>
+  <span>VERTECH TdF · RÍO GRANDE, TIERRA DEL FUEGO, ARGENTINA</span>
+  <span>INNOVATÓN SPACE 2025 · SENTINEL · CLAUDE VISION · v3.1</span>
+</footer>
+
+<script>
+  const BACKEND = 'https://vertech-backend.onrender.com';
+  let b64 = null, mtype = 'image/jpeg';
+
+  const dropZone  = document.getElementById('drop-zone');
+  const fileInput = document.getElementById('file-input');
+  const strip     = document.getElementById('preview-strip');
+  const thumb     = document.getElementById('prev-thumb');
+  const fname     = document.getElementById('prev-name');
+  const btnSwap   = document.getElementById('btn-swap');
+  const btnRun    = document.getElementById('btn-run');
+  const procBar   = document.getElementById('proc-bar');
+  const procTxt   = document.getElementById('proc-txt');
+
+  dropZone.addEventListener('click', e => { if(e.target !== fileInput) fileInput.click(); });
+  dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.style.borderColor = 'var(--green)'; });
+  dropZone.addEventListener('dragleave', () => { dropZone.style.borderColor = ''; });
+  dropZone.addEventListener('drop', e => { e.preventDefault(); dropZone.style.borderColor = ''; if(e.dataTransfer.files[0]) load(e.dataTransfer.files[0]); });
+  fileInput.addEventListener('change', e => { if(e.target.files[0]) load(e.target.files[0]); });
+  btnSwap.addEventListener('click', () => { fileInput.value = ''; fileInput.click(); });
+
+  function load(file) {
+    if(!file.type.startsWith('image/')) { alert('Seleccioná una imagen.'); return; }
+    const r = new FileReader();
+    r.onload = e => {
+      b64 = e.target.result.split(',')[1];
+      mtype = file.type || 'image/jpeg';
+      thumb.src = e.target.result;
+      fname.textContent = file.name;
+      strip.classList.add('visible');
+      btnRun.disabled = false;
+    };
+    r.readAsDataURL(file);
+  }
+
+  const PASOS = [
+    'Ejecutando segmentación espectral de la imagen...',
+    'Calculando índices de vegetación NDVI / EVI...',
+    'Detectando zonas de estrés hídrico y sequía...',
+    'Estimando superficie y dimensión de cultivos...',
+    'Generando diagnóstico agronómico con Claude Vision...'
+  ];
+
+  btnRun.addEventListener('click', async () => {
+    if(!b64) return;
+    btnRun.disabled = true;
+    procBar.classList.add('visible');
+    let p = 0;
+    const iv = setInterval(() => { if(p < PASOS.length) procTxt.textContent = PASOS[p++]; }, 950);
+
+    try {
+      const lugar  = document.getElementById('lugar').value.trim();
+      const fuente = document.getElementById('fuente').value.trim() || 'Imagen satelital';
+
+      const res = await fetch(`${BACKEND}/analizar-imagen`, {
+        method: 'POST',
+        headers: {'Content-Type':'application/json'},
+        body: JSON.stringify({ imagen_base64: b64, media_type: mtype, tipo: 'campo', lugar, fuente })
+      });
+
+      clearInterval(iv);
+      procBar.classList.remove('visible');
+      if(!res.ok) throw new Error((await res.json().catch(()=>({}))).detail || `HTTP ${res.status}`);
+
+      render(await res.json(), lugar, fuente);
+
+    } catch(e) {
+      clearInterval(iv);
+      procBar.classList.remove('visible');
+      console.error(e);
+      alert(`Error: ${e.message}`);
+    }
+    btnRun.disabled = false;
+  });
+
+  function render(d, lugar, fuente) {
+    // Imagen
+    document.getElementById('sat-img').src = thumb.src;
+    document.getElementById('img-title').textContent = (d.zona || lugar || 'Zona analizada').toUpperCase();
+    document.getElementById('img-sub').textContent = fuente + ' · ' + new Date().toLocaleDateString('es-AR');
+    document.getElementById('img-coord').textContent = 'ZONA: ' + (d.zona || lugar || '—');
+
+    // Métricas
+    const vals = [
+      {id:'m0', cls:'', sub:'ms0'},
+      {id:'m1', cls:'white', sub:'ms1'},
+      {id:'m2', cls:'amber', sub:'ms2'},
+      {id:'m3', cls:'red', sub:'ms3'},
+      {id:'m4', cls:'blue', sub:'ms4'},
+      {id:'m5', cls:'', sub:'ms5'}
+    ];
+    const colorMap = {green:'',blue:'blue',red:'red',amber:'amber',neutral:'white'};
+    (d.metricas||[]).forEach((m,i) => {
+      if(!vals[i]) return;
+      const el = document.getElementById(vals[i].id);
+      const sub = document.getElementById(vals[i].sub);
+      if(el) { el.textContent = m.value; el.className = 'met-val ' + (colorMap[m.color]||''); }
+      if(sub) sub.textContent = m.sub;
+    });
+
+    // NDVI barras
+    const colors = { campo:'#00e5a0', mar:'#2196f3', metano:'#ff3d3d' };
+    document.getElementById('ndvi-rows').innerHTML = (d.zonas_ndvi||[]).map(z => `
+      <div class="ndvi-item">
+        <div class="ndvi-item-top">
+          <div>
+            <div class="ndvi-item-zone">${z.zona}</div>
+            <div class="ndvi-item-status">${z.estado}</div>
+          </div>
+          <span class="ndvi-item-val">${z.ndvi}</span>
+        </div>
+        <div class="ndvi-track">
+          <div class="ndvi-fill" style="width:${z.pct||50}%;background:linear-gradient(90deg,${colors.campo}88,${colors.campo})"></div>
+        </div>
+      </div>`).join('');
+
+    // Alertas
+    const icons = {ok:'ti-circle-check',warn:'ti-alert-triangle',critical:'ti-alert-octagon'};
+    document.getElementById('alertas-body').innerHTML = (d.alertas||[]).map(a => `
+      <div class="alerta ${a.tipo||'warn'}">
+        <div class="alerta-title"><i class="ti ${icons[a.tipo]||'ti-alert-triangle'}"></i> ${a.titulo}</div>
+        <div class="alerta-desc">${a.desc}</div>
+      </div>`).join('');
+
+    // Misiones
+    document.getElementById('misiones-body').innerHTML = (d.misiones||[]).map(m => `
+      <div class="mision">
+        <span class="mision-prioridad p-${(m.prioridad||'MEDIA').toLowerCase()}">${m.prioridad}</span>
+        <div>
+          <div class="mision-zona">${m.zona}</div>
+          <div class="mision-tarea">${m.tarea}</div>
+        </div>
+      </div>`).join('');
+
+    // Diagnóstico
+    document.getElementById('diag-body').textContent = d.diagnostico || '—';
+  }
+</script>
+</body>
+</html>
