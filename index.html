@@ -34,7 +34,61 @@
       min-height: 100vh; display: flex; flex-direction: column;
     }
 
-    /* ── HEADER ── */
+    /* ══ LOGIN ══ */
+    #login-screen {
+      position: fixed; inset: 0; background: var(--bg);
+      z-index: 999; display: flex; align-items: center; justify-content: center; padding: 1.5rem;
+    }
+    .login-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius-lg); padding: 2.5rem 2rem;
+      width: 100%; max-width: 420px; display: flex; flex-direction: column; gap: 1.25rem;
+    }
+    .login-logo-row { display: flex; align-items: center; gap: 12px; }
+    .login-logo { height: 36px; width: auto; object-fit: contain; }
+    .login-brand { display: flex; flex-direction: column; line-height: 1.15; }
+    .login-brand-main { font-size: 16px; font-weight: 700; color: var(--white); }
+    .login-brand-main span { color: var(--amber); }
+    .login-brand-sub { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; }
+    .login-title { font-size: 18px; font-weight: 700; color: var(--white); }
+    .login-desc { font-size: 13px; color: var(--muted); line-height: 1.6; }
+    .login-desc a { color: var(--blue); text-decoration: none; }
+    .login-label { font-size: 12px; font-weight: 600; color: var(--text); margin-bottom: 6px; display: block; }
+    .login-input-wrap { position: relative; }
+    .login-input {
+      width: 100%; background: var(--card); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 11px 40px 11px 12px;
+      font-size: 13px; color: var(--white); outline: none; transition: border-color .2s;
+      font-family: monospace; letter-spacing: .03em;
+    }
+    .login-input:focus { border-color: var(--blue); }
+    .login-input::placeholder { color: var(--muted); font-family: system-ui; letter-spacing: 0; }
+    .btn-eye {
+      position: absolute; right: 10px; top: 50%; transform: translateY(-50%);
+      background: none; border: none; color: var(--muted); cursor: pointer; font-size: 16px;
+    }
+    .btn-eye:hover { color: var(--text); }
+    .login-note {
+      display: flex; align-items: flex-start; gap: 8px;
+      background: var(--blue-dim); border: 1px solid rgba(59,130,246,.2);
+      border-radius: var(--radius); padding: 10px 12px;
+      font-size: 11px; color: #93c5fd; line-height: 1.5;
+    }
+    .login-note .ti { font-size: 15px; flex-shrink: 0; margin-top: 1px; }
+    .login-error { font-size: 12px; color: var(--red); display: none; align-items: center; gap: 6px; }
+    .login-error.visible { display: flex; }
+    .btn-login {
+      width: 100%; padding: 13px; background: var(--blue); border: none;
+      border-radius: var(--radius); font-size: 14px; font-weight: 600; color: #fff;
+      cursor: pointer; display: flex; align-items: center; justify-content: center;
+      gap: 8px; transition: background .2s;
+    }
+    .btn-login:hover { background: #2563eb; }
+
+    /* ══ APP ══ */
+    #app { display: none; flex-direction: column; flex: 1; }
+    #app.visible { display: flex; }
+
     header {
       background: var(--surface); border-bottom: 1px solid var(--border);
       padding: 0.75rem 2rem; display: flex; align-items: center; justify-content: space-between;
@@ -52,14 +106,18 @@
       padding: 3px 10px; border-radius: 20px; text-transform: uppercase; letter-spacing: .04em;
     }
     .hdr-flag { height: 32px; border-radius: 4px; border: 1px solid var(--border); object-fit: contain; }
+    .btn-logout {
+      background: none; border: 1px solid var(--border); border-radius: var(--radius);
+      color: var(--muted); font-size: 11px; padding: 4px 10px; cursor: pointer;
+      display: flex; align-items: center; gap: 5px; transition: all .15s;
+    }
+    .btn-logout:hover { border-color: var(--red); color: var(--red); }
 
-    /* ── MAIN ── */
     main {
       flex: 1; display: flex; flex-direction: column; align-items: center;
       padding: 2.5rem 1.5rem 3rem; max-width: 860px; margin: 0 auto; width: 100%;
     }
 
-    /* ── HERO ── */
     .hero { text-align: center; margin-bottom: 2.5rem; }
     .hero-eyebrow {
       display: inline-flex; align-items: center; gap: 6px;
@@ -72,7 +130,6 @@
     .hero-title em { font-style: normal; color: var(--blue); }
     .hero-desc { font-size: 15px; color: var(--muted); max-width: 520px; margin: 0 auto; line-height: 1.65; }
 
-    /* ── MODOS ── */
     .mode-row { width: 100%; display: grid; grid-template-columns: repeat(3,1fr); gap: 8px; margin-bottom: 1.25rem; }
     .mode-card {
       background: var(--card); border: 1px solid var(--border); border-radius: var(--radius);
@@ -85,7 +142,6 @@
     .mode-label { font-size: 12px; font-weight: 600; color: var(--text); display: block; }
     .mode-sub { font-size: 10px; color: var(--muted); display: block; margin-top: 1px; }
 
-    /* ── UPLOAD ── */
     .upload-zone {
       width: 100%; border: 2px dashed var(--border-hi); border-radius: var(--radius-lg);
       padding: 3rem 2rem; text-align: center; cursor: pointer; background: var(--surface);
@@ -100,7 +156,6 @@
     .upload-sub { font-size: 12px; color: var(--muted); pointer-events: none; }
     .upload-sub strong { color: var(--text); }
 
-    /* ── PREVIEW ── */
     .preview-box {
       width: 100%; border: 1px solid var(--border); border-radius: var(--radius-lg);
       overflow: hidden; background: #050a10; margin-bottom: 1.25rem; display: none; position: relative;
@@ -119,7 +174,6 @@
     }
     .preview-change:hover { border-color: var(--blue); }
 
-    /* ── BOTÓN ── */
     .btn-analyze {
       width: 100%; padding: 14px; background: var(--blue); border: none;
       border-radius: var(--radius); font-size: 14px; font-weight: 600; color: #fff;
@@ -129,7 +183,6 @@
     .btn-analyze:hover:not(:disabled) { background: #2563eb; }
     .btn-analyze:disabled { background: var(--border); color: var(--muted); cursor: not-allowed; }
 
-    /* ── SPINNER ── */
     .spinner-box {
       width: 100%; display: none; align-items: center; gap: 12px;
       padding: 14px 18px; background: var(--blue-dim);
@@ -143,7 +196,6 @@
     }
     @keyframes spin { to { transform: rotate(360deg); } }
 
-    /* ── RESULTADOS ── */
     .results { width: 100%; display: none; flex-direction: column; gap: 10px; }
     .results.visible { display: flex; }
     .results-divider {
@@ -166,17 +218,6 @@
     .badge-info { background: var(--blue-dim);  color: var(--blue);  }
     .result-card-body { padding: 14px 16px; font-size: 13px; color: var(--text); line-height: 1.75; white-space: pre-wrap; }
 
-    /* ── STATUS BACKEND ── */
-    .backend-status {
-      display: flex; align-items: center; gap: 8px;
-      font-size: 11px; color: var(--muted);
-      margin-bottom: 1rem;
-    }
-    .status-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--muted); flex-shrink: 0; }
-    .status-dot.ok  { background: var(--green); box-shadow: 0 0 0 3px var(--green-dim); }
-    .status-dot.err { background: var(--red);   box-shadow: 0 0 0 3px var(--red-dim); }
-
-    /* ── FOOTER ── */
     footer {
       background: var(--surface); border-top: 1px solid var(--border);
       padding: .75rem 2rem; display: flex; justify-content: space-between;
@@ -189,136 +230,210 @@
       .mode-row { grid-template-columns: 1fr; }
       header { padding: .6rem 1rem; }
       .hdr-badge { display: none; }
+      .login-card { padding: 1.75rem 1.25rem; }
     }
   </style>
 </head>
 <body>
 
-<header>
-  <div class="hdr-left">
-    <img src="logo.png" alt="Vertech TdF" class="hdr-logo">
-    <div class="hdr-brand">
-      <span class="brand-main">VERTECH <span>TdF</span></span>
-      <span class="brand-sub">Inteligencia Satelital</span>
-    </div>
-  </div>
-  <div class="hdr-right">
-    <span class="hdr-badge">Innovatón Space 2025</span>
-    <img src="Bandera.png" alt="Tierra del Fuego" class="hdr-flag">
-  </div>
-</header>
-
-<main>
-
-  <div class="hero">
-    <div class="hero-eyebrow"><i class="ti ti-satellite"></i> Sentinel · TROPOMI · Claude Vision</div>
-    <h1 class="hero-title">Análisis satelital con <em>IA</em></h1>
-    <p class="hero-desc">
-      Subí cualquier imagen satelital — campo, mar o atmósfera —
-      y Claude Vision genera un diagnóstico técnico en segundos.
-    </p>
-  </div>
-
-  <!-- Estado del backend -->
-  <div class="backend-status">
-    <div class="status-dot" id="status-dot"></div>
-    <span id="status-text">Verificando conexión con el servidor...</span>
-  </div>
-
-  <!-- Tipo de análisis -->
-  <div class="mode-row">
-    <div class="mode-card selected" data-mode="campo">
-      <i class="ti ti-plant-2"></i>
-      <span class="mode-label">AgroTech</span>
-      <span class="mode-sub">NDVI · Pasturas · Drones</span>
-    </div>
-    <div class="mode-card" data-mode="mar">
-      <i class="ti ti-waves"></i>
-      <span class="mode-label">Economía Azul</span>
-      <span class="mode-sub">SST · Clorofila · Buques</span>
-    </div>
-    <div class="mode-card" data-mode="metano">
-      <i class="ti ti-flame"></i>
-      <span class="mode-label">Metano CH₄</span>
-      <span class="mode-sub">TROPOMI</span>
-    </div>
-  </div>
-
-  <!-- Upload -->
-  <div class="upload-zone" id="drop-zone">
-    <input type="file" id="file-input" accept="image/*">
-    <i class="ti ti-cloud-upload upload-icon"></i>
-    <div class="upload-title">Arrastrá la imagen acá o hacé click para seleccionar</div>
-    <div class="upload-sub">PNG · JPEG · GeoTIFF export — <strong>Sentinel-2 · SAR · TROPOMI</strong></div>
-  </div>
-
-  <!-- Preview -->
-  <div class="preview-box" id="preview-box">
-    <img id="preview-img" src="" alt="Imagen cargada">
-    <div class="preview-label">Imagen cargada · <strong id="preview-name">—</strong></div>
-    <div class="preview-change" id="btn-change">Cambiar imagen</div>
-  </div>
-
-  <!-- Botón -->
-  <button class="btn-analyze" id="btn-analyze" disabled>
-    <i class="ti ti-brain"></i> Analizar con Claude Vision
-  </button>
-
-  <!-- Spinner -->
-  <div class="spinner-box" id="spinner">
-    <div class="spin"></div>
-    <span id="spinner-text">Procesando imagen satelital...</span>
-  </div>
-
-  <!-- Resultados -->
-  <div class="results" id="results">
-    <div class="results-divider">Diagnóstico IA</div>
-
-    <div class="result-card">
-      <div class="result-card-hdr">
-        <i class="ti ti-chart-bar" style="color:var(--blue)"></i>
-        <div class="result-hdr-text">
-          <span class="result-title">Índices detectados</span>
-          <span class="result-badge badge-info">Métricas</span>
-        </div>
+<!-- ══ LOGIN ══ -->
+<div id="login-screen">
+  <div class="login-card">
+    <div class="login-logo-row">
+      <img src="logo.png" alt="Vertech TdF" class="login-logo">
+      <div class="login-brand">
+        <span class="login-brand-main">VERTECH <span>TdF</span></span>
+        <span class="login-brand-sub">Inteligencia Satelital</span>
       </div>
-      <div class="result-card-body" id="res-indices">—</div>
     </div>
-
-    <div class="result-card">
-      <div class="result-card-hdr">
-        <i class="ti ti-file-description" style="color:var(--amber)"></i>
-        <div class="result-hdr-text">
-          <span class="result-title">Diagnóstico técnico</span>
-          <span class="result-badge badge-warn">Análisis</span>
-        </div>
+    <div>
+      <div class="login-title">Ingresá tu clave de API</div>
+      <p class="login-desc" style="margin-top:6px">
+        Necesitás una clave de Anthropic para usar Claude Vision.<br>
+        Obtené una en <a href="https://console.anthropic.com/settings/keys" target="_blank">console.anthropic.com</a>
+      </p>
+    </div>
+    <div>
+      <label class="login-label" for="api-key-input">Clave de API de Anthropic</label>
+      <div class="login-input-wrap">
+        <input type="password" id="api-key-input" class="login-input"
+          placeholder="sk-ant-api03-..." autocomplete="off" spellcheck="false">
+        <button class="btn-eye" id="btn-eye"><i class="ti ti-eye" id="eye-icon"></i></button>
       </div>
-      <div class="result-card-body" id="res-diagnostico">—</div>
     </div>
-
-    <div class="result-card">
-      <div class="result-card-hdr">
-        <i class="ti ti-drone" style="color:var(--green)"></i>
-        <div class="result-hdr-text">
-          <span class="result-title">Misiones recomendadas</span>
-          <span class="result-badge badge-ok">Acción</span>
-        </div>
-      </div>
-      <div class="result-card-body" id="res-misiones">—</div>
+    <div class="login-note">
+      <i class="ti ti-lock"></i>
+      <span>Tu clave se guarda solo en esta sesión del navegador y nunca se envía a servidores de terceros. Al cerrar la pestaña se elimina automáticamente.</span>
     </div>
+    <div class="login-error" id="login-error">
+      <i class="ti ti-alert-circle"></i>
+      <span id="login-error-msg">La clave no puede estar vacía.</span>
+    </div>
+    <button class="btn-login" id="btn-login">
+      <i class="ti ti-rocket"></i> Ingresar
+    </button>
   </div>
+</div>
 
-</main>
+<!-- ══ APP ══ -->
+<div id="app">
+  <header>
+    <div class="hdr-left">
+      <img src="logo.png" alt="Vertech TdF" class="hdr-logo">
+      <div class="hdr-brand">
+        <span class="brand-main">VERTECH <span>TdF</span></span>
+        <span class="brand-sub">Inteligencia Satelital</span>
+      </div>
+    </div>
+    <div class="hdr-right">
+      <span class="hdr-badge">Innovatón Space 2025</span>
+      <img src="Bandera.png" alt="Tierra del Fuego" class="hdr-flag">
+      <button class="btn-logout" id="btn-logout"><i class="ti ti-logout"></i> Salir</button>
+    </div>
+  </header>
 
-<footer>
-  <span>Vertech TdF · Río Grande, Tierra del Fuego, Argentina</span>
-  <span>Innovatón Space 2025 · Sentinel · TROPOMI · Claude Vision</span>
-</footer>
+  <main>
+    <div class="hero">
+      <div class="hero-eyebrow"><i class="ti ti-satellite"></i> Sentinel · TROPOMI · Claude Vision</div>
+      <h1 class="hero-title">Análisis satelital con <em>IA</em></h1>
+      <p class="hero-desc">
+        Subí cualquier imagen satelital de Tierra del Fuego — campo, mar o atmósfera —
+        y Claude Vision genera un diagnóstico técnico en segundos.
+      </p>
+    </div>
+
+    <div class="mode-row">
+      <div class="mode-card selected" data-mode="campo">
+        <i class="ti ti-plant-2"></i>
+        <span class="mode-label">AgroTech</span>
+        <span class="mode-sub">NDVI · Pasturas · Drones</span>
+      </div>
+      <div class="mode-card" data-mode="mar">
+        <i class="ti ti-waves"></i>
+        <span class="mode-label">Economía Azul</span>
+        <span class="mode-sub">SST · Clorofila · Buques</span>
+      </div>
+      <div class="mode-card" data-mode="metano">
+        <i class="ti ti-flame"></i>
+        <span class="mode-label">Metano CH₄</span>
+        <span class="mode-sub">TROPOMI · Cuenca Austral</span>
+      </div>
+    </div>
+
+    <div class="upload-zone" id="drop-zone">
+      <input type="file" id="file-input" accept="image/*">
+      <i class="ti ti-cloud-upload upload-icon"></i>
+      <div class="upload-title">Arrastrá la imagen acá o hacé click para seleccionar</div>
+      <div class="upload-sub">PNG · JPEG · GeoTIFF export — <strong>Sentinel-2 · SAR · TROPOMI</strong></div>
+    </div>
+
+    <div class="preview-box" id="preview-box">
+      <img id="preview-img" src="" alt="Imagen cargada">
+      <div class="preview-label">Imagen cargada · <strong id="preview-name">—</strong></div>
+      <div class="preview-change" id="btn-change">Cambiar imagen</div>
+    </div>
+
+    <button class="btn-analyze" id="btn-analyze" disabled>
+      <i class="ti ti-brain"></i> Analizar con Claude Vision
+    </button>
+
+    <div class="spinner-box" id="spinner">
+      <div class="spin"></div>
+      <span id="spinner-text">Procesando imagen satelital...</span>
+    </div>
+
+    <div class="results" id="results">
+      <div class="results-divider">Diagnóstico IA</div>
+      <div class="result-card">
+        <div class="result-card-hdr">
+          <i class="ti ti-chart-bar" style="color:var(--blue)"></i>
+          <div class="result-hdr-text">
+            <span class="result-title">Índices detectados</span>
+            <span class="result-badge badge-info">Métricas</span>
+          </div>
+        </div>
+        <div class="result-card-body" id="res-indices">—</div>
+      </div>
+      <div class="result-card">
+        <div class="result-card-hdr">
+          <i class="ti ti-file-description" style="color:var(--amber)"></i>
+          <div class="result-hdr-text">
+            <span class="result-title">Diagnóstico técnico</span>
+            <span class="result-badge badge-warn">Análisis</span>
+          </div>
+        </div>
+        <div class="result-card-body" id="res-diagnostico">—</div>
+      </div>
+      <div class="result-card">
+        <div class="result-card-hdr">
+          <i class="ti ti-drone" style="color:var(--green)"></i>
+          <div class="result-hdr-text">
+            <span class="result-title">Misiones recomendadas</span>
+            <span class="result-badge badge-ok">Acción</span>
+          </div>
+        </div>
+        <div class="result-card-body" id="res-misiones">—</div>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <span>Vertech TdF · Río Grande, Tierra del Fuego, Argentina</span>
+    <span>Innovatón Space 2025 · Sentinel · TROPOMI · Claude Vision</span>
+  </footer>
+</div>
 
 <script>
-  const BACKEND = 'https://vertech-backend.onrender.com';
+  // ══ LOGIN ══
+  const loginScreen = document.getElementById('login-screen');
+  const app         = document.getElementById('app');
+  const apiInput    = document.getElementById('api-key-input');
+  const btnLogin    = document.getElementById('btn-login');
+  const btnLogout   = document.getElementById('btn-logout');
+  const loginError  = document.getElementById('login-error');
+  const loginErrMsg = document.getElementById('login-error-msg');
+  const btnEye      = document.getElementById('btn-eye');
+  const eyeIcon     = document.getElementById('eye-icon');
 
-  // ── Estado ──
+  if (sessionStorage.getItem('vertech_key')) {
+    loginScreen.style.display = 'none';
+    app.classList.add('visible');
+  }
+
+  btnEye.addEventListener('click', () => {
+    const show = apiInput.type === 'password';
+    apiInput.type = show ? 'text' : 'password';
+    eyeIcon.className = show ? 'ti ti-eye-off' : 'ti ti-eye';
+  });
+
+  apiInput.addEventListener('keydown', e => { if (e.key === 'Enter') btnLogin.click(); });
+
+  btnLogin.addEventListener('click', () => {
+    const key = apiInput.value.trim();
+    loginError.classList.remove('visible');
+    if (!key) {
+      loginErrMsg.textContent = 'La clave no puede estar vacía.';
+      loginError.classList.add('visible');
+      return;
+    }
+    if (!key.startsWith('sk-ant-')) {
+      loginErrMsg.textContent = 'La clave debe comenzar con "sk-ant-". Verificá que la copiaste completa.';
+      loginError.classList.add('visible');
+      return;
+    }
+    sessionStorage.setItem('vertech_key', key);
+    loginScreen.style.display = 'none';
+    app.classList.add('visible');
+  });
+
+  btnLogout.addEventListener('click', () => {
+    sessionStorage.removeItem('vertech_key');
+    apiInput.value = '';
+    app.classList.remove('visible');
+    loginScreen.style.display = 'flex';
+  });
+
+  // ══ APP ══
   let imageBase64    = null;
   let imageMediaType = 'image/png';
   let currentMode    = 'campo';
@@ -333,25 +448,7 @@
   const spinner     = document.getElementById('spinner');
   const spinnerTxt  = document.getElementById('spinner-text');
   const results     = document.getElementById('results');
-  const statusDot   = document.getElementById('status-dot');
-  const statusText  = document.getElementById('status-text');
 
-  // ── Verificar backend al cargar ──
-  async function checkBackend() {
-    try {
-      const r = await fetch(`${BACKEND}/health`, { signal: AbortSignal.timeout(8000) });
-      if (r.ok) {
-        statusDot.classList.add('ok');
-        statusText.textContent = 'Servidor conectado · Claude Vision listo';
-      } else throw new Error();
-    } catch {
-      statusDot.classList.add('err');
-      statusText.textContent = 'Servidor no disponible — verificá Render';
-    }
-  }
-  checkBackend();
-
-  // ── Modos ──
   document.querySelectorAll('.mode-card').forEach(card => {
     card.addEventListener('click', () => {
       document.querySelectorAll('.mode-card').forEach(c => c.classList.remove('selected'));
@@ -360,26 +457,25 @@
     });
   });
 
-  // ── Upload ──
-  dropZone.addEventListener('click', (e) => { if (e.target !== fileInput) fileInput.click(); });
-  dropZone.addEventListener('dragover', (e) => { e.preventDefault(); dropZone.classList.add('drag-over'); });
+  dropZone.addEventListener('click', e => { if (e.target !== fileInput) fileInput.click(); });
+  dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('drag-over'); });
   dropZone.addEventListener('dragleave', () => dropZone.classList.remove('drag-over'));
-  dropZone.addEventListener('drop', (e) => {
+  dropZone.addEventListener('drop', e => {
     e.preventDefault(); dropZone.classList.remove('drag-over');
     if (e.dataTransfer.files[0]) cargarArchivo(e.dataTransfer.files[0]);
   });
-  fileInput.addEventListener('change', (e) => { if (e.target.files[0]) cargarArchivo(e.target.files[0]); });
+  fileInput.addEventListener('change', e => { if (e.target.files[0]) cargarArchivo(e.target.files[0]); });
   btnChange.addEventListener('click', () => { fileInput.value = ''; fileInput.click(); });
 
   function cargarArchivo(file) {
     if (!file.type.startsWith('image/')) { alert('Seleccioná una imagen (PNG, JPEG, etc.)'); return; }
     const reader = new FileReader();
-    reader.onload = (e) => {
-      const dataUrl   = e.target.result;
-      imageBase64     = dataUrl.split(',')[1];
-      imageMediaType  = file.type || 'image/png';
-      previewImg.src  = dataUrl;
-      previewName.textContent = file.name;
+    reader.onload = e => {
+      const dataUrl  = e.target.result;
+      imageBase64    = dataUrl.split(',')[1];
+      imageMediaType = file.type || 'image/png';
+      previewImg.src = dataUrl;
+      previewName.textContent  = file.name;
       previewBox.style.display = 'block';
       dropZone.style.display   = 'none';
       btnAnalyze.disabled      = false;
@@ -388,16 +484,22 @@
     reader.readAsDataURL(file);
   }
 
-  // ── Pasos del spinner ──
+  const PROMPTS = {
+    campo:  `Sos un experto en teledetección agrícola de Patagonia austral. Analizá esta imagen satelital y respondé SOLO con JSON sin backticks:\n{"indices":"NDVI estimado: X\\nCobertura vegetal: X%\\nHumedad estimada: X%\\nZonas críticas: X","diagnostico":"5-6 oraciones técnicas sobre el estado del campo, estrés hídrico, distribución de cobertura y riesgos.","misiones":"[ALTA] Zona X — tarea\\n[MEDIA] Zona Y — tarea\\n[BAJA] Zona Z — tarea"}`,
+    mar:    `Sos un experto en oceanografía del Mar Argentino y Canal Beagle. Analizá esta imagen satelital y respondé SOLO con JSON sin backticks:\n{"indices":"Temperatura superficial: X°C\\nProductividad marina: X\\nTurbidez: X NTU\\nEmbarcaciones detectadas: X","diagnostico":"5-6 oraciones técnicas sobre estado oceanográfico, productividad biológica y condiciones para pesca.","misiones":"[ALTA] Zona X — acción\\n[MEDIA] Zona Y — acción\\n[BAJA] Zona Z — acción"}`,
+    metano: `Sos un experto en monitoreo atmosférico de CH₄ en la Cuenca Austral. Analizá esta imagen TROPOMI y respondé SOLO con JSON sin backticks:\n{"indices":"Concentración CH₄: X ppb\\nZonas de emisión: X\\nAnomalías detectadas: X\\nNivel de riesgo: X","diagnostico":"5-6 oraciones técnicas sobre riesgo, fuentes probables, dispersión y tendencia.","misiones":"[ALTA] Zona X — acción urgente\\n[MEDIA] Zona Y — acción\\n[BAJA] Zona Z — acción"}`
+  };
+
   const PASOS = {
     campo:  ['Leyendo imagen satelital...','Detectando índices NDVI...','Identificando zonas críticas...','Generando diagnóstico agronómico...'],
     mar:    ['Leyendo imagen SAR...','Analizando temperatura superficial...','Detectando embarcaciones...','Generando diagnóstico oceanográfico...'],
     metano: ['Leyendo datos TROPOMI...','Calculando concentración CH₄...','Identificando plumas de emisión...','Generando diagnóstico atmosférico...']
   };
 
-  // ── Analizar ──
   btnAnalyze.addEventListener('click', async () => {
     if (!imageBase64) return;
+    const apiKey = sessionStorage.getItem('vertech_key');
+    if (!apiKey) { alert('Sesión expirada. Recargá la página.'); return; }
 
     btnAnalyze.disabled = true;
     results.classList.remove('visible');
@@ -410,11 +512,14 @@
     }, 950);
 
     try {
-      const res = await fetch(`${BACKEND}/analizar-imagen`, {
+      const res = await fetch('https://vertech-backend.onrender.com/analizar-imagen', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json'
+        },
         body: JSON.stringify({
           imagen_base64: imageBase64,
+          media_type: imageMediaType,
           tipo: currentMode,
           lugar: 'Tierra del Fuego, Argentina',
           fecha: new Date().toLocaleDateString('es-AR'),
@@ -427,44 +532,15 @@
 
       if (!res.ok) {
         const err = await res.json().catch(() => ({}));
-        throw new Error(err?.detail || `Error HTTP ${res.status}`);
+        throw new Error(err?.error?.message || `Error HTTP ${res.status}`);
       }
 
       const data = await res.json();
 
-      // Formatear índices según el tipo de respuesta del backend
-      let indices = '—';
-      if (data.indices) {
-        // Respuesta tipo campo/metano: array de objetos
-        if (Array.isArray(data.indices)) {
-          indices = data.indices.map(i => `${i.label}: ${i.value}  —  ${i.sub}`).join('\n');
-        } else {
-          indices = String(data.indices);
-        }
-      } else if (data.indicadores) {
-        // Respuesta tipo mar: objeto con claves
-        const ind = data.indicadores;
-        indices = [
-          `Temperatura: ${ind.temperatura || '—'}`,
-          `Clorofila: ${ind.clorofila || '—'}`,
-          `Turbidez: ${ind.turbidez || '—'}`,
-          `Embarcaciones: ${ind.embarcaciones || '—'}`,
-          `Productividad: ${ind.productividad || '—'}`,
-          `Nivel de alerta: ${ind.nivel_alerta || '—'}`,
-        ].join('\n');
-      }
-
-      // Misiones
-      let misiones = '—';
-      if (Array.isArray(data.misiones)) {
-        misiones = data.misiones.map(m => `[${(m.prioridad || '').toUpperCase()}] ${m.zona} — ${m.tarea}`).join('\n');
-      } else if (Array.isArray(data.acciones)) {
-        misiones = data.acciones.map(a => `${a.organismo}: ${a.texto}`).join('\n');
-      }
-
-      document.getElementById('res-indices').textContent    = indices;
+      // El backend devuelve el JSON directamente (ya parseado por FastAPI)
+      document.getElementById('res-indices').textContent     = data.indices     || '—';
       document.getElementById('res-diagnostico').textContent = data.diagnostico || '—';
-      document.getElementById('res-misiones').textContent   = misiones;
+      document.getElementById('res-misiones').textContent    = data.misiones    || '—';
 
       results.classList.add('visible');
       results.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -473,7 +549,7 @@
       clearInterval(intervalo);
       spinner.classList.remove('visible');
       console.error(err);
-      alert(`Error al analizar:\n${err.message}\n\nVerificá que el servidor Render esté activo.`);
+      alert(`Error al analizar:\n${err.message}`);
     }
 
     btnAnalyze.disabled = false;
