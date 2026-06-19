@@ -7,438 +7,187 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/tabler-icons.min.css">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
     :root {
-      --bg:         #080d14;
-      --surface:    #0f1824;
-      --card:       #141f2e;
-      --border:     #1e2e42;
-      --border-hi:  #2a4060;
-      --blue:       #3b82f6;
-      --blue-dim:   rgba(59,130,246,.12);
-      --green:      #10b981;
-      --green-dim:  rgba(16,185,129,.12);
-      --amber:      #f59e0b;
-      --amber-dim:  rgba(245,158,11,.12);
-      --red:        #ef4444;
-      --red-dim:    rgba(239,68,68,.12);
-      --text:       #e2e8f0;
-      --muted:      #64748b;
-      --subtle:     #334155;
-      --white:      #f8fafc;
-      --radius:     8px;
-      --radius-lg:  14px;
+      --bg:        #080d14;
+      --surface:   #0f1824;
+      --card:      #141f2e;
+      --border:    #1e2e42;
+      --border-hi: #2a4060;
+      --blue:      #3b82f6;
+      --blue-dim:  rgba(59,130,246,.12);
+      --green:     #10b981;
+      --green-dim: rgba(16,185,129,.12);
+      --amber:     #f59e0b;
+      --amber-dim: rgba(245,158,11,.12);
+      --red:       #ef4444;
+      --red-dim:   rgba(239,68,68,.12);
+      --text:      #e2e8f0;
+      --muted:     #64748b;
+      --white:     #f8fafc;
+      --radius:    8px;
+      --radius-lg: 14px;
     }
-
     body {
-      font-family: 'SF Pro Display', system-ui, -apple-system, 'Segoe UI', sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      font-size: 14px;
-      line-height: 1.5;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
+      font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
+      background: var(--bg); color: var(--text);
+      font-size: 14px; line-height: 1.5;
+      min-height: 100vh; display: flex; flex-direction: column;
     }
 
     /* ── HEADER ── */
     header {
-      background: var(--surface);
-      border-bottom: 1px solid var(--border);
-      padding: 0.75rem 2rem;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      position: sticky;
-      top: 0;
-      z-index: 50;
+      background: var(--surface); border-bottom: 1px solid var(--border);
+      padding: 0.75rem 2rem; display: flex; align-items: center; justify-content: space-between;
     }
-    .hdr-left {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-    }
-    .hdr-logo {
-      height: 38px;
-      width: auto;
-      object-fit: contain;
-    }
-    .hdr-brand {
-      display: flex;
-      flex-direction: column;
-      line-height: 1.15;
-    }
-    .brand-main {
-      font-size: 15px;
-      font-weight: 700;
-      color: var(--white);
-      letter-spacing: .02em;
-    }
+    .hdr-left { display: flex; align-items: center; gap: 14px; }
+    .hdr-logo { height: 38px; width: auto; object-fit: contain; }
+    .hdr-brand { display: flex; flex-direction: column; line-height: 1.15; }
+    .brand-main { font-size: 15px; font-weight: 700; color: var(--white); }
     .brand-main span { color: var(--amber); }
-    .brand-sub {
-      font-size: 10px;
-      color: var(--muted);
-      letter-spacing: .06em;
-      text-transform: uppercase;
-    }
-    .hdr-right {
-      display: flex;
-      align-items: center;
-      gap: 16px;
-    }
+    .brand-sub { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; }
+    .hdr-right { display: flex; align-items: center; gap: 12px; }
     .hdr-badge {
-      font-size: 10px;
-      font-weight: 600;
-      color: var(--amber);
-      background: var(--amber-dim);
-      border: 1px solid rgba(245,158,11,.25);
-      padding: 3px 10px;
-      border-radius: 20px;
-      letter-spacing: .04em;
-      text-transform: uppercase;
+      font-size: 10px; font-weight: 600; color: var(--amber);
+      background: var(--amber-dim); border: 1px solid rgba(245,158,11,.25);
+      padding: 3px 10px; border-radius: 20px; text-transform: uppercase; letter-spacing: .04em;
     }
-    .hdr-flag {
-      height: 32px;
-      border-radius: 4px;
-      border: 1px solid var(--border);
-      object-fit: contain;
-    }
+    .hdr-flag { height: 32px; border-radius: 4px; border: 1px solid var(--border); object-fit: contain; }
 
-    /* ── MAIN LAYOUT ── */
+    /* ── MAIN ── */
     main {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 2.5rem 1.5rem 3rem;
-      max-width: 860px;
-      margin: 0 auto;
-      width: 100%;
+      flex: 1; display: flex; flex-direction: column; align-items: center;
+      padding: 2.5rem 1.5rem 3rem; max-width: 860px; margin: 0 auto; width: 100%;
     }
 
     /* ── HERO ── */
-    .hero {
-      text-align: center;
-      margin-bottom: 2.5rem;
-    }
+    .hero { text-align: center; margin-bottom: 2.5rem; }
     .hero-eyebrow {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      font-size: 11px;
-      font-weight: 600;
-      color: var(--blue);
-      text-transform: uppercase;
-      letter-spacing: .08em;
-      margin-bottom: 1rem;
-      background: var(--blue-dim);
-      border: 1px solid rgba(59,130,246,.2);
-      padding: 4px 12px;
-      border-radius: 20px;
+      display: inline-flex; align-items: center; gap: 6px;
+      font-size: 11px; font-weight: 600; color: var(--blue);
+      text-transform: uppercase; letter-spacing: .08em; margin-bottom: 1rem;
+      background: var(--blue-dim); border: 1px solid rgba(59,130,246,.2);
+      padding: 4px 12px; border-radius: 20px;
     }
-    .hero-title {
-      font-size: 32px;
-      font-weight: 700;
-      color: var(--white);
-      line-height: 1.15;
-      margin-bottom: 0.75rem;
-      letter-spacing: -.01em;
-    }
-    .hero-title em {
-      font-style: normal;
-      color: var(--blue);
-    }
-    .hero-desc {
-      font-size: 15px;
-      color: var(--muted);
-      max-width: 520px;
-      margin: 0 auto;
-      line-height: 1.65;
-    }
+    .hero-title { font-size: 32px; font-weight: 700; color: var(--white); line-height: 1.15; margin-bottom: .75rem; }
+    .hero-title em { font-style: normal; color: var(--blue); }
+    .hero-desc { font-size: 15px; color: var(--muted); max-width: 520px; margin: 0 auto; line-height: 1.65; }
 
-    /* ── UPLOAD ZONE ── */
+    /* ── MODOS ── */
+    .mode-row { width: 100%; display: grid; grid-template-columns: repeat(3,1fr); gap: 8px; margin-bottom: 1.25rem; }
+    .mode-card {
+      background: var(--card); border: 1px solid var(--border); border-radius: var(--radius);
+      padding: 12px 10px; text-align: center; cursor: pointer; transition: all .15s; user-select: none;
+    }
+    .mode-card:hover { border-color: var(--border-hi); }
+    .mode-card.selected { border-color: var(--blue); background: var(--blue-dim); }
+    .mode-card .ti { font-size: 20px; color: var(--muted); display: block; margin-bottom: 4px; }
+    .mode-card.selected .ti { color: var(--blue); }
+    .mode-label { font-size: 12px; font-weight: 600; color: var(--text); display: block; }
+    .mode-sub { font-size: 10px; color: var(--muted); display: block; margin-top: 1px; }
+
+    /* ── UPLOAD ── */
     .upload-zone {
-      width: 100%;
-      border: 2px dashed var(--border-hi);
-      border-radius: var(--radius-lg);
-      padding: 3rem 2rem;
-      text-align: center;
-      cursor: pointer;
-      background: var(--surface);
-      position: relative;
-      transition: border-color .2s, background .2s;
-      margin-bottom: 1.25rem;
+      width: 100%; border: 2px dashed var(--border-hi); border-radius: var(--radius-lg);
+      padding: 3rem 2rem; text-align: center; cursor: pointer; background: var(--surface);
+      position: relative; transition: border-color .2s, background .2s; margin-bottom: 1.25rem;
     }
-    .upload-zone:hover,
-    .upload-zone.drag-over {
-      border-color: var(--blue);
-      background: var(--blue-dim);
-    }
+    .upload-zone:hover, .upload-zone.drag-over { border-color: var(--blue); background: var(--blue-dim); }
     .upload-zone input[type="file"] {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      opacity: 0;
-      cursor: pointer;
-      z-index: 2;
+      position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; z-index: 2;
     }
-    .upload-icon {
-      font-size: 40px;
-      color: var(--blue);
-      display: block;
-      margin-bottom: 1rem;
-      pointer-events: none;
-    }
-    .upload-title {
-      font-size: 16px;
-      font-weight: 600;
-      color: var(--white);
-      margin-bottom: 0.4rem;
-      pointer-events: none;
-    }
-    .upload-sub {
-      font-size: 12px;
-      color: var(--muted);
-      pointer-events: none;
-    }
-    .upload-sub strong {
-      color: var(--text);
-    }
+    .upload-icon { font-size: 40px; color: var(--blue); display: block; margin-bottom: 1rem; pointer-events: none; }
+    .upload-title { font-size: 16px; font-weight: 600; color: var(--white); margin-bottom: .4rem; pointer-events: none; }
+    .upload-sub { font-size: 12px; color: var(--muted); pointer-events: none; }
+    .upload-sub strong { color: var(--text); }
 
     /* ── PREVIEW ── */
     .preview-box {
-      width: 100%;
-      border: 1px solid var(--border);
-      border-radius: var(--radius-lg);
-      overflow: hidden;
-      background: #050a10;
-      margin-bottom: 1.25rem;
-      display: none;
-      position: relative;
+      width: 100%; border: 1px solid var(--border); border-radius: var(--radius-lg);
+      overflow: hidden; background: #050a10; margin-bottom: 1.25rem; display: none; position: relative;
     }
-    .preview-box img {
-      display: block;
-      width: 100%;
-      max-height: 360px;
-      object-fit: contain;
-    }
+    .preview-box img { display: block; width: 100%; max-height: 360px; object-fit: contain; }
     .preview-label {
-      position: absolute;
-      top: 10px;
-      left: 10px;
-      background: rgba(8,13,20,.85);
-      border: 1px solid var(--border);
-      border-radius: 6px;
-      padding: 4px 10px;
-      font-size: 11px;
-      color: var(--muted);
-      backdrop-filter: blur(4px);
+      position: absolute; top: 10px; left: 10px; background: rgba(8,13,20,.85);
+      border: 1px solid var(--border); border-radius: 6px; padding: 4px 10px;
+      font-size: 11px; color: var(--muted); backdrop-filter: blur(4px);
     }
     .preview-label strong { color: var(--text); }
     .preview-change {
-      position: absolute;
-      top: 10px;
-      right: 10px;
-      background: rgba(8,13,20,.85);
-      border: 1px solid var(--border-hi);
-      border-radius: 6px;
-      padding: 4px 10px;
-      font-size: 11px;
-      color: var(--blue);
-      cursor: pointer;
-      backdrop-filter: blur(4px);
-      transition: border-color .15s;
+      position: absolute; top: 10px; right: 10px; background: rgba(8,13,20,.85);
+      border: 1px solid var(--border-hi); border-radius: 6px; padding: 4px 10px;
+      font-size: 11px; color: var(--blue); cursor: pointer; backdrop-filter: blur(4px);
     }
     .preview-change:hover { border-color: var(--blue); }
 
-    /* ── TIPO DE ANÁLISIS ── */
-    .mode-row {
-      width: 100%;
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 8px;
-      margin-bottom: 1.25rem;
-    }
-    .mode-card {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 12px 10px;
-      text-align: center;
-      cursor: pointer;
-      transition: all .15s;
-      user-select: none;
-    }
-    .mode-card:hover { border-color: var(--border-hi); }
-    .mode-card.selected {
-      border-color: var(--blue);
-      background: var(--blue-dim);
-    }
-    .mode-card .ti {
-      font-size: 20px;
-      color: var(--muted);
-      display: block;
-      margin-bottom: 4px;
-    }
-    .mode-card.selected .ti { color: var(--blue); }
-    .mode-card-label {
-      font-size: 12px;
-      font-weight: 600;
-      color: var(--text);
-      display: block;
-    }
-    .mode-card-sub {
-      font-size: 10px;
-      color: var(--muted);
-      display: block;
-      margin-top: 1px;
-    }
-
     /* ── BOTÓN ── */
     .btn-analyze {
-      width: 100%;
-      padding: 14px;
-      background: var(--blue);
-      border: none;
-      border-radius: var(--radius);
-      font-size: 14px;
-      font-weight: 600;
-      color: #fff;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      transition: background .2s, opacity .2s;
-      margin-bottom: 1.25rem;
+      width: 100%; padding: 14px; background: var(--blue); border: none;
+      border-radius: var(--radius); font-size: 14px; font-weight: 600; color: #fff;
+      cursor: pointer; display: flex; align-items: center; justify-content: center;
+      gap: 8px; transition: background .2s; margin-bottom: 1.25rem;
     }
     .btn-analyze:hover:not(:disabled) { background: #2563eb; }
-    .btn-analyze:disabled {
-      background: var(--border);
-      color: var(--muted);
-      cursor: not-allowed;
-    }
+    .btn-analyze:disabled { background: var(--border); color: var(--muted); cursor: not-allowed; }
 
     /* ── SPINNER ── */
     .spinner-box {
-      width: 100%;
-      display: none;
-      align-items: center;
-      gap: 12px;
-      padding: 14px 18px;
-      background: var(--blue-dim);
-      border: 1px dashed rgba(59,130,246,.35);
-      border-radius: var(--radius);
-      margin-bottom: 1.25rem;
-      font-size: 13px;
-      color: #93c5fd;
+      width: 100%; display: none; align-items: center; gap: 12px;
+      padding: 14px 18px; background: var(--blue-dim);
+      border: 1px dashed rgba(59,130,246,.35); border-radius: var(--radius);
+      margin-bottom: 1.25rem; font-size: 13px; color: #93c5fd;
     }
     .spinner-box.visible { display: flex; }
     .spin {
-      width: 16px; height: 16px;
-      border: 2px solid rgba(147,197,253,.25);
-      border-top-color: #93c5fd;
-      border-radius: 50%;
-      animation: spin .8s linear infinite;
-      flex-shrink: 0;
+      width: 16px; height: 16px; border: 2px solid rgba(147,197,253,.25);
+      border-top-color: #93c5fd; border-radius: 50%; animation: spin .8s linear infinite; flex-shrink: 0;
     }
     @keyframes spin { to { transform: rotate(360deg); } }
 
     /* ── RESULTADOS ── */
-    .results {
-      width: 100%;
-      display: none;
-      flex-direction: column;
-      gap: 10px;
-    }
+    .results { width: 100%; display: none; flex-direction: column; gap: 10px; }
     .results.visible { display: flex; }
-
-    .result-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 4px;
+    .results-divider {
+      display: flex; align-items: center; gap: 10px;
+      color: var(--muted); font-size: 11px; font-weight: 600;
+      text-transform: uppercase; letter-spacing: .06em; margin: 4px 0;
     }
-    .result-title {
-      font-size: 13px;
-      font-weight: 700;
-      color: var(--white);
-      letter-spacing: .01em;
-    }
-    .result-badge {
-      font-size: 10px;
-      font-weight: 700;
-      padding: 2px 8px;
-      border-radius: 4px;
-      text-transform: uppercase;
-      letter-spacing: .04em;
-    }
-    .badge-ok     { background: var(--green-dim); color: var(--green); }
-    .badge-warn   { background: var(--amber-dim); color: var(--amber); }
-    .badge-error  { background: var(--red-dim);   color: var(--red);   }
-    .badge-info   { background: var(--blue-dim);  color: var(--blue);  }
-
-    .result-card {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-lg);
-      overflow: hidden;
-    }
+    .results-divider::before, .results-divider::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+    .result-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; }
     .result-card-hdr {
-      padding: 12px 16px;
-      border-bottom: 1px solid var(--border);
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      background: rgba(255,255,255,.015);
+      padding: 12px 16px; border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; gap: 10px; background: rgba(255,255,255,.015);
     }
     .result-card-hdr .ti { font-size: 18px; }
-    .result-card-body {
-      padding: 14px 16px;
-      font-size: 13px;
-      color: var(--text);
-      line-height: 1.7;
-      white-space: pre-wrap;
-    }
+    .result-hdr-text { display: flex; align-items: center; justify-content: space-between; flex: 1; }
+    .result-title { font-size: 13px; font-weight: 700; color: var(--white); }
+    .result-badge { font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 4px; text-transform: uppercase; letter-spacing: .04em; }
+    .badge-ok   { background: var(--green-dim); color: var(--green); }
+    .badge-warn { background: var(--amber-dim); color: var(--amber); }
+    .badge-info { background: var(--blue-dim);  color: var(--blue);  }
+    .result-card-body { padding: 14px 16px; font-size: 13px; color: var(--text); line-height: 1.75; white-space: pre-wrap; }
 
-    /* Separador de sección resultados */
-    .results-divider {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      color: var(--muted);
-      font-size: 11px;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: .06em;
-      margin: 4px 0;
+    /* ── STATUS BACKEND ── */
+    .backend-status {
+      display: flex; align-items: center; gap: 8px;
+      font-size: 11px; color: var(--muted);
+      margin-bottom: 1rem;
     }
-    .results-divider::before,
-    .results-divider::after {
-      content: '';
-      flex: 1;
-      height: 1px;
-      background: var(--border);
-    }
+    .status-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--muted); flex-shrink: 0; }
+    .status-dot.ok  { background: var(--green); box-shadow: 0 0 0 3px var(--green-dim); }
+    .status-dot.err { background: var(--red);   box-shadow: 0 0 0 3px var(--red-dim); }
 
     /* ── FOOTER ── */
     footer {
-      background: var(--surface);
-      border-top: 1px solid var(--border);
-      padding: 0.75rem 2rem;
-      display: flex;
-      justify-content: space-between;
-      font-size: 11px;
-      color: var(--muted);
+      background: var(--surface); border-top: 1px solid var(--border);
+      padding: .75rem 2rem; display: flex; justify-content: space-between;
+      font-size: 11px; color: var(--muted);
     }
 
-    /* ── RESPONSIVE ── */
     @media (max-width: 600px) {
       main { padding: 1.5rem 1rem 2rem; }
       .hero-title { font-size: 24px; }
       .mode-row { grid-template-columns: 1fr; }
-      header { padding: 0.6rem 1rem; }
+      header { padding: .6rem 1rem; }
       .hdr-badge { display: none; }
     }
   </style>
@@ -461,12 +210,8 @@
 
 <main>
 
-  <!-- HERO -->
   <div class="hero">
-    <div class="hero-eyebrow">
-      <i class="ti ti-satellite"></i>
-      Sentinel · TROPOMI · Claude Vision
-    </div>
+    <div class="hero-eyebrow"><i class="ti ti-satellite"></i> Sentinel · TROPOMI · Claude Vision</div>
     <h1 class="hero-title">Análisis satelital con <em>IA</em></h1>
     <p class="hero-desc">
       Subí cualquier imagen satelital de Tierra del Fuego — campo, mar o atmósfera —
@@ -474,26 +219,32 @@
     </p>
   </div>
 
-  <!-- TIPO DE ANÁLISIS -->
-  <div class="mode-row" id="mode-row">
+  <!-- Estado del backend -->
+  <div class="backend-status">
+    <div class="status-dot" id="status-dot"></div>
+    <span id="status-text">Verificando conexión con el servidor...</span>
+  </div>
+
+  <!-- Tipo de análisis -->
+  <div class="mode-row">
     <div class="mode-card selected" data-mode="campo">
       <i class="ti ti-plant-2"></i>
-      <span class="mode-card-label">AgroTech</span>
-      <span class="mode-card-sub">NDVI · Pasturas · Drones</span>
+      <span class="mode-label">AgroTech</span>
+      <span class="mode-sub">NDVI · Pasturas · Drones</span>
     </div>
     <div class="mode-card" data-mode="mar">
       <i class="ti ti-waves"></i>
-      <span class="mode-card-label">Economía Azul</span>
-      <span class="mode-card-sub">SST · Clorofila · Buques</span>
+      <span class="mode-label">Economía Azul</span>
+      <span class="mode-sub">SST · Clorofila · Buques</span>
     </div>
     <div class="mode-card" data-mode="metano">
       <i class="ti ti-flame"></i>
-      <span class="mode-card-label">Metano CH₄</span>
-      <span class="mode-card-sub">TROPOMI · Cuenca Austral</span>
+      <span class="mode-label">Metano CH₄</span>
+      <span class="mode-sub">TROPOMI · Cuenca Austral</span>
     </div>
   </div>
 
-  <!-- UPLOAD -->
+  <!-- Upload -->
   <div class="upload-zone" id="drop-zone">
     <input type="file" id="file-input" accept="image/*">
     <i class="ti ti-cloud-upload upload-icon"></i>
@@ -501,33 +252,32 @@
     <div class="upload-sub">PNG · JPEG · GeoTIFF export — <strong>Sentinel-2 · SAR · TROPOMI</strong></div>
   </div>
 
-  <!-- PREVIEW -->
+  <!-- Preview -->
   <div class="preview-box" id="preview-box">
     <img id="preview-img" src="" alt="Imagen cargada">
     <div class="preview-label">Imagen cargada · <strong id="preview-name">—</strong></div>
     <div class="preview-change" id="btn-change">Cambiar imagen</div>
   </div>
 
-  <!-- BOTÓN -->
+  <!-- Botón -->
   <button class="btn-analyze" id="btn-analyze" disabled>
     <i class="ti ti-brain"></i> Analizar con Claude Vision
   </button>
 
-  <!-- SPINNER -->
+  <!-- Spinner -->
   <div class="spinner-box" id="spinner">
     <div class="spin"></div>
     <span id="spinner-text">Procesando imagen satelital...</span>
   </div>
 
-  <!-- RESULTADOS -->
+  <!-- Resultados -->
   <div class="results" id="results">
-
     <div class="results-divider">Diagnóstico IA</div>
 
     <div class="result-card">
       <div class="result-card-hdr">
         <i class="ti ti-chart-bar" style="color:var(--blue)"></i>
-        <div class="result-header" style="flex:1">
+        <div class="result-hdr-text">
           <span class="result-title">Índices detectados</span>
           <span class="result-badge badge-info">Métricas</span>
         </div>
@@ -538,9 +288,9 @@
     <div class="result-card">
       <div class="result-card-hdr">
         <i class="ti ti-file-description" style="color:var(--amber)"></i>
-        <div class="result-header" style="flex:1">
+        <div class="result-hdr-text">
           <span class="result-title">Diagnóstico técnico</span>
-          <span class="result-badge badge-warn" id="badge-diag">Análisis</span>
+          <span class="result-badge badge-warn">Análisis</span>
         </div>
       </div>
       <div class="result-card-body" id="res-diagnostico">—</div>
@@ -549,14 +299,13 @@
     <div class="result-card">
       <div class="result-card-hdr">
         <i class="ti ti-drone" style="color:var(--green)"></i>
-        <div class="result-header" style="flex:1">
+        <div class="result-hdr-text">
           <span class="result-title">Misiones recomendadas</span>
           <span class="result-badge badge-ok">Acción</span>
         </div>
       </div>
       <div class="result-card-body" id="res-misiones">—</div>
     </div>
-
   </div>
 
 </main>
@@ -566,25 +315,43 @@
   <span>Innovatón Space 2025 · Sentinel · TROPOMI · Claude Vision</span>
 </footer>
 
-<script src="config.js"></script>
 <script>
+  const BACKEND = 'https://vertech-backend.onrender.com';
+
   // ── Estado ──
-  let imageBase64 = null;
+  let imageBase64    = null;
   let imageMediaType = 'image/png';
-  let currentMode = 'campo';
+  let currentMode    = 'campo';
 
-  const dropZone   = document.getElementById('drop-zone');
-  const fileInput  = document.getElementById('file-input');
-  const previewBox = document.getElementById('preview-box');
-  const previewImg = document.getElementById('preview-img');
+  const dropZone    = document.getElementById('drop-zone');
+  const fileInput   = document.getElementById('file-input');
+  const previewBox  = document.getElementById('preview-box');
+  const previewImg  = document.getElementById('preview-img');
   const previewName = document.getElementById('preview-name');
-  const btnChange  = document.getElementById('btn-change');
-  const btnAnalyze = document.getElementById('btn-analyze');
-  const spinner    = document.getElementById('spinner');
-  const spinnerTxt = document.getElementById('spinner-text');
-  const results    = document.getElementById('results');
+  const btnChange   = document.getElementById('btn-change');
+  const btnAnalyze  = document.getElementById('btn-analyze');
+  const spinner     = document.getElementById('spinner');
+  const spinnerTxt  = document.getElementById('spinner-text');
+  const results     = document.getElementById('results');
+  const statusDot   = document.getElementById('status-dot');
+  const statusText  = document.getElementById('status-text');
 
-  // ── Selección de modo ──
+  // ── Verificar backend al cargar ──
+  async function checkBackend() {
+    try {
+      const r = await fetch(`${BACKEND}/health`, { signal: AbortSignal.timeout(8000) });
+      if (r.ok) {
+        statusDot.classList.add('ok');
+        statusText.textContent = 'Servidor conectado · Claude Vision listo';
+      } else throw new Error();
+    } catch {
+      statusDot.classList.add('err');
+      statusText.textContent = 'Servidor no disponible — verificá Render';
+    }
+  }
+  checkBackend();
+
+  // ── Modos ──
   document.querySelectorAll('.mode-card').forEach(card => {
     card.addEventListener('click', () => {
       document.querySelectorAll('.mode-card').forEach(c => c.classList.remove('selected'));
@@ -593,105 +360,49 @@
     });
   });
 
-  // ── Click en zona de carga ──
-  dropZone.addEventListener('click', (e) => {
-    if (e.target !== fileInput) fileInput.click();
-  });
-
-  // ── Drag & drop ──
-  dropZone.addEventListener('dragover', (e) => {
-    e.preventDefault();
-    dropZone.classList.add('drag-over');
-  });
+  // ── Upload ──
+  dropZone.addEventListener('click', (e) => { if (e.target !== fileInput) fileInput.click(); });
+  dropZone.addEventListener('dragover', (e) => { e.preventDefault(); dropZone.classList.add('drag-over'); });
   dropZone.addEventListener('dragleave', () => dropZone.classList.remove('drag-over'));
   dropZone.addEventListener('drop', (e) => {
-    e.preventDefault();
-    dropZone.classList.remove('drag-over');
-    const file = e.dataTransfer.files[0];
-    if (file) cargarArchivo(file);
+    e.preventDefault(); dropZone.classList.remove('drag-over');
+    if (e.dataTransfer.files[0]) cargarArchivo(e.dataTransfer.files[0]);
   });
+  fileInput.addEventListener('change', (e) => { if (e.target.files[0]) cargarArchivo(e.target.files[0]); });
+  btnChange.addEventListener('click', () => { fileInput.value = ''; fileInput.click(); });
 
-  // ── Selección tradicional ──
-  fileInput.addEventListener('change', (e) => {
-    const file = e.target.files[0];
-    if (file) cargarArchivo(file);
-  });
-
-  // ── Cambiar imagen ──
-  btnChange.addEventListener('click', () => {
-    fileInput.value = '';
-    fileInput.click();
-  });
-
-  // ── Cargar archivo ──
   function cargarArchivo(file) {
-    if (!file.type.startsWith('image/')) {
-      alert('Seleccioná una imagen (PNG, JPEG, etc.)');
-      return;
-    }
+    if (!file.type.startsWith('image/')) { alert('Seleccioná una imagen (PNG, JPEG, etc.)'); return; }
     const reader = new FileReader();
     reader.onload = (e) => {
-      const dataUrl = e.target.result;
-      imageBase64 = dataUrl.split(',')[1];
-      imageMediaType = file.type || 'image/png';
-
-      previewImg.src = dataUrl;
+      const dataUrl   = e.target.result;
+      imageBase64     = dataUrl.split(',')[1];
+      imageMediaType  = file.type || 'image/png';
+      previewImg.src  = dataUrl;
       previewName.textContent = file.name;
       previewBox.style.display = 'block';
-      dropZone.style.display = 'none';
-      btnAnalyze.disabled = false;
+      dropZone.style.display   = 'none';
+      btnAnalyze.disabled      = false;
       results.classList.remove('visible');
     };
     reader.readAsDataURL(file);
   }
 
-  // ── Prompts por modo ──
-  const PROMPTS = {
-    campo: `Sos un experto en teledetección agrícola y pasturas de Patagonia austral.
-Analizá esta imagen satelital de un campo o zona de vegetación en Tierra del Fuego y respondé ÚNICAMENTE con un JSON válido sin backticks:
-{
-  "indices": "Lista los índices detectados: NDVI estimado, cobertura vegetal %, humedad estimada, zonas críticas identificadas. Cada uno en una línea.",
-  "diagnostico": "5-6 oraciones técnicas: estado del campo, zonas de estrés hídrico o vegetal, distribución de cobertura, tendencias y riesgos detectados.",
-  "misiones": "3 misiones de dron recomendadas, cada una en una línea con formato: [PRIORIDAD] Zona X — Tarea específica."
-}`,
-    mar: `Sos un experto en oceanografía y economía azul del Mar Argentino y Canal Beagle.
-Analizá esta imagen satelital marina y respondé ÚNICAMENTE con un JSON válido sin backticks:
-{
-  "indices": "Temperatura superficial estimada, productividad marina (clorofila), turbidez, cantidad de embarcaciones detectadas. Cada uno en una línea.",
-  "diagnostico": "5-6 oraciones técnicas: estado oceanográfico, productividad biológica, condiciones para pesca, anomalías detectadas, riesgos.",
-  "misiones": "3 acciones de monitoreo recomendadas, cada una en línea con formato: [PRIORIDAD] Zona — Acción específica."
-}`,
-    metano: `Sos un experto en monitoreo atmosférico de metano (CH₄) en la Cuenca Austral y Tierra del Fuego.
-Analizá esta imagen TROPOMI/Sentinel-5P y respondé ÚNICAMENTE con un JSON válido sin backticks:
-{
-  "indices": "Concentración CH₄ estimada (ppb), zonas de emisión, anomalías sobre umbral, nivel de riesgo. Cada uno en una línea.",
-  "diagnostico": "5-6 oraciones técnicas: nivel de riesgo, fuentes probables de emisión, dispersión, tendencia, umbrales de alarma.",
-  "misiones": "3 acciones urgentes recomendadas, cada una en línea con formato: [PRIORIDAD] Zona — Acción específica."
-}`
-  };
-
   // ── Pasos del spinner ──
   const PASOS = {
-    campo:   ['Leyendo imagen satelital...','Detectando índices NDVI...','Identificando zonas críticas...','Generando reporte agronómico...'],
-    mar:     ['Leyendo imagen SAR...','Analizando temperatura superficial...','Detectando embarcaciones...','Generando reporte oceanográfico...'],
-    metano:  ['Leyendo datos TROPOMI...','Calculando concentración CH₄...','Identificando plumas de emisión...','Generando reporte atmosférico...']
+    campo:  ['Leyendo imagen satelital...','Detectando índices NDVI...','Identificando zonas críticas...','Generando diagnóstico agronómico...'],
+    mar:    ['Leyendo imagen SAR...','Analizando temperatura superficial...','Detectando embarcaciones...','Generando diagnóstico oceanográfico...'],
+    metano: ['Leyendo datos TROPOMI...','Calculando concentración CH₄...','Identificando plumas de emisión...','Generando diagnóstico atmosférico...']
   };
 
   // ── Analizar ──
   btnAnalyze.addEventListener('click', async () => {
     if (!imageBase64) return;
 
-    const apiKey = (typeof CONFIG !== 'undefined') ? CONFIG.ANTHROPIC_API_KEY : '';
-    if (!apiKey) {
-      alert('No se encontró la clave de API de Anthropic.\nIngresala al iniciar la aplicación.');
-      return;
-    }
-
     btnAnalyze.disabled = true;
     results.classList.remove('visible');
     spinner.classList.add('visible');
 
-    // Pasos animados
     const pasos = PASOS[currentMode] || PASOS.campo;
     let paso = 0;
     const intervalo = setInterval(() => {
@@ -699,24 +410,15 @@ Analizá esta imagen TROPOMI/Sentinel-5P y respondé ÚNICAMENTE con un JSON vá
     }, 950);
 
     try {
-      const res = await fetch('https://api.anthropic.com/v1/messages', {
+      const res = await fetch(`${BACKEND}/analizar-imagen`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'x-api-key': apiKey,
-          'anthropic-version': '2023-06-01',
-          'anthropic-dangerous-direct-browser-calls': 'true'
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          model: CONFIG.MODEL || 'claude-sonnet-4-6',
-          max_tokens: 1200,
-          messages: [{
-            role: 'user',
-            content: [
-              { type: 'image', source: { type: 'base64', media_type: imageMediaType, data: imageBase64 } },
-              { type: 'text',  text: PROMPTS[currentMode] }
-            ]
-          }]
+          imagen_base64: imageBase64,
+          tipo: currentMode,
+          lugar: 'Tierra del Fuego, Argentina',
+          fecha: new Date().toLocaleDateString('es-AR'),
+          fuente: 'Sentinel / TROPOMI'
         })
       });
 
@@ -725,16 +427,44 @@ Analizá esta imagen TROPOMI/Sentinel-5P y respondé ÚNICAMENTE con un JSON vá
 
       if (!res.ok) {
         const err = await res.json().catch(() => ({}));
-        throw new Error(err?.error?.message || `Error HTTP ${res.status}`);
+        throw new Error(err?.detail || `Error HTTP ${res.status}`);
       }
 
       const data = await res.json();
-      const texto = (data.content?.[0]?.text || '').replace(/```json|```/g, '').trim();
-      const json = JSON.parse(texto);
 
-      document.getElementById('res-indices').textContent    = json.indices    || '—';
-      document.getElementById('res-diagnostico').textContent = json.diagnostico || '—';
-      document.getElementById('res-misiones').textContent   = json.misiones   || '—';
+      // Formatear índices según el tipo de respuesta del backend
+      let indices = '—';
+      if (data.indices) {
+        // Respuesta tipo campo/metano: array de objetos
+        if (Array.isArray(data.indices)) {
+          indices = data.indices.map(i => `${i.label}: ${i.value}  —  ${i.sub}`).join('\n');
+        } else {
+          indices = String(data.indices);
+        }
+      } else if (data.indicadores) {
+        // Respuesta tipo mar: objeto con claves
+        const ind = data.indicadores;
+        indices = [
+          `Temperatura: ${ind.temperatura || '—'}`,
+          `Clorofila: ${ind.clorofila || '—'}`,
+          `Turbidez: ${ind.turbidez || '—'}`,
+          `Embarcaciones: ${ind.embarcaciones || '—'}`,
+          `Productividad: ${ind.productividad || '—'}`,
+          `Nivel de alerta: ${ind.nivel_alerta || '—'}`,
+        ].join('\n');
+      }
+
+      // Misiones
+      let misiones = '—';
+      if (Array.isArray(data.misiones)) {
+        misiones = data.misiones.map(m => `[${(m.prioridad || '').toUpperCase()}] ${m.zona} — ${m.tarea}`).join('\n');
+      } else if (Array.isArray(data.acciones)) {
+        misiones = data.acciones.map(a => `${a.organismo}: ${a.texto}`).join('\n');
+      }
+
+      document.getElementById('res-indices').textContent    = indices;
+      document.getElementById('res-diagnostico').textContent = data.diagnostico || '—';
+      document.getElementById('res-misiones').textContent   = misiones;
 
       results.classList.add('visible');
       results.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -743,7 +473,7 @@ Analizá esta imagen TROPOMI/Sentinel-5P y respondé ÚNICAMENTE con un JSON vá
       clearInterval(intervalo);
       spinner.classList.remove('visible');
       console.error(err);
-      alert(`Error al analizar la imagen:\n${err.message}`);
+      alert(`Error al analizar:\n${err.message}\n\nVerificá que el servidor Render esté activo.`);
     }
 
     btnAnalyze.disabled = false;
