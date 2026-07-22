@@ -42,7 +42,6 @@
       z-index: 0;
     }
 
-    /* ── HEADER ── */
     header {
       background: var(--deep);
       border-bottom: 1px solid var(--border);
@@ -59,19 +58,12 @@
     .brand-sub { font-size: 9px; color: var(--text); letter-spacing: .18em; text-transform: uppercase; margin-top: 2px; }
     .hdr-right { display: flex; align-items: center; gap: 12px; }
     .badge-innovaton {
-      font-family: var(--mono);
-      font-size: 9px;
-      color: var(--amber);
-      background: rgba(255,179,0,.08);
-      border: 1px solid rgba(255,179,0,.2);
-      padding: 3px 10px;
-      border-radius: 3px;
-      letter-spacing: .08em;
-      text-transform: uppercase;
+      font-family: var(--mono); font-size: 9px; color: var(--amber);
+      background: rgba(255,179,0,.08); border: 1px solid rgba(255,179,0,.2);
+      padding: 3px 10px; border-radius: 3px; letter-spacing: .08em; text-transform: uppercase;
     }
     .hdr-flag { height: 30px; border-radius: 3px; border: 1px solid var(--border-hi); }
 
-    /* ── HERO ── */
     .hero {
       flex: 1;
       display: flex;
@@ -85,195 +77,89 @@
     }
 
     .hero-eyebrow {
-      font-family: var(--mono);
-      font-size: 10px;
-      color: var(--text);
-      letter-spacing: .22em;
-      text-transform: uppercase;
-      margin-bottom: 1.5rem;
-      display: flex;
-      align-items: center;
-      gap: 10px;
+      font-family: var(--mono); font-size: 10px; color: var(--text);
+      letter-spacing: .22em; text-transform: uppercase; margin-bottom: 1.5rem;
+      display: flex; align-items: center; gap: 10px;
     }
-    .hero-eyebrow::before,
-    .hero-eyebrow::after { content: '——'; opacity: .3; }
+    .hero-eyebrow::before, .hero-eyebrow::after { content: '——'; opacity: .3; }
 
     .hero-title {
-      font-family: var(--mono);
-      font-size: clamp(28px, 5vw, 52px);
-      font-weight: 400;
-      color: var(--white);
-      letter-spacing: .06em;
-      line-height: 1.15;
-      margin-bottom: .5rem;
+      font-family: var(--mono); font-size: clamp(28px, 5vw, 52px); font-weight: 400;
+      color: var(--white); letter-spacing: .06em; line-height: 1.15; margin-bottom: .5rem;
     }
     .hero-title span { color: var(--amber); }
 
     .hero-sub {
-      font-family: var(--mono);
-      font-size: 12px;
-      color: var(--text);
-      letter-spacing: .12em;
-      margin-bottom: 3rem;
+      font-family: var(--mono); font-size: 12px; color: var(--text);
+      letter-spacing: .12em; margin-bottom: 3rem;
     }
 
-    /* ── MÓDULOS ── */
     .modules {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 16px;
-      max-width: 900px;
-      width: 100%;
-      margin: 0 auto;
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      gap: 16px; max-width: 900px; width: 100%; margin: 0 auto;
     }
 
     .module-card {
-      background: var(--panel);
-      border: 1px solid var(--border);
-      border-radius: 6px;
-      padding: 2rem 1.5rem;
-      text-decoration: none;
-      display: flex;
-      flex-direction: column;
-      align-items: flex-start;
-      gap: 12px;
-      position: relative;
-      overflow: hidden;
+      background: var(--panel); border: 1px solid var(--border); border-radius: 6px;
+      padding: 2rem 1.5rem; text-decoration: none; display: flex; flex-direction: column;
+      align-items: flex-start; gap: 12px; position: relative; overflow: hidden;
       transition: border-color .2s, transform .2s;
     }
     .module-card::before {
-      content: '';
-      position: absolute;
-      top: 0; left: 0; right: 0;
-      height: 2px;
-      opacity: .6;
-      transition: opacity .2s;
+      content: ''; position: absolute; top: 0; left: 0; right: 0;
+      height: 2px; opacity: .6; transition: opacity .2s;
     }
     .module-card::after {
-      content: '';
-      position: absolute;
-      inset: 0;
-      opacity: 0;
-      transition: opacity .3s;
+      content: ''; position: absolute; inset: 0; opacity: 0; transition: opacity .3s;
     }
     .module-card:hover { transform: translateY(-2px); }
     .module-card:hover::before { opacity: 1; }
     .module-card:hover::after { opacity: 1; }
 
-    /* AgroTech — verde */
     .card-agro::before { background: var(--green); }
     .card-agro::after { background: radial-gradient(ellipse at top, rgba(0,229,160,.06) 0%, transparent 70%); }
     .card-agro:hover { border-color: rgba(0,229,160,.3); }
     .card-agro .mod-icon { color: var(--green); }
-    .card-agro .mod-accent { color: var(--green); }
 
-    /* Mar — cyan */
     .card-mar::before { background: var(--cyan); }
     .card-mar::after { background: radial-gradient(ellipse at top, rgba(0,212,255,.06) 0%, transparent 70%); }
     .card-mar:hover { border-color: rgba(0,212,255,.3); }
     .card-mar .mod-icon { color: var(--cyan); }
-    .card-mar .mod-accent { color: var(--cyan); }
 
-    /* CH4 — rojo */
     .card-ch4::before { background: var(--red); }
     .card-ch4::after { background: radial-gradient(ellipse at top, rgba(255,61,61,.06) 0%, transparent 70%); }
     .card-ch4:hover { border-color: rgba(255,61,61,.3); }
     .card-ch4 .mod-icon { color: var(--red); }
-    .card-ch4 .mod-accent { color: var(--red); }
 
     .mod-icon { font-size: 28px; position: relative; z-index: 1; }
-    .mod-code {
-      font-family: var(--mono);
-      font-size: 9px;
-      letter-spacing: .16em;
-      text-transform: uppercase;
-      opacity: .5;
-      position: relative;
-      z-index: 1;
-    }
-    .mod-title {
-      font-family: var(--mono);
-      font-size: 15px;
-      color: var(--white);
-      letter-spacing: .08em;
-      position: relative;
-      z-index: 1;
-    }
-    .mod-desc {
-      font-size: 11px;
-      color: var(--text);
-      line-height: 1.6;
-      position: relative;
-      z-index: 1;
-    }
-    .mod-tags {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 5px;
-      position: relative;
-      z-index: 1;
-      margin-top: 4px;
-    }
-    .mod-tag {
-      font-family: var(--mono);
-      font-size: 8px;
-      letter-spacing: .08em;
-      padding: 2px 6px;
-      border-radius: 2px;
-      border: 1px solid;
-      opacity: .7;
-    }
+    .mod-code { font-family: var(--mono); font-size: 9px; letter-spacing: .16em; text-transform: uppercase; opacity: .5; position: relative; z-index: 1; }
+    .mod-title { font-family: var(--mono); font-size: 15px; color: var(--white); letter-spacing: .08em; position: relative; z-index: 1; }
+    .mod-desc { font-size: 11px; color: var(--text); line-height: 1.6; position: relative; z-index: 1; }
+    .mod-tags { display: flex; flex-wrap: wrap; gap: 5px; position: relative; z-index: 1; margin-top: 4px; }
+    .mod-tag { font-family: var(--mono); font-size: 8px; letter-spacing: .08em; padding: 2px 6px; border-radius: 2px; border: 1px solid; opacity: .7; }
     .mod-enter {
-      font-family: var(--mono);
-      font-size: 9px;
-      letter-spacing: .1em;
-      text-transform: uppercase;
-      display: flex;
-      align-items: center;
-      gap: 5px;
-      margin-top: auto;
-      position: relative;
-      z-index: 1;
-      opacity: .5;
-      transition: opacity .2s;
+      font-family: var(--mono); font-size: 9px; letter-spacing: .1em; text-transform: uppercase;
+      display: flex; align-items: center; gap: 5px; margin-top: auto;
+      position: relative; z-index: 1; opacity: .5; transition: opacity .2s;
     }
     .module-card:hover .mod-enter { opacity: 1; }
 
-    /* ── INFO STRIP ── */
     .info-strip {
-      max-width: 900px;
-      width: 100%;
-      margin: 2rem auto 0;
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 10px;
+      max-width: 900px; width: 100%; margin: 2rem auto 0;
+      display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px;
     }
     .info-item {
-      background: var(--panel);
-      border: 1px solid var(--border);
-      border-radius: 4px;
-      padding: 10px 14px;
-      display: flex;
-      align-items: center;
-      gap: 10px;
+      background: var(--panel); border: 1px solid var(--border); border-radius: 4px;
+      padding: 10px 14px; display: flex; align-items: center; gap: 10px;
     }
     .info-item .ti { font-size: 18px; color: var(--text); opacity: .5; }
     .info-lbl { font-size: 9px; color: var(--text); text-transform: uppercase; letter-spacing: .06em; }
     .info-val { font-family: var(--mono); font-size: 11px; color: var(--text-hi); margin-top: 1px; }
 
-    /* ── FOOTER ── */
     footer {
-      background: var(--deep);
-      border-top: 1px solid var(--border);
-      padding: .5rem 2rem;
-      display: flex;
-      justify-content: space-between;
-      font-family: var(--mono);
-      font-size: 9px;
-      color: var(--text);
-      letter-spacing: .06em;
-      position: relative;
-      z-index: 1;
+      background: var(--deep); border-top: 1px solid var(--border); padding: .5rem 2rem;
+      display: flex; justify-content: space-between; font-family: var(--mono);
+      font-size: 9px; color: var(--text); letter-spacing: .06em; position: relative; z-index: 1;
     }
 
     @media(max-width: 768px) {
@@ -301,7 +187,7 @@
 
 <div class="hero">
 
-  <div class="hero-eyebrow">Earth Observation · AI Analysis · Real Time</div>
+  <div class="hero-eyebrow">CONAE · SAOCOM · SABIA-Mar · SIASGE · Claude Vision</div>
   <h1 class="hero-title">INTELIGENCIA<br><span>SATELITAL</span></h1>
   <p class="hero-sub">Subí una imagen satelital · Seleccioná el módulo · Claude Vision analiza</p>
 
@@ -313,22 +199,22 @@
       <div class="mod-title">AgroTech</div>
       <div class="mod-desc">Análisis de vegetación, índices NDVI, detección de sequía, estrés hídrico y dimensionamiento de cultivos.</div>
       <div class="mod-tags">
-        <span class="mod-tag mod-accent" style="border-color:rgba(0,229,160,.3);color:#00e5a0">NDVI</span>
-        <span class="mod-tag mod-accent" style="border-color:rgba(0,229,160,.3);color:#00e5a0">Sequía</span>
-        <span class="mod-tag mod-accent" style="border-color:rgba(0,229,160,.3);color:#00e5a0">Sentinel-2</span>
+        <span class="mod-tag" style="border-color:rgba(0,229,160,.3);color:#00e5a0">NDVI</span>
+        <span class="mod-tag" style="border-color:rgba(0,229,160,.3);color:#00e5a0">Sequía</span>
+        <span class="mod-tag" style="border-color:rgba(0,229,160,.3);color:#00e5a0">SAOCOM · SIASGE</span>
       </div>
-      <div class="mod-enter mod-accent">INGRESAR →</div>
+      <div class="mod-enter" style="color:var(--green)">INGRESAR →</div>
     </a>
 
     <a href="mar.html" class="module-card card-mar">
       <i class="ti ti-waves mod-icon"></i>
       <div class="mod-code">MÓDULO 02</div>
       <div class="mod-title">Economía Azul</div>
-      <div class="mod-desc">Vigilancia marítima, detección de pesca ilegal, estado de mareas, temperatura superficial y productividad marina.</div>
+      <div class="mod-desc">Vigilancia marítima, detección de pesca ilegal, estado de mareas, temperatura superficial y productividad marina en la ZEE argentina.</div>
       <div class="mod-tags">
-        <span class="mod-tag" style="border-color:rgba(0,212,255,.3);color:#00d4ff">SAR</span>
-        <span class="mod-tag" style="border-color:rgba(0,212,255,.3);color:#00d4ff">Pesca Ilegal</span>
-        <span class="mod-tag" style="border-color:rgba(0,212,255,.3);color:#00d4ff">Mareas</span>
+        <span class="mod-tag" style="border-color:rgba(0,212,255,.3);color:#00d4ff">SAOCOM SAR</span>
+        <span class="mod-tag" style="border-color:rgba(0,212,255,.3);color:#00d4ff">SABIA-Mar</span>
+        <span class="mod-tag" style="border-color:rgba(0,212,255,.3);color:#00d4ff">ZEE</span>
       </div>
       <div class="mod-enter" style="color:var(--cyan)">INGRESAR →</div>
     </a>
@@ -337,11 +223,11 @@
       <i class="ti ti-flame mod-icon"></i>
       <div class="mod-code">MÓDULO 03</div>
       <div class="mod-title">Metano CH₄</div>
-      <div class="mod-desc">Detección de fugas, plumas de emisión, concentración atmosférica y alertas ambientales para autoridades.</div>
+      <div class="mod-desc">Detección de fugas, plumas de emisión, concentración atmosférica y alertas ambientales para la Cuenca Austral argentina.</div>
       <div class="mod-tags">
         <span class="mod-tag" style="border-color:rgba(255,61,61,.3);color:#ff3d3d">TROPOMI</span>
-        <span class="mod-tag" style="border-color:rgba(255,61,61,.3);color:#ff3d3d">Fugas</span>
         <span class="mod-tag" style="border-color:rgba(255,61,61,.3);color:#ff3d3d">Sentinel-5P</span>
+        <span class="mod-tag" style="border-color:rgba(255,61,61,.3);color:#ff3d3d">Cuenca Austral</span>
       </div>
       <div class="mod-enter" style="color:var(--red)">INGRESAR →</div>
     </a>
@@ -351,11 +237,11 @@
   <div class="info-strip">
     <div class="info-item">
       <i class="ti ti-satellite"></i>
-      <div><div class="info-lbl">Fuente de datos</div><div class="info-val">Copernicus / ESA</div></div>
+      <div><div class="info-lbl">Constelación</div><div class="info-val">CONAE · SAOCOM · SABIA-Mar</div></div>
     </div>
     <div class="info-item">
       <i class="ti ti-brain"></i>
-      <div><div class="info-lbl">Motor IA</div><div class="info-val">Claude Vision</div></div>
+      <div><div class="info-lbl">Motor IA</div><div class="info-val">Claude Vision · Anthropic</div></div>
     </div>
     <div class="info-item">
       <i class="ti ti-world"></i>
@@ -363,7 +249,7 @@
     </div>
     <div class="info-item">
       <i class="ti ti-lock"></i>
-      <div><div class="info-lbl">Procesamiento</div><div class="info-val">Backend Seguro</div></div>
+      <div><div class="info-lbl">Procesamiento</div><div class="info-val">Backend Seguro · Render</div></div>
     </div>
   </div>
 
@@ -371,7 +257,7 @@
 
 <footer>
   <span>VERTECH TdF · RÍO GRANDE, TIERRA DEL FUEGO, ARGENTINA</span>
-  <span>INNOVATÓN SPACE 2025 · SENTINEL · TROPOMI · CLAUDE VISION</span>
+  <span>INNOVATÓN SPACE 2025 · CONAE · SAOCOM · SABIA-Mar · CLAUDE VISION</span>
 </footer>
 
 </body>
