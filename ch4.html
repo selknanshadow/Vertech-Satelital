@@ -164,11 +164,11 @@
   <div class="upload-bar">
     <div class="field">
       <label class="field-lbl">Zona de Emisión / Región</label>
-      <input type="text" id="lugar" class="field-input" placeholder="Ej: Cuenca Austral, Siberia, Permafrost...">
+      <input type="text" id="lugar" class="field-input" placeholder="Ej: Cuenca Austral, Patagonia, Siberia...">
     </div>
     <div class="field">
       <label class="field-lbl">Sensor / Instrumento</label>
-      <input type="text" id="fuente" class="field-input" placeholder="Ej: TROPOMI, Sentinel-5P...">
+      <input type="text" id="fuente" class="field-input" placeholder="Ej: TROPOMI, Sentinel-5P, GHGSat...">
     </div>
     <div class="field">
       <label class="field-lbl">Imagen TROPOMI / CH₄</label>
@@ -194,7 +194,7 @@
     <span id="proc-txt">Leyendo columna atmosférica TROPOMI...</span>
   </div>
 
-  <div class="section-eyebrow">MÓDULO CH₄ — FUGAS · PLUMAS · CONCENTRACIÓN · ALERTAS AMBIENTALES</div>
+  <div class="section-eyebrow">MÓDULO CH₄ — TROPOMI · FUGAS · PLUMAS · CONCENTRACIÓN · ALERTAS AMBIENTALES</div>
 
   <div class="metrics-row">
     <div class="met"><div class="met-lbl">CH₄ promedio</div><div class="met-val" id="m0">—</div><div class="met-sub" id="ms0">Concentración columna total</div></div>
@@ -246,15 +246,15 @@
   </div>
 
   <div class="diag-panel">
-    <div class="diag-hdr"><i class="ti ti-file-description"></i> DIAGNÓSTICO ATMOSFÉRICO — FUENTES DE EMISIÓN Y NIVEL DE RIESGO</div>
-    <div class="diag-body" id="diag-body">Cargá una imagen TROPOMI o satelital de concentración de CH₄ y ejecutá el procesamiento para obtener el diagnóstico de emisiones generado por Claude Vision.</div>
+    <div class="diag-hdr"><i class="ti ti-file-description"></i> DIAGNÓSTICO ATMOSFÉRICO — FUENTES DE EMISIÓN · NIVEL DE RIESGO · CUENCA AUSTRAL</div>
+    <div class="diag-body" id="diag-body">Cargá una imagen TROPOMI/Sentinel-5P de concentración de CH₄ y ejecutá el procesamiento para obtener el diagnóstico de emisiones generado por Claude Vision. TROPOMI complementa la constelación CONAE para monitoreo atmosférico de la Cuenca Austral argentina.</div>
   </div>
 
 </div>
 
 <footer>
   <span>VERTECH TdF · RÍO GRANDE, TIERRA DEL FUEGO, ARGENTINA</span>
-  <span>INNOVATÓN SPACE 2025 · TROPOMI · SENTINEL-5P · CLAUDE VISION · v3.1</span>
+  <span>INNOVATÓN SPACE 2025 · TROPOMI / ESA · CONAE · CLAUDE VISION · v3.2</span>
 </footer>
 
 <script>
@@ -293,9 +293,9 @@
   }
 
   const PASOS = [
-    'Leyendo columna atmosférica TROPOMI...',
+    'Leyendo columna atmosférica TROPOMI/Sentinel-5P...',
     'Calculando concentración de CH₄ en ppb...',
-    'Identificando focos de fuga activos...',
+    'Identificando focos de fuga activos en Cuenca Austral...',
     'Trazando plumas de dispersión...',
     'Generando diagnóstico de emisiones con Claude Vision...'
   ];
@@ -309,7 +309,7 @@
 
     try {
       const lugar  = document.getElementById('lugar').value.trim();
-      const fuente = document.getElementById('fuente').value.trim() || 'TROPOMI / Sentinel-5P';
+      const fuente = document.getElementById('fuente').value.trim() || 'TROPOMI / Sentinel-5P · ESA';
 
       const res = await fetch(`${BACKEND}/analizar-imagen`, {
         method: 'POST',
