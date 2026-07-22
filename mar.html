@@ -155,7 +155,7 @@
     <a href="ch4.html"  class="nav-link">Metano CH₄</a>
   </nav>
   <div class="hdr-right">
-    <div class="hdr-status"><span class="status-dot"></span> SAR ACTIVO</div>
+    <div class="hdr-status"><span class="status-dot"></span> SAOCOM ACTIVO</div>
     <img src="Bandera.png" alt="TdF" class="hdr-flag">
   </div>
 </header>
@@ -165,11 +165,11 @@
   <div class="upload-bar">
     <div class="field">
       <label class="field-lbl">Zona Marítima / Cuerpo de Agua</label>
-      <input type="text" id="lugar" class="field-input" placeholder="Ej: Canal Beagle, Mar del Norte...">
+      <input type="text" id="lugar" class="field-input" placeholder="Ej: Canal Beagle, ZEE Argentina, Mar del Plata...">
     </div>
     <div class="field">
-      <label class="field-lbl">Sensor / Fuente</label>
-      <input type="text" id="fuente" class="field-input" placeholder="Ej: Sentinel-1 SAR, MODIS...">
+      <label class="field-lbl">Sensor / Fuente CONAE</label>
+      <input type="text" id="fuente" class="field-input" placeholder="Ej: SAOCOM 1A, SABIA-Mar, SIASGE...">
     </div>
     <div class="field">
       <label class="field-lbl">Imagen Satelital / SAR</label>
@@ -192,27 +192,27 @@
 
   <div class="proc-bar" id="proc-bar">
     <div class="proc-spin"></div>
-    <span id="proc-txt">Procesando señal SAR...</span>
+    <span id="proc-txt">Procesando señal SAOCOM SAR banda L...</span>
   </div>
 
-  <div class="section-eyebrow">MÓDULO MARÍTIMO — VIGILANCIA · PESCA ILEGAL · MAREAS · OCEANOGRAFÍA</div>
+  <div class="section-eyebrow">MÓDULO MARÍTIMO — SAOCOM / SABIA-Mar · VIGILANCIA · PESCA ILEGAL · ZEE ARGENTINA</div>
 
   <div class="metrics-row">
-    <div class="met accent-blue"><div class="met-lbl">Embarcaciones totales</div><div class="met-val blue" id="m0">—</div><div class="met-sub" id="ms0">Detectadas en imagen</div></div>
-    <div class="met accent-red"><div class="met-lbl">Pesca ilegal sospechosa</div><div class="met-val red" id="m1">—</div><div class="met-sub" id="ms1">Sin AIS / zona restringida</div></div>
+    <div class="met accent-blue"><div class="met-lbl">Embarcaciones totales</div><div class="met-val blue" id="m0">—</div><div class="met-sub" id="ms0">Detectadas vía SAOCOM SAR</div></div>
+    <div class="met accent-red"><div class="met-lbl">Pesca ilegal sospechosa</div><div class="met-val red" id="m1">—</div><div class="met-sub" id="ms1">Sin AIS / zona restringida ZEE</div></div>
     <div class="met"><div class="met-lbl">Estado de mareas</div><div class="met-val" id="m2">—</div><div class="met-sub" id="ms2">Estimación costera</div></div>
-    <div class="met"><div class="met-lbl">Temperatura sup. mar</div><div class="met-val white" id="m3">—</div><div class="met-sub" id="ms3">SST estimada</div></div>
-    <div class="met accent-blue"><div class="met-lbl">Productividad marina</div><div class="met-val green" id="m4">—</div><div class="met-sub" id="ms4">Biomasa fitoplanctónica</div></div>
-    <div class="met accent-amber"><div class="met-lbl">Nivel de alerta</div><div class="met-val amber" id="m5">—</div><div class="met-sub" id="ms5">Estado de vigilancia</div></div>
+    <div class="met"><div class="met-lbl">Temperatura sup. mar</div><div class="met-val white" id="m3">—</div><div class="met-sub" id="ms3">SST vía SABIA-Mar</div></div>
+    <div class="met accent-blue"><div class="met-lbl">Productividad marina</div><div class="met-val green" id="m4">—</div><div class="met-sub" id="ms4">Clorofila-a vía SABIA-Mar</div></div>
+    <div class="met accent-amber"><div class="met-lbl">Nivel de alerta</div><div class="met-val amber" id="m5">—</div><div class="met-sub" id="ms5">Estado vigilancia ZEE</div></div>
   </div>
 
   <div class="center-grid">
     <div class="img-panel">
       <div class="img-panel-hdr">
-        <span class="img-panel-title" id="img-title">IMAGEN SAR — ECONOMÍA AZUL</span>
+        <span class="img-panel-title" id="img-title">IMAGEN SAOCOM SAR — ECONOMÍA AZUL</span>
         <span class="img-panel-sub" id="img-sub">Aguardando carga</span>
       </div>
-      <img id="sat-img" src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='600' height='270'><rect width='600' height='270' fill='%230a1828'/><text x='50%' y='50%' fill='%230d2440' font-size='14' font-family='monospace' text-anchor='middle' dominant-baseline='middle'>[ AWAITING SAR INPUT ]</text></svg>" alt="">
+      <img id="sat-img" src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='600' height='270'><rect width='600' height='270' fill='%230a1828'/><text x='50%' y='50%' fill='%230d2440' font-size='14' font-family='monospace' text-anchor='middle' dominant-baseline='middle'>[ AWAITING SAOCOM INPUT ]</text></svg>" alt="">
       <div class="img-overlay">
         <span class="img-coord" id="img-coord">ZONA: —</span>
         <div class="img-legend">
@@ -224,7 +224,7 @@
     </div>
 
     <div class="ndvi-panel">
-      <div class="ndvi-panel-title">Actividad por sector</div>
+      <div class="ndvi-panel-title">Actividad por sector marítimo</div>
       <div id="ndvi-rows">
         <div style="color:var(--text);font-family:var(--mono);font-size:9px;padding:20px 0;text-align:center">[ ESPERANDO ANÁLISIS ]</div>
       </div>
@@ -232,7 +232,7 @@
 
     <div class="right-col">
       <div class="panel">
-        <div class="panel-hdr"><i class="ti ti-alert-triangle"></i> ALERTAS MARÍTIMAS</div>
+        <div class="panel-hdr"><i class="ti ti-alert-triangle"></i> ALERTAS MARÍTIMAS — ZEE</div>
         <div class="panel-body" id="alertas-body">
           <div style="color:var(--text);font-family:var(--mono);font-size:9px;padding:8px 0">[ ESPERANDO ANÁLISIS ]</div>
         </div>
@@ -247,15 +247,15 @@
   </div>
 
   <div class="diag-panel">
-    <div class="diag-hdr"><i class="ti ti-file-description"></i> DIAGNÓSTICO OCEANOGRÁFICO Y DE VIGILANCIA MARÍTIMA</div>
-    <div class="diag-body" id="diag-body">Cargá una imagen SAR o satelital marina y ejecutá el procesamiento para obtener el diagnóstico de vigilancia generado por Claude Vision.</div>
+    <div class="diag-hdr"><i class="ti ti-file-description"></i> DIAGNÓSTICO OCEANOGRÁFICO — SAOCOM / SABIA-Mar / CONAE</div>
+    <div class="diag-body" id="diag-body">Cargá una imagen SAOCOM SAR o SABIA-Mar y ejecutá el procesamiento para obtener el diagnóstico de vigilancia de la ZEE argentina generado por Claude Vision.</div>
   </div>
 
 </div>
 
 <footer>
   <span>VERTECH TdF · RÍO GRANDE, TIERRA DEL FUEGO, ARGENTINA</span>
-  <span>INNOVATÓN SPACE 2025 · SENTINEL-1 SAR · CLAUDE VISION · v3.1</span>
+  <span>INNOVATÓN SPACE 2025 · SAOCOM 1A/1B · SABIA-Mar · CLAUDE VISION · v3.2</span>
 </footer>
 
 <script>
@@ -294,9 +294,9 @@
   }
 
   const PASOS = [
-    'Procesando señal de Radar de Apertura Sintética...',
-    'Detectando trazas de embarcaciones en imagen...',
-    'Analizando estado de mareas y corrientes...',
+    'Procesando señal SAOCOM SAR banda L...',
+    'Detectando trazas de embarcaciones en ZEE argentina...',
+    'Analizando estado de mareas y corrientes subantárticas...',
     'Identificando actividad pesquera sospechosa...',
     'Generando diagnóstico oceanográfico con Claude Vision...'
   ];
@@ -310,7 +310,7 @@
 
     try {
       const lugar  = document.getElementById('lugar').value.trim();
-      const fuente = document.getElementById('fuente').value.trim() || 'Sentinel-1 SAR';
+      const fuente = document.getElementById('fuente').value.trim() || 'SAOCOM 1A/1B · CONAE';
 
       const res = await fetch(`${BACKEND}/analizar-imagen`, {
         method: 'POST',
@@ -334,7 +334,7 @@
 
   function render(d, lugar, fuente) {
     document.getElementById('sat-img').src = thumb.src;
-    document.getElementById('img-title').textContent = (d.zona || lugar || 'Zona marítima').toUpperCase();
+    document.getElementById('img-title').textContent = (d.zona || lugar || 'ZEE Argentina').toUpperCase();
     document.getElementById('img-sub').textContent = fuente + ' · ' + new Date().toLocaleDateString('es-AR');
     document.getElementById('img-coord').textContent = 'ZONA: ' + (d.zona || lugar || '—');
 
