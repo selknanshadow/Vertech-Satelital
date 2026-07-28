@@ -168,6 +168,11 @@
     .summary-body{padding:12px 14px;font-size:11px;color:var(--text-hi);line-height:1.8}
 
 
+    /* Aviso de respuesta parcial */
+    .trunc-warn{display:none;align-items:center;gap:8px;padding:6px 11px;background:var(--amber-dim);border:1px solid rgba(255,179,0,.25);border-radius:3px;font-family:var(--mono);font-size:9px;color:var(--amber);letter-spacing:.05em;margin-bottom:2px}
+    .trunc-warn.visible{display:flex}
+    .trunc-warn .ti{font-size:13px}
+
     /* Badge de formato detectado */
     .fmt-badge{font-family:var(--mono);font-size:8px;font-weight:700;padding:2px 7px;border-radius:2px;letter-spacing:.1em;text-transform:uppercase;white-space:nowrap}
     .fmt-img{background:var(--blue-dim);color:var(--blue);border:1px solid rgba(33,150,243,.3)}
@@ -278,6 +283,11 @@
 
   <!-- RESULTADOS -->
   <div id="results">
+
+    <div class="trunc-warn" id="trunc-warn">
+      <i class="ti ti-alert-triangle"></i>
+      <span>DICTAMEN PARCIAL — El análisis excedió el límite de respuesta y fue reconstruido. Algunos hallazgos pueden estar incompletos. Volvé a ejecutar la revisión para un dictamen completo.</span>
+    </div>
 
     <!-- Scores -->
     <div class="scores-row">
@@ -537,6 +547,7 @@
 
   function render(d) {
     const s = d.score || {};
+    $('trunc-warn').classList.toggle('visible', !!d._respuesta_truncada);
     const sets = [
       ['sc-global','fill-global', s.global],
       ['sc-carto','fill-carto', s.cartografico],
