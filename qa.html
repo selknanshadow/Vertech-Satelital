@@ -1,992 +1,1196 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Vertech TdF — QA Mapas de Emergencia</title>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/tabler-icons.min.css">
-  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    :root {
-      --void:#02060d; --deep:#050d1a; --panel:#071220; --card:#0a1828;
-      --border:#0d2440; --border-hi:#1a3d6b;
-      --amber:#ffb300; --amber-dim:rgba(255,179,0,.08); --amber-glow:rgba(255,179,0,.3);
-      --green:#00e5a0; --green-dim:rgba(0,229,160,.08);
-      --red:#ff3d3d; --red-dim:rgba(255,61,61,.08);
-      --blue:#2196f3; --blue-dim:rgba(33,150,243,.08);
-      --cyan:#00d4ff;
-      --text:#8eb4d4; --text-hi:#c8e0f4; --white:#e8f4ff;
-      --mono:'Share Tech Mono',monospace; --sans:'Inter',system-ui,sans-serif;
-    }
-    body{font-family:var(--sans);background:var(--void);color:var(--text);font-size:12px;line-height:1.45;min-height:100vh;display:flex;flex-direction:column;overflow-x:hidden}
-    body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(255,179,0,.008) 2px,rgba(255,179,0,.008) 4px);pointer-events:none;z-index:0}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vertech TdF — Módulo QA Mapas de Emergencia CONAE</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <style>
+        /* ==========================================================================
+           1. VARIABLES Y TEMA (Aesthetic CONAE / Vertech TdF Space Dark Theme)
+           ========================================================================== */
+        :root {
+            --bg-void: #030812;
+            --bg-card: #081628;
+            --bg-tile: #0d2038;
+            --bg-hover: #122a4a;
+            
+            --border-color: #143258;
+            --border-bright: #21508a;
+            --border-glow: rgba(0, 212, 255, 0.3);
+            
+            --amber: #ffb300;
+            --amber-glow: rgba(255, 179, 0, 0.25);
+            --green: #00e5a0;
+            --green-glow: rgba(0, 229, 160, 0.2);
+            --cyan: #00d4ff;
+            --cyan-glow: rgba(0, 212, 255, 0.2);
+            --red: #ff4d4d;
+            
+            --text-main: #9cbcdb;
+            --text-bright: #e2f0fd;
+            --text-muted: #53759b;
+            --text-white: #ffffff;
+            
+            --font-mono: 'Share Tech Mono', monospace;
+            --font-sans: 'Inter', sans-serif;
+        }
 
-    /* HEADER */
-    header{background:var(--deep);border-bottom:1px solid var(--border);padding:.6rem 1.5rem;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;flex-shrink:0}
-    .hdr-left{display:flex;align-items:center;gap:16px}
-    .hdr-brand{display:flex;flex-direction:column;line-height:1.1}
-    .brand-name{font-family:var(--mono);font-size:14px;color:var(--white);letter-spacing:.12em}
-    .brand-name span{color:var(--amber)}
-    .brand-sub{font-size:9px;color:var(--text);letter-spacing:.18em;text-transform:uppercase;margin-top:2px}
-    .hdr-nav{display:flex;gap:2px}
-    .nav-link{font-family:var(--mono);font-size:10px;letter-spacing:.1em;color:var(--text);text-decoration:none;padding:5px 13px;border-radius:3px;border:1px solid transparent;transition:all .15s;text-transform:uppercase}
-    .nav-link:hover{color:var(--white);border-color:var(--border-hi)}
-    .nav-link.active{color:var(--amber);border-color:var(--amber);background:var(--amber-dim)}
-    .hdr-right{display:flex;align-items:center;gap:12px}
-    .hdr-status{display:flex;align-items:center;gap:6px;font-family:var(--mono);font-size:10px;color:var(--amber);letter-spacing:.08em}
-    .status-dot{width:7px;height:7px;border-radius:50%;background:var(--amber);box-shadow:0 0 8px var(--amber-glow);animation:blink 2s ease-in-out infinite}
-    @keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
-    .hdr-flag{height:30px;border-radius:3px;border:1px solid var(--border-hi)}
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
 
-    .main{flex:1;padding:1rem 1.5rem;display:flex;flex-direction:column;gap:10px;position:relative;z-index:1}
+        body {
+            background-color: var(--bg-void);
+            color: var(--text-main);
+            font-family: var(--font-sans);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            background-image: 
+                linear-gradient(rgba(0, 212, 255, 0.02) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 212, 255, 0.02) 1px, transparent 1px);
+            background-size: 32px 32px;
+            overflow-x: hidden;
+        }
 
-    /* AVISO SEGURIDAD */
-    .security-bar{display:flex;align-items:center;gap:10px;padding:7px 12px;background:var(--green-dim);border:1px solid rgba(0,229,160,.2);border-radius:3px;font-family:var(--mono);font-size:9px;color:var(--green);letter-spacing:.06em}
-    .security-bar .ti{font-size:14px}
-    .security-bar strong{color:var(--white)}
+        /* Ambient Glow Bar */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--amber) 0%, var(--cyan) 50%, var(--green) 100%);
+            z-index: 1000;
+        }
 
-    /* UPLOAD BAR */
-    .upload-bar{background:var(--panel);border:1px solid var(--border);border-radius:4px;padding:.75rem 1rem;display:grid;grid-template-columns:180px 1fr auto auto;gap:10px;align-items:end}
-    .field{display:flex;flex-direction:column;gap:4px}
-    .field-lbl{font-family:var(--mono);font-size:9px;color:var(--text);letter-spacing:.12em;text-transform:uppercase}
-    .field-input,.field-select{background:var(--card);border:1px solid var(--border);border-radius:3px;padding:6px 10px;font-size:11px;font-family:var(--mono);color:var(--white);outline:none;transition:border-color .2s;letter-spacing:.04em;height:29px}
-    .field-input:focus,.field-select:focus{border-color:var(--amber)}
-    .field-input::placeholder{color:var(--border-hi)}
-    .field-select option{background:var(--card);color:var(--white)}
-    .upload-btn{background:var(--card);border:1px dashed var(--border-hi);border-radius:3px;padding:6px 14px;font-family:var(--mono);font-size:10px;color:var(--amber);cursor:pointer;position:relative;transition:all .15s;letter-spacing:.08em;white-space:nowrap;display:flex;align-items:center;gap:6px;height:29px}
-    .upload-btn:hover,.upload-btn.drag{border-color:var(--amber);background:var(--amber-dim)}
-    .upload-btn input{position:absolute;inset:0;opacity:0;cursor:pointer}
-    .run-btn{background:var(--amber);border:none;border-radius:3px;padding:6px 18px;font-family:var(--mono);font-size:10px;font-weight:600;color:var(--void);cursor:pointer;display:flex;align-items:center;gap:6px;letter-spacing:.1em;transition:all .15s;white-space:nowrap;height:29px}
-    .run-btn:hover:not(:disabled){box-shadow:0 0 16px var(--amber-glow)}
-    .run-btn:disabled{background:var(--border);color:var(--text);cursor:not-allowed;box-shadow:none}
+        /* Custom Scrollbars */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--bg-void);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--border-bright);
+            border-radius: 3px;
+        }
 
-    .preview-strip{display:none;align-items:center;gap:10px;padding:6px 10px;background:var(--panel);border:1px solid var(--border);border-radius:3px}
-    .preview-strip.visible{display:flex}
-    .preview-strip img{height:36px;width:54px;object-fit:cover;border-radius:2px;border:1px solid var(--border-hi)}
-    .preview-fname{font-family:var(--mono);font-size:10px;color:var(--text-hi);flex:1}
-    .btn-swap{font-family:var(--mono);font-size:9px;color:var(--text);background:none;border:1px solid var(--border);border-radius:3px;padding:3px 8px;cursor:pointer;letter-spacing:.06em}
-    .btn-swap:hover{border-color:var(--border-hi);color:var(--text-hi)}
+        /* ==========================================================================
+           2. HEADER Y NAVEGACIÓN
+           ========================================================================== */
+        header {
+            background-color: rgba(8, 22, 40, 0.95);
+            border-bottom: 1px solid var(--border-color);
+            padding: 14px 28px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            backdrop-filter: blur(8px);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
 
-    .proc-bar{display:none;align-items:center;gap:10px;padding:8px 12px;background:var(--amber-dim);border:1px solid rgba(255,179,0,.2);border-radius:3px;font-family:var(--mono);font-size:10px;color:var(--amber);letter-spacing:.06em}
-    .proc-bar.visible{display:flex}
-    .proc-spin{width:12px;height:12px;border:2px solid rgba(255,179,0,.2);border-top-color:var(--amber);border-radius:50%;animation:spin .7s linear infinite;flex-shrink:0}
-    @keyframes spin{to{transform:rotate(360deg)}}
+        .brand-container {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
 
-    .section-eyebrow{font-family:var(--mono);font-size:9px;color:var(--text);letter-spacing:.2em;text-transform:uppercase;display:flex;align-items:center;gap:10px;padding:2px 0}
-    .section-eyebrow::after{content:'';flex:1;height:1px;background:var(--border)}
+        .brand-logo {
+            font-family: var(--font-mono);
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--text-white);
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
 
-    /* SCORES */
-    .scores-row{display:grid;grid-template-columns:1.4fr repeat(4,1fr) auto;gap:8px}
-    .score-card{background:var(--panel);border:1px solid var(--border);border-radius:4px;padding:10px 12px;position:relative;overflow:hidden}
-    .score-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--amber);opacity:.5}
-    .score-card.principal::before{height:3px;opacity:1}
-    .score-lbl{font-family:var(--mono);font-size:8px;color:var(--text);letter-spacing:.12em;text-transform:uppercase;margin-bottom:4px}
-    .score-val{font-family:var(--mono);font-size:26px;font-weight:400;line-height:1;color:var(--white)}
-    .score-card.principal .score-val{font-size:34px}
-    .score-val.g{color:var(--green)} .score-val.a{color:var(--amber)} .score-val.r{color:var(--red)}
-    .score-sub{font-size:9px;color:var(--text);margin-top:3px}
-    .score-track{height:3px;background:var(--void);border-radius:2px;overflow:hidden;margin-top:6px}
-    .score-fill{height:100%;border-radius:2px;transition:width 1s ease}
+        .brand-logo i {
+            color: var(--cyan);
+        }
 
-    /* VEREDICTO */
-    .verdict{display:flex;flex-direction:column;justify-content:center;align-items:center;padding:10px 16px;border-radius:4px;border:1px solid;min-width:150px}
-    .verdict.si{background:var(--green-dim);border-color:var(--green)}
-    .verdict.no{background:var(--red-dim);border-color:var(--red)}
-    .verdict.con_correcciones{background:var(--amber-dim);border-color:var(--amber)}
-    .verdict-lbl{font-family:var(--mono);font-size:8px;letter-spacing:.14em;text-transform:uppercase;color:var(--text);margin-bottom:3px}
-    .verdict-val{font-family:var(--mono);font-size:15px;font-weight:700;letter-spacing:.06em;text-align:center;line-height:1.2}
-    .verdict.si .verdict-val{color:var(--green)}
-    .verdict.no .verdict-val{color:var(--red)}
-    .verdict.con_correcciones .verdict-val{color:var(--amber)}
+        .badge-conae {
+            font-family: var(--font-mono);
+            font-size: 11px;
+            padding: 4px 10px;
+            background: rgba(255, 179, 0, 0.1);
+            border: 1px solid var(--amber);
+            color: var(--amber);
+            border-radius: 4px;
+            letter-spacing: 1px;
+        }
 
-    /* GRID CENTRAL */
-    .qa-grid{display:grid;grid-template-columns:1fr 300px 340px;gap:8px;align-items:start}
+        .status-telemetry {
+            display: flex;
+            align-items: center;
+            gap: 24px;
+            font-family: var(--font-mono);
+            font-size: 13px;
+        }
 
-    /* PANEL MAPA */
-    .map-panel{background:var(--card);border:1px solid var(--border);border-radius:4px;overflow:hidden;position:relative}
-    .map-panel-hdr{padding:6px 10px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;background:rgba(0,0,0,.3)}
-    .map-panel-title{font-family:var(--mono);font-size:10px;color:var(--text-hi);letter-spacing:.08em}
-    .map-panel-sub{font-size:9px;color:var(--text);font-family:var(--mono)}
-    .map-panel img{display:block;width:100%;height:400px;object-fit:contain;background:#050a12}
+        .telemetry-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--text-bright);
+        }
 
-    /* CHECKLIST */
-    .check-panel{background:var(--panel);border:1px solid var(--border);border-radius:4px;overflow:hidden;display:flex;flex-direction:column;max-height:465px}
-    .panel-hdr{padding:6px 10px;border-bottom:1px solid var(--border);font-family:var(--mono);font-size:9px;color:var(--text);letter-spacing:.12em;text-transform:uppercase;display:flex;align-items:center;gap:6px;background:rgba(0,0,0,.2);flex-shrink:0}
-    .panel-hdr .ti{font-size:12px}
-    .check-body{padding:6px;display:flex;flex-direction:column;gap:2px;overflow-y:auto}
-    .check-row{display:flex;align-items:flex-start;gap:7px;padding:5px 7px;border-radius:3px;background:rgba(0,0,0,.2)}
-    .check-icon{font-size:13px;flex-shrink:0;margin-top:1px}
-    .check-row.ok .check-icon{color:var(--green)}
-    .check-row.falta .check-icon{color:var(--red)}
-    .check-row.revisar .check-icon{color:var(--amber)}
-    .check-item{font-size:10px;font-weight:600;color:var(--text-hi)}
-    .check-obs{font-size:9px;color:var(--text);line-height:1.4;margin-top:1px}
+        .dot-indicator {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: var(--green);
+            box-shadow: 0 0 8px var(--green);
+        }
 
-    /* CHAT */
-    .chat-panel{background:var(--panel);border:1px solid var(--border);border-radius:4px;display:flex;flex-direction:column;height:465px;overflow:hidden}
-    .chat-body{flex:1;overflow-y:auto;padding:10px;display:flex;flex-direction:column;gap:8px}
-    .chat-msg{max-width:88%;padding:7px 10px;border-radius:4px;font-size:11px;line-height:1.55;white-space:pre-wrap;word-wrap:break-word}
-    .chat-msg.bot{background:var(--card);border:1px solid var(--border);border-left:2px solid var(--amber);align-self:flex-start;color:var(--text-hi)}
-    .chat-msg.user{background:var(--blue-dim);border:1px solid rgba(33,150,243,.25);align-self:flex-end;color:var(--white)}
-    .chat-msg.typing{color:var(--amber);font-family:var(--mono);font-size:10px}
-    .chat-empty{color:var(--border-hi);font-family:var(--mono);font-size:10px;text-align:center;padding:2rem 1rem;line-height:1.8}
-    .chat-suggestions{display:flex;flex-wrap:wrap;gap:4px;padding:6px 10px;border-top:1px solid var(--border);flex-shrink:0}
-    .sugg{font-family:var(--mono);font-size:9px;color:var(--text);background:var(--card);border:1px solid var(--border);border-radius:3px;padding:3px 7px;cursor:pointer;transition:all .15s}
-    .sugg:hover{border-color:var(--amber);color:var(--amber)}
-    .chat-input-row{display:flex;gap:6px;padding:8px 10px;border-top:1px solid var(--border);flex-shrink:0}
-    .chat-input{flex:1;background:var(--card);border:1px solid var(--border);border-radius:3px;padding:7px 10px;font-size:11px;font-family:var(--sans);color:var(--white);outline:none;transition:border-color .2s}
-    .chat-input:focus{border-color:var(--amber)}
-    .chat-input::placeholder{color:var(--border-hi)}
-    .chat-input:disabled{opacity:.4;cursor:not-allowed}
-    .chat-send{background:var(--amber);border:none;border-radius:3px;padding:0 12px;color:var(--void);cursor:pointer;font-size:15px;display:flex;align-items:center;transition:all .15s}
-    .chat-send:hover:not(:disabled){box-shadow:0 0 12px var(--amber-glow)}
-    .chat-send:disabled{background:var(--border);color:var(--text);cursor:not-allowed}
+        .dot-indicator.pulse {
+            animation: pulse 2s infinite;
+        }
 
-    /* HALLAZGOS */
-    .findings-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
-    .find-panel{background:var(--panel);border:1px solid var(--border);border-radius:4px;overflow:hidden}
-    .find-body{padding:8px;display:flex;flex-direction:column;gap:6px;max-height:230px;overflow-y:auto}
-    .find-item{padding:7px 9px;border-radius:3px;background:rgba(0,0,0,.25);border-left:2px solid var(--border)}
-    .find-item.crit{border-left-color:var(--red);background:rgba(255,61,61,.04)}
-    .find-item.warn{border-left-color:var(--amber)}
-    .find-item.text{border-left-color:var(--blue)}
-    .find-title{font-size:10px;font-weight:700;color:var(--white);margin-bottom:2px}
-    .find-desc{font-size:9px;color:var(--text);line-height:1.5}
-    .find-action{font-size:9px;color:var(--green);line-height:1.5;margin-top:3px;font-style:italic}
-    .find-empty{font-family:var(--mono);font-size:9px;color:var(--border-hi);padding:12px 4px;text-align:center}
-    .txt-old{color:var(--red);text-decoration:line-through;font-family:var(--mono);font-size:10px}
-    .txt-new{color:var(--green);font-family:var(--mono);font-size:10px}
-    .txt-motivo{font-size:8px;color:var(--text);font-family:var(--mono);letter-spacing:.06em;text-transform:uppercase;margin-top:2px}
+        @keyframes pulse {
+            0% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.4; transform: scale(0.85); }
+            100% { opacity: 1; transform: scale(1); }
+        }
 
-    /* RESUMEN */
-    .summary-panel{background:var(--panel);border:1px solid var(--border);border-radius:4px;overflow:hidden}
-    .summary-hdr{padding:6px 12px;border-bottom:1px solid var(--border);font-family:var(--mono);font-size:9px;color:var(--amber);letter-spacing:.14em;text-transform:uppercase;display:flex;align-items:center;justify-content:space-between;background:var(--amber-dim)}
-    .summary-hdr-l{display:flex;align-items:center;gap:8px}
-    .btn-report{font-family:var(--mono);font-size:9px;color:var(--amber);background:none;border:1px solid var(--amber);border-radius:3px;padding:3px 10px;cursor:pointer;letter-spacing:.08em;transition:all .15s;display:flex;align-items:center;gap:5px}
-    .btn-report:hover{background:var(--amber);color:var(--void)}
-    .summary-body{padding:12px 14px;font-size:11px;color:var(--text-hi);line-height:1.8}
+        /* Navigation Tabs */
+        .nav-tabs {
+            display: flex;
+            gap: 8px;
+            margin-left: 32px;
+        }
 
+        .nav-tab {
+            background: transparent;
+            border: 1px solid transparent;
+            color: var(--text-main);
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-family: var(--font-mono);
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
 
-    /* Aviso de respuesta parcial */
-    .trunc-warn{display:none;align-items:center;gap:8px;padding:6px 11px;background:var(--amber-dim);border:1px solid rgba(255,179,0,.25);border-radius:3px;font-family:var(--mono);font-size:9px;color:var(--amber);letter-spacing:.05em;margin-bottom:2px}
-    .trunc-warn.visible{display:flex}
-    .trunc-warn .ti{font-size:13px}
+        .nav-tab:hover {
+            color: var(--text-bright);
+            background-color: rgba(13, 32, 56, 0.6);
+        }
 
-    /* Badge de formato detectado */
-    .fmt-badge{font-family:var(--mono);font-size:8px;font-weight:700;padding:2px 7px;border-radius:2px;letter-spacing:.1em;text-transform:uppercase;white-space:nowrap}
-    .fmt-img{background:var(--blue-dim);color:var(--blue);border:1px solid rgba(33,150,243,.3)}
-    .fmt-json{background:var(--green-dim);color:var(--green);border:1px solid rgba(0,229,160,.3)}
+        .nav-tab.active {
+            background-color: var(--bg-tile);
+            border-color: var(--border-bright);
+            color: var(--cyan);
+            box-shadow: 0 0 10px rgba(0, 212, 255, 0.1);
+        }
 
-    /* Panel estructural (reemplaza el mapa cuando es JSON) */
-    .struct-panel{background:var(--card);border:1px solid var(--border);border-radius:4px;overflow:hidden;display:none;flex-direction:column;height:465px}
-    .struct-panel.visible{display:flex}
-    .struct-body{padding:10px;overflow-y:auto;display:flex;flex-direction:column;gap:10px}
-    .struct-kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
-    .kpi{background:var(--panel);border:1px solid var(--border);border-radius:3px;padding:8px 9px}
-    .kpi-l{font-family:var(--mono);font-size:7.5px;color:var(--text);letter-spacing:.1em;text-transform:uppercase;margin-bottom:3px}
-    .kpi-v{font-family:var(--mono);font-size:17px;color:var(--white);line-height:1}
-    .kpi-v.g{color:var(--green)}.kpi-v.a{color:var(--amber)}.kpi-v.r{color:var(--red)}
-    .struct-sec{font-family:var(--mono);font-size:8.5px;color:var(--text);letter-spacing:.14em;text-transform:uppercase;display:flex;align-items:center;gap:8px;margin-top:2px}
-    .struct-sec::after{content:'';flex:1;height:1px;background:var(--border)}
-    .meta-row{display:flex;justify-content:space-between;font-size:10px;padding:3px 0;border-bottom:1px solid rgba(13,36,64,.6)}
-    .meta-row:last-child{border-bottom:none}
-    .meta-k{color:var(--text);font-family:var(--mono);font-size:9.5px}
-    .meta-v{color:var(--text-hi);font-family:var(--mono);font-size:9.5px;text-align:right}
-    .layer-chip{display:inline-block;font-size:9px;color:var(--text-hi);background:var(--panel);border:1px solid var(--border);border-radius:2px;padding:2px 6px;margin:2px 2px 0 0}
-    .issue-row{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:5px 8px;border-radius:3px;background:rgba(0,0,0,.25);border-left:2px solid var(--border)}
-    .issue-row.hit{border-left-color:var(--amber)}
-    .issue-row.crit{border-left-color:var(--red)}
-    .issue-row.ok{border-left-color:var(--green)}
-    .issue-n{font-family:var(--mono);font-size:12px;font-weight:700;color:var(--white);flex-shrink:0}
-    .issue-n.a{color:var(--amber)}.issue-n.r{color:var(--red)}.issue-n.g{color:var(--green)}
-    .issue-t{font-size:9.5px;color:var(--text-hi)}
+        /* ==========================================================================
+           3. MAIN LAYOUT GRID
+           ========================================================================== */
+        .app-container {
+            display: grid;
+            grid-template-columns: 320px 1fr 360px;
+            gap: 20px;
+            padding: 20px 28px;
+            flex: 1;
+            max-width: 1920px;
+            margin: 0 auto;
+            width: 100%;
+        }
 
-    footer{background:var(--deep);border-top:1px solid var(--border);padding:.4rem 1.5rem;display:flex;justify-content:space-between;font-family:var(--mono);font-size:9px;color:var(--text);letter-spacing:.06em;flex-shrink:0}
+        .card {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            position: relative;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+        }
 
-    #results{display:none;flex-direction:column;gap:10px}
-    #results.visible{display:flex}
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 12px;
+        }
 
-    @media(max-width:1300px){.qa-grid{grid-template-columns:1fr 1fr}.chat-panel{grid-column:span 2;height:380px}}
-    @media(max-width:900px){.scores-row{grid-template-columns:repeat(3,1fr)}.qa-grid{grid-template-columns:1fr}.chat-panel{grid-column:span 1}.findings-grid{grid-template-columns:1fr}.upload-bar{grid-template-columns:1fr}}
-  </style>
+        .card-title {
+            font-family: var(--font-mono);
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--amber);
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .card-title i {
+            color: var(--cyan);
+        }
+
+        /* ==========================================================================
+           4. LEFT PANEL: INGESTA Y ARCHIVOS
+           ========================================================================== */
+        .upload-dropzone {
+            border: 2px dashed var(--border-bright);
+            border-radius: 6px;
+            padding: 24px 16px;
+            text-align: center;
+            background-color: rgba(13, 32, 56, 0.4);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .upload-dropzone:hover {
+            border-color: var(--cyan);
+            background-color: rgba(0, 212, 255, 0.04);
+            box-shadow: inset 0 0 15px rgba(0, 212, 255, 0.05);
+        }
+
+        .upload-dropzone i {
+            font-size: 32px;
+            color: var(--cyan);
+            margin-bottom: 10px;
+        }
+
+        .upload-dropzone p {
+            font-size: 13px;
+            color: var(--text-bright);
+            margin-bottom: 4px;
+        }
+
+        .upload-dropzone span {
+            font-size: 11px;
+            color: var(--text-muted);
+            font-family: var(--font-mono);
+        }
+
+        .file-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .file-item {
+            background-color: var(--bg-tile);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 10px 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 12px;
+        }
+
+        .file-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            overflow: hidden;
+        }
+
+        .file-info i {
+            font-size: 16px;
+            color: var(--amber);
+        }
+
+        .file-name {
+            color: var(--text-bright);
+            font-family: var(--font-mono);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 170px;
+        }
+
+        .file-status {
+            font-family: var(--font-mono);
+            font-size: 10px;
+            color: var(--green);
+            background: rgba(0, 229, 160, 0.1);
+            padding: 2px 6px;
+            border-radius: 3px;
+        }
+
+        /* Satellite Map Preview Frame */
+        .preview-frame {
+            position: relative;
+            width: 100%;
+            height: 210px;
+            border-radius: 6px;
+            border: 1px solid var(--border-bright);
+            overflow: hidden;
+            background-color: #000;
+        }
+
+        .preview-frame img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0.85;
+            transition: opacity 0.3s ease;
+        }
+
+        .preview-frame:hover img {
+            opacity: 1;
+        }
+
+        .grid-overlay {
+            position: absolute;
+            inset: 0;
+            background-image: 
+                linear-gradient(rgba(0, 212, 255, 0.15) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 212, 255, 0.15) 1px, transparent 1px);
+            background-size: 40px 40px;
+            pointer-events: none;
+        }
+
+        .map-coords {
+            position: absolute;
+            bottom: 6px;
+            right: 8px;
+            font-family: var(--font-mono);
+            font-size: 10px;
+            background: rgba(3, 8, 18, 0.85);
+            padding: 3px 8px;
+            border-radius: 3px;
+            color: var(--cyan);
+            border: 1px solid var(--border-color);
+        }
+
+        /* ==========================================================================
+           5. CENTER PANEL: METRICAS Y GRAFICOS QA
+           ========================================================================== */
+        .metrics-summary-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+        }
+
+        .metric-tile {
+            background-color: var(--bg-tile);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 14px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .metric-label {
+            font-family: var(--font-mono);
+            font-size: 11px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+        }
+
+        .metric-value {
+            font-family: var(--font-mono);
+            font-size: 26px;
+            font-weight: 700;
+            color: var(--text-white);
+            line-height: 1;
+        }
+
+        .metric-value.highlight-amber { color: var(--amber); }
+        .metric-value.highlight-green { color: var(--green); }
+        .metric-value.highlight-cyan { color: var(--cyan); }
+
+        .metric-sub {
+            font-size: 11px;
+            color: var(--text-main);
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        /* Charts Row */
+        .charts-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        .chart-box {
+            background-color: var(--bg-tile);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 16px;
+            position: relative;
+            height: 260px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .chart-box-header {
+            font-family: var(--font-mono);
+            font-size: 12px;
+            color: var(--text-bright);
+            margin-bottom: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .chart-container-inner {
+            position: relative;
+            flex: 1;
+            width: 100%;
+            height: 100%;
+        }
+
+        /* Matriz de Reglas Table */
+        .rules-table-container {
+            overflow-x: auto;
+            border-radius: 6px;
+            border: 1px solid var(--border-color);
+        }
+
+        .rules-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 12px;
+            text-align: left;
+        }
+
+        .rules-table th {
+            background-color: var(--bg-tile);
+            font-family: var(--font-mono);
+            color: var(--amber);
+            padding: 10px 14px;
+            border-bottom: 1px solid var(--border-bright);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .rules-table td {
+            padding: 10px 14px;
+            border-bottom: 1px solid var(--border-color);
+            color: var(--text-bright);
+            background-color: rgba(8, 22, 40, 0.6);
+        }
+
+        .rules-table tr:hover td {
+            background-color: var(--bg-hover);
+        }
+
+        .status-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            font-family: var(--font-mono);
+            font-size: 10px;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+        }
+
+        .status-pill.ok {
+            background: rgba(0, 229, 160, 0.12);
+            color: var(--green);
+            border: 1px solid var(--green);
+        }
+
+        .status-pill.warn {
+            background: rgba(255, 179, 0, 0.12);
+            color: var(--amber);
+            border: 1px solid var(--amber);
+        }
+
+        .status-pill.fail {
+            background: rgba(255, 77, 77, 0.12);
+            color: var(--red);
+            border: 1px solid var(--red);
+        }
+
+        /* Filter Controls */
+        .table-filters {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 10px;
+        }
+
+        .filter-btn {
+            background: var(--bg-tile);
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-family: var(--font-mono);
+            font-size: 11px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .filter-btn.active, .filter-btn:hover {
+            border-color: var(--cyan);
+            color: var(--cyan);
+        }
+
+        /* ==========================================================================
+           6. RIGHT PANEL: CHATBOT ASISTENTE QA & VERDICT
+           ========================================================================== */
+        .verdict-box {
+            background: linear-gradient(135deg, rgba(0, 229, 160, 0.08) 0%, rgba(8, 22, 40, 0.9) 100%);
+            border: 1px solid var(--green);
+            border-radius: 6px;
+            padding: 16px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .verdict-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: rgba(0, 229, 160, 0.15);
+            border: 1px solid var(--green);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--green);
+            font-size: 22px;
+            flex-shrink: 0;
+        }
+
+        .verdict-info h4 {
+            font-family: var(--font-mono);
+            color: var(--green);
+            font-size: 14px;
+            letter-spacing: 1px;
+        }
+
+        .verdict-info p {
+            font-size: 12px;
+            color: var(--text-main);
+            margin-top: 2px;
+        }
+
+        /* Chatbot Container */
+        .chat-container {
+            display: flex;
+            flex-direction: column;
+            height: 380px;
+            background-color: var(--bg-tile);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            overflow: hidden;
+        }
+
+        .chat-messages {
+            flex: 1;
+            padding: 12px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: flex-start;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .message {
+            display: flex;
+            flex-direction: column;
+            max-width: 88%;
+            font-size: 12px;
+            line-height: 1.4;
+        }
+
+        .message.bot {
+            align-self: flex-start;
+        }
+
+        .message.user {
+            align-self: flex-end;
+        }
+
+        .message-bubble {
+            padding: 10px 12px;
+            border-radius: 6px;
+            font-family: var(--font-sans);
+        }
+
+        .message.bot .message-bubble {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-bright);
+            color: var(--text-bright);
+        }
+
+        .message.user .message-bubble {
+            background-color: rgba(0, 212, 255, 0.15);
+            border: 1px solid var(--cyan);
+            color: var(--text-white);
+        }
+
+        .message-time {
+            font-family: var(--font-mono);
+            font-size: 9px;
+            color: var(--text-muted);
+            margin-top: 3px;
+        }
+
+        .chat-input-area {
+            display: flex;
+            padding: 8px;
+            background-color: var(--bg-card);
+            border-top: 1px solid var(--border-color);
+            gap: 6px;
+        }
+
+        .chat-input {
+            flex: 1;
+            background-color: var(--bg-void);
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            padding: 8px 10px;
+            color: var(--text-bright);
+            font-family: var(--font-sans);
+            font-size: 12px;
+            outline: none;
+        }
+
+        .chat-input:focus {
+            border-color: var(--cyan);
+        }
+
+        .chat-send-btn {
+            background-color: var(--cyan);
+            color: var(--bg-void);
+            border: none;
+            border-radius: 4px;
+            padding: 0 14px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .chat-send-btn:hover {
+            background-color: #33ddff;
+        }
+
+        .quick-prompts {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+
+        .prompt-chip {
+            background: rgba(0, 212, 255, 0.08);
+            border: 1px solid rgba(0, 212, 255, 0.2);
+            color: var(--cyan);
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-family: var(--font-mono);
+            font-size: 10px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .prompt-chip:hover {
+            background: rgba(0, 212, 255, 0.2);
+            border-color: var(--cyan);
+        }
+
+        .btn-action-main {
+            background: linear-gradient(90deg, var(--amber) 0%, #ff9100 100%);
+            color: var(--bg-void);
+            border: none;
+            padding: 12px;
+            border-radius: 6px;
+            font-family: var(--font-mono);
+            font-size: 13px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: transform 0.1s, box-shadow 0.2s;
+            box-shadow: 0 4px 15px var(--amber-glow);
+        }
+
+        .btn-action-main:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 20px rgba(255, 179, 0, 0.4);
+        }
+
+        /* Responsive Breakpoint */
+        @media (max-width: 1200px) {
+            .app-container {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
 </head>
 <body>
 
-<header>
-  <div class="hdr-left">
-    <img src="logo2.png" alt="Vertech TdF" style="height:38px;width:auto;object-fit:contain;">
-    <div class="hdr-brand">
-      <span class="brand-name">VERTECH <span>TdF</span></span>
-      <span class="brand-sub">Earth Observation Intelligence</span>
-    </div>
-  </div>
-  <nav class="hdr-nav">
-    <a href="agro.html" class="nav-link">AgroTech</a>
-    <a href="mar.html"  class="nav-link">Economía Azul</a>
-    <a href="ch4.html"  class="nav-link">Metano CH₄</a>
-    <a href="qa.html"   class="nav-link active">QA Emergencias</a>
-  </nav>
-  <div class="hdr-right">
-    <div class="hdr-status"><span class="status-dot"></span> MODO LOCAL</div>
-    <img src="Bandera.png" alt="TdF" class="hdr-flag">
-  </div>
-</header>
-
-<div class="main">
-
-  <div class="security-bar">
-    <i class="ti ti-shield-lock"></i>
-    <span><strong>PROCESAMIENTO INSTITUCIONAL</strong> — Arquitectura desacoplada del motor IA. Desplegable on-premise dentro del entorno CONAE. Los mapas no se almacenan ni se registran en base de datos.</span>
-  </div>
-
-  <div class="upload-bar">
-    <div class="field">
-      <label class="field-lbl">Tipo de Evento</label>
-      <select id="evento" class="field-select">
-        <option value="incendio">Incendio forestal</option>
-        <option value="inundacion">Inundación</option>
-        <option value="volcanico">Erupción volcánica</option>
-        <option value="nevada">Nevada extrema</option>
-        <option value="general" selected>Emergencia general</option>
-      </select>
-    </div>
-    <div class="field">
-      <label class="field-lbl">Descripción declarada del mapa (opcional)</label>
-      <input type="text" id="descripcion" class="field-input" placeholder="Ej: Área quemada Parque Nacional Los Alerces — SAOCOM 1B, 18/06/2026">
-    </div>
-    <div class="field">
-      <label class="field-lbl">Mapa Temático · Imagen o JSON</label>
-      <div class="upload-btn" id="drop-zone">
-        <input type="file" id="file-input" accept="image/*,.json,.geojson,application/json">
-        <i class="ti ti-file-upload"></i> CARGAR MAPA / JSON
-      </div>
-    </div>
-    <div class="field">
-      <label class="field-lbl">&nbsp;</label>
-      <button class="run-btn" id="btn-run" disabled><i class="ti ti-checkup-list"></i> REVISAR</button>
-    </div>
-  </div>
-
-  <div class="preview-strip" id="preview-strip">
-    <img id="prev-thumb" src="" alt="">
-    <span class="preview-fname" id="prev-name">—</span>
-    <button class="btn-swap" id="btn-swap">↺ REEMPLAZAR</button>
-  </div>
-
-  <div class="proc-bar" id="proc-bar">
-    <div class="proc-spin"></div>
-    <span id="proc-txt">Iniciando control de calidad cartográfica...</span>
-  </div>
-
-  <div class="section-eyebrow">CONTROL DE CALIDAD — MAPAS TEMÁTICOS DE EMERGENCIA · UNIDAD DE ALERTAS TEMPRANAS</div>
-
-  <!-- RESULTADOS -->
-  <div id="results">
-
-    <div class="trunc-warn" id="trunc-warn">
-      <i class="ti ti-alert-triangle"></i>
-      <span>DICTAMEN PARCIAL — El análisis excedió el límite de respuesta y fue reconstruido. Algunos hallazgos pueden estar incompletos. Volvé a ejecutar la revisión para un dictamen completo.</span>
-    </div>
-
-    <!-- Scores -->
-    <div class="scores-row">
-      <div class="score-card principal">
-        <div class="score-lbl">Score Global</div>
-        <div class="score-val" id="sc-global">—</div>
-        <div class="score-sub" id="sc-tipo">—</div>
-        <div class="score-track"><div class="score-fill" id="fill-global" style="width:0%"></div></div>
-      </div>
-      <div class="score-card">
-        <div class="score-lbl">Cartográfico</div>
-        <div class="score-val" id="sc-carto">—</div>
-        <div class="score-sub">Escala · Norte · Grilla</div>
-        <div class="score-track"><div class="score-fill" id="fill-carto" style="width:0%"></div></div>
-      </div>
-      <div class="score-card">
-        <div class="score-lbl">Institucional</div>
-        <div class="score-val" id="sc-inst">—</div>
-        <div class="score-sub">Logos · Créditos</div>
-        <div class="score-track"><div class="score-fill" id="fill-inst" style="width:0%"></div></div>
-      </div>
-      <div class="score-card">
-        <div class="score-lbl">Redacción</div>
-        <div class="score-val" id="sc-red">—</div>
-        <div class="score-sub">Ortografía · Gramática</div>
-        <div class="score-track"><div class="score-fill" id="fill-red" style="width:0%"></div></div>
-      </div>
-      <div class="score-card">
-        <div class="score-lbl">Coherencia</div>
-        <div class="score-val" id="sc-coh">—</div>
-        <div class="score-sub">Contenido vs Descripción</div>
-        <div class="score-track"><div class="score-fill" id="fill-coh" style="width:0%"></div></div>
-      </div>
-      <div class="verdict" id="verdict">
-        <div class="verdict-lbl">Apto Entrega</div>
-        <div class="verdict-val" id="verdict-val">—</div>
-      </div>
-    </div>
-
-    <!-- Grid principal -->
-    <div class="qa-grid">
-
-      <div class="map-panel" id="map-panel">
-        <div class="map-panel-hdr">
-          <span class="map-panel-title" id="map-title">MAPA BAJO REVISIÓN</span>
-          <span class="map-panel-sub" id="map-sub">—</span>
+    <!-- HEADER / TELEMETRÍA CONAE -->
+    <header>
+        <div class="brand-container">
+            <div class="brand-logo">
+                <i class="fa-solid fa-satellite-dish"></i>
+                <span>VERTECH TdF</span>
+            </div>
+            <span class="badge-conae"><i class="fa-solid fa-shield-halved"></i> MÓDULO QA CONAE v2.4</span>
+            
+            <nav class="nav-tabs">
+                <button class="nav-tab active"><i class="fa-solid fa-chart-line"></i> Dashboard</button>
+                <button class="nav-tab"><i class="fa-solid fa-map"></i> Auditoría Mapa</button>
+                <button class="nav-tab"><i class="fa-solid fa-list-check"></i> Matriz Reglas</button>
+                <button class="nav-tab"><i class="fa-solid fa-sliders"></i> Configuración</button>
+            </nav>
         </div>
-        <img id="map-img" src="" alt="Mapa en revisión">
-      </div>
 
-      <div class="struct-panel" id="struct-panel">
-        <div class="panel-hdr">
-          <i class="ti ti-stack-2"></i> ANÁLISIS ESTRUCTURAL
-          <span class="fmt-badge fmt-json" id="fmt-badge" style="margin-left:auto">JSON</span>
+        <div class="status-telemetry">
+            <div class="telemetry-item">
+                <div class="dot-indicator pulse"></div>
+                <span>NODO CONAE: ONLINE</span>
+            </div>
+            <div class="telemetry-item" style="color: var(--amber);">
+                <i class="fa-solid fa-bolt"></i>
+                <span>SAOCOM-1B / COSMO</span>
+            </div>
+            <div class="telemetry-item" style="color: var(--cyan);">
+                <i class="fa-solid fa-stopwatch"></i>
+                <span>LATENCIA: 1.8s</span>
+            </div>
         </div>
-        <div class="struct-body" id="struct-body"></div>
-      </div>
+    </header>
 
-      <div class="check-panel">
-        <div class="panel-hdr"><i class="ti ti-list-check"></i> CHECKLIST CARTOGRÁFICO</div>
-        <div class="check-body" id="check-body"></div>
-      </div>
+    <!-- MAIN DASHBOARD CONTAINER -->
+    <main class="app-container">
 
-      <div class="chat-panel">
-        <div class="panel-hdr"><i class="ti ti-message-2"></i> ASISTENTE DE REVISIÓN</div>
-        <div class="chat-body" id="chat-body"></div>
-        <div class="chat-suggestions" id="chat-sugg">
-          <div class="sugg" data-q="¿Qué debo corregir con más urgencia antes de entregar?">Prioridad de corrección</div>
-          <div class="sugg" data-q="¿La leyenda está completa y es coherente con los símbolos del mapa?">Revisar leyenda</div>
-          <div class="sugg" data-q="¿Falta algún elemento cartográfico obligatorio?">Elementos faltantes</div>
-          <div class="sugg" data-q="¿El mapa es legible para un tomador de decisión sin formación técnica?">Legibilidad</div>
-        </div>
-        <div class="chat-input-row">
-          <input type="text" id="chat-input" class="chat-input" placeholder="Consultá sobre el mapa..." disabled>
-          <button class="chat-send" id="chat-send" disabled><i class="ti ti-send"></i></button>
-        </div>
-      </div>
+        <!-- LEFT PANEL: INGESTA DE MAPAS Y JSON -->
+        <section class="card">
+            <div class="card-header">
+                <span class="card-title"><i class="fa-solid fa-file-import"></i> Ingesta Multi-Archivo</span>
+                <i class="fa-solid fa-ellipsis-vertical" style="color: var(--text-muted);"></i>
+            </div>
 
-    </div>
+            <!-- Upload Dropzone -->
+            <div class="upload-dropzone" id="dropzone">
+                <i class="fa-solid fa-cloud-arrow-up"></i>
+                <p>Arrastre Mapas (PNG/JPG) + Metadata (JSON)</p>
+                <span>Formatos oficiales de la CONAE</span>
+            </div>
 
-    <!-- Hallazgos -->
-    <div class="findings-grid">
-      <div class="find-panel">
-        <div class="panel-hdr" style="color:var(--red)"><i class="ti ti-alert-octagon"></i> ERRORES CRÍTICOS</div>
-        <div class="find-body" id="criticos-body"></div>
-      </div>
-      <div class="find-panel">
-        <div class="panel-hdr" style="color:var(--amber)"><i class="ti ti-alert-triangle"></i> ADVERTENCIAS</div>
-        <div class="find-body" id="advert-body"></div>
-      </div>
-      <div class="find-panel">
-        <div class="panel-hdr" style="color:var(--blue)"><i class="ti ti-typography"></i> CORRECCIONES DE TEXTO</div>
-        <div class="find-body" id="texto-body"></div>
-      </div>
-    </div>
+            <!-- Loaded Files List -->
+            <div class="file-list">
+                <div class="file-item">
+                    <div class="file-info">
+                        <i class="fa-solid fa-file-image"></i>
+                        <span class="file-name">MAPA_EMERG_INUND_20260728.png</span>
+                    </div>
+                    <span class="file-status">12.4 MB</span>
+                </div>
+                <div class="file-item">
+                    <div class="file-info">
+                        <i class="fa-solid fa-file-code" style="color: var(--cyan);"></i>
+                        <span class="file-name">MAPA_EMERG_INUND_20260728.json</span>
+                    </div>
+                    <span class="file-status">OK (JSON)</span>
+                </div>
+            </div>
 
-    <!-- Resumen -->
-    <div class="summary-panel">
-      <div class="summary-hdr">
-        <div class="summary-hdr-l"><i class="ti ti-file-description"></i> DICTAMEN DE CONTROL DE CALIDAD</div>
-        <button class="btn-report" id="btn-report"><i class="ti ti-printer"></i> GENERAR REPORTE</button>
-      </div>
-      <div class="summary-body" id="summary-body">—</div>
-    </div>
+            <!-- Live Satellite Preview Frame -->
+            <div class="card-header" style="margin-top: 10px;">
+                <span class="card-title"><i class="fa-solid fa-earth-americas"></i> Vista Previa Registrada</span>
+            </div>
+            <div class="preview-frame">
+                <img src="https://earth.esa.int/eogateway/documents/20142/4190972/Palermo-banner.jpg/9a2aa37f-a933-30b7-c335-39b2a9876ff0?t=1673866464055" alt="Satélite SAOCOM">
+                <div class="grid-overlay"></div>
+                <div class="map-coords">POSGAR2007 | 34°36'S 58°22'W</div>
+            </div>
 
-  </div>
+            <button class="btn-action-main">
+                <i class="fa-solid fa-microchip"></i> RE-EJECUTAR AUDITORÍA
+            </button>
+        </section>
 
-</div>
 
-<footer>
-  <span>VERTECH TdF · RÍO GRANDE, TIERRA DEL FUEGO, ARGENTINA</span>
-  <span>INNOVATÓN SPACE 2025 · CONAE · UNIDAD DE EMERGENCIAS Y ALERTAS TEMPRANAS · v4.0</span>
-</footer>
+        <!-- CENTER PANEL: MÉTRICAS, GRAFICOS DINÁMICOS Y REGLAS -->
+        <section class="card">
+            <div class="card-header">
+                <span class="card-title"><i class="fa-solid fa-gauge-high"></i> Puntuación y Diagnóstico de Calidad Cartográfica</span>
+                <span style="font-family: var(--font-mono); font-size: 11px; color: var(--green);"><i class="fa-solid fa-check-circle"></i> QA COMPLETADO</span>
+            </div>
 
-<script>
-  const BACKEND = 'https://vertech-backend.onrender.com';
-  let b64 = null, mtype = 'image/jpeg', imgDataUrl = '';
-  let historial = [], qaData = null, fileName = '';
-  let modo = 'imagen', jsonTexto = '', resumenEstructural = '';
+            <!-- Metric Summary Tiles -->
+            <div class="metrics-summary-grid">
+                <div class="metric-tile">
+                    <span class="metric-label">Score Global QA</span>
+                    <span class="metric-value highlight-amber">93.8%</span>
+                    <span class="metric-sub" style="color: var(--green);"><i class="fa-solid fa-arrow-up"></i> Aprobado técnico</span>
+                </div>
+                <div class="metric-tile">
+                    <span class="metric-label">Normativa CONAE</span>
+                    <span class="metric-value highlight-green">100%</span>
+                    <span class="metric-sub"><i class="fa-solid fa-shield"></i> Sin desvíos</span>
+                </div>
+                <div class="metric-tile">
+                    <span class="metric-label">Metadatos JSON</span>
+                    <span class="metric-value highlight-cyan">95.0%</span>
+                    <span class="metric-sub"><i class="fa-solid fa-code"></i> Estructura OK</span>
+                </div>
+                <div class="metric-tile">
+                    <span class="metric-label">Desvíos Visuales</span>
+                    <span class="metric-value" style="color: var(--text-bright);">1</span>
+                    <span class="metric-sub" style="color: var(--amber);"><i class="fa-solid fa-circle-exclamation"></i> Ajuste leyenda</span>
+                </div>
+            </div>
 
-  const $ = id => document.getElementById(id);
-  const dropZone = $('drop-zone'), fileInput = $('file-input');
-  const strip = $('preview-strip'), thumb = $('prev-thumb'), fname = $('prev-name');
-  const btnSwap = $('btn-swap'), btnRun = $('btn-run');
-  const procBar = $('proc-bar'), procTxt = $('proc-txt');
-  const results = $('results'), chatBody = $('chat-body');
-  const chatInput = $('chat-input'), chatSend = $('chat-send');
+            <!-- Charts Row (Chart.js Radar & Bar) -->
+            <div class="charts-row">
+                <div class="chart-box">
+                    <div class="chart-box-header">
+                        <span><i class="fa-solid fa-radar"></i> Evaluador Multidimensional QA</span>
+                        <span style="color: var(--cyan); font-family: var(--font-mono);">Radar Score</span>
+                    </div>
+                    <div class="chart-container-inner">
+                        <canvas id="radarChart"></canvas>
+                    </div>
+                </div>
 
-  // ── Upload ──
-  dropZone.addEventListener('click', e => { if(e.target !== fileInput) fileInput.click(); });
-  dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('drag'); });
-  dropZone.addEventListener('dragleave', () => dropZone.classList.remove('drag'));
-  dropZone.addEventListener('drop', e => { e.preventDefault(); dropZone.classList.remove('drag'); if(e.dataTransfer.files[0]) load(e.dataTransfer.files[0]); });
-  fileInput.addEventListener('change', e => { if(e.target.files[0]) load(e.target.files[0]); });
-  btnSwap.addEventListener('click', () => { fileInput.value = ''; fileInput.click(); });
+                <div class="chart-box">
+                    <div class="chart-box-header">
+                        <span><i class="fa-solid fa-chart-column"></i> Cumplimiento por Categoría</span>
+                        <span style="color: var(--amber); font-family: var(--font-mono);">% Ponderado</span>
+                    </div>
+                    <div class="chart-container-inner">
+                        <canvas id="barChart"></canvas>
+                    </div>
+                </div>
+            </div>
 
-  const ICONO_JSON = "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='54' height='36'><rect width='54' height='36' fill='%230a1828'/><text x='50%' y='53%' fill='%2300e5a0' font-size='9' font-family='monospace' text-anchor='middle' dominant-baseline='middle'>JSON</text></svg>";
+            <!-- Matriz de Reglas Interactiva -->
+            <div class="card-header" style="margin-top: 4px;">
+                <span class="card-title"><i class="fa-solid fa-table-list"></i> Matriz Verificadora de Reglas Automatizadas</span>
+                
+                <div class="table-filters">
+                    <button class="filter-btn active" onclick="filterRules('all')">Todos (5)</button>
+                    <button class="filter-btn" onclick="filterRules('ok')">OK (4)</button>
+                    <button class="filter-btn" onclick="filterRules('warn')">Advertencias (1)</button>
+                </div>
+            </div>
 
-  function load(file) {
-    const esJson = file.type === 'application/json'
-                || /\.(json|geojson)$/i.test(file.name);
+            <div class="rules-table-container">
+                <table class="rules-table">
+                    <thead>
+                        <tr>
+                            <th>Código</th>
+                            <th>Regla / Criterio QA</th>
+                            <th>Área Verificada</th>
+                            <th>Estado</th>
+                            <th>Detalle Técnico</th>
+                        </tr>
+                    </thead>
+                    <tbody id="rulesTableBody">
+                        <tr data-status="ok">
+                            <td style="font-family: var(--font-mono); color: var(--cyan);">REG-GEO-01</td>
+                            <td>Proyección y Datum POSGAR 2007</td>
+                            <td>Spatial Metadata</td>
+                            <td><span class="status-pill ok"><i class="fa-solid fa-check"></i> VALIDADO</span></td>
+                            <td>Coordenadas EPSG:5346 verificadas sin desfase.</td>
+                        </tr>
+                        <tr data-status="ok">
+                            <td style="font-family: var(--font-mono); color: var(--cyan);">REG-LOG-02</td>
+                            <td>Logotipo e Isologotipo CONAE / IGN</td>
+                            <td>Visual Header</td>
+                            <td><span class="status-pill ok"><i class="fa-solid fa-check"></i> VALIDADO</span></td>
+                            <td>Logos en posición superior derecha según norma.</td>
+                        </tr>
+                        <tr data-status="warn">
+                            <td style="font-family: var(--font-mono); color: var(--amber);">REG-VIS-08</td>
+                            <td>Contraste en Capa de Agua / Inundación</td>
+                            <td>Visual Symbology</td>
+                            <td><span class="status-pill warn"><i class="fa-solid fa-triangle-exclamation"></i> ADVERTENCIA</span></td>
+                            <td>Contraste RGB insuficiente en cuerpo hídrico sur.</td>
+                        </tr>
+                        <tr data-status="ok">
+                            <td style="font-family: var(--font-mono); color: var(--cyan);">REG-ESC-04</td>
+                            <td>Coherencia de Escala Gráfica / Numérica</td>
+                            <td>Cartography</td>
+                            <td><span class="status-pill ok"><i class="fa-solid fa-check"></i> VALIDADO</span></td>
+                            <td>Escala 1:50.000 alineada con la grilla.</td>
+                        </tr>
+                        <tr data-status="ok">
+                            <td style="font-family: var(--font-mono); color: var(--cyan);">REG-NOR-05</td>
+                            <td>Rosa de los Vientos &amp; Orientación Norte</td>
+                            <td>Layout Elements</td>
+                            <td><span class="status-pill ok"><i class="fa-solid fa-check"></i> VALIDADO</span></td>
+                            <td>Elemento vectorizado detectado a 0° declinación.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
 
-    if (esJson) {
-      const r = new FileReader();
-      r.onload = e => {
-        jsonTexto = e.target.result;
-        try { JSON.parse(jsonTexto); }
-        catch(err) { alert('El archivo no es un JSON válido:\n' + err.message); return; }
-        modo = 'json';
-        b64 = null;
-        imgDataUrl = '';
-        fileName = file.name;
-        thumb.src = ICONO_JSON;
-        fname.textContent = file.name + '  ·  ' + (file.size/1024).toFixed(0) + ' KB';
-        strip.classList.add('visible');
-        btnRun.disabled = false;
-      };
-      r.readAsText(file);
-      return;
-    }
 
-    if (!file.type.startsWith('image/')) {
-      alert('Formato no admitido. Cargá una imagen del mapa (PNG, JPEG) o una configuración cartográfica (.json / .geojson).');
-      return;
-    }
+        <!-- RIGHT PANEL: VERDICTO Y CHATBOT ASISTENTE IA -->
+        <section class="card">
+            <div class="card-header">
+                <span class="card-title"><i class="fa-solid fa-stamp"></i> Veredicto Final QA</span>
+            </div>
 
-    const r = new FileReader();
-    r.onload = e => {
-      imgDataUrl = e.target.result;
-      b64 = imgDataUrl.split(',')[1];
-      mtype = file.type || 'image/jpeg';
-      modo = 'imagen';
-      jsonTexto = '';
-      fileName = file.name;
-      thumb.src = imgDataUrl;
-      fname.textContent = file.name;
-      strip.classList.add('visible');
-      btnRun.disabled = false;
-    };
-    r.readAsDataURL(file);
-  }
+            <!-- Verdict Card -->
+            <div class="verdict-box">
+                <div class="verdict-icon">
+                    <i class="fa-solid fa-file-circle-check"></i>
+                </div>
+                <div class="verdict-info">
+                    <h4>APROBADO CON OBSERVACIÓN</h4>
+                    <p>El mapa cumple los estándares críticos de la CONAE. Se sugiere ajustar contraste hídrico antes del despacho.</p>
+                </div>
+            </div>
 
-  const PASOS_IMG = [
-    'Verificando elementos cartográficos obligatorios...',
-    'Analizando completitud y coherencia de la leyenda...',
-    'Detectando identidad institucional y créditos de fuente...',
-    'Revisando ortografía, gramática y terminología...',
-    'Evaluando coherencia entre contenido y descripción...',
-    'Generando dictamen de control de calidad...'
-  ];
+            <!-- Asistente Virtual IA QA -->
+            <div class="card-header">
+                <span class="card-title"><i class="fa-solid fa-robot"></i> Asistente Chatbot QA</span>
+                <span style="font-family: var(--font-mono); font-size: 10px; color: var(--cyan);">GPT-4o CONAE Engine</span>
+            </div>
 
-  const PASOS_JSON = [
-    'Parseando configuración cartográfica...',
-    'Validando sistema de referencia y proyección...',
-    'Verificando integridad referencial capa-grupo...',
-    'Auditando créditos y atribución de fuentes...',
-    'Evaluando dependencia de servicios externos...',
-    'Generando dictamen de control de calidad...'
-  ];
+            <div class="chat-container">
+                <div class="chat-messages" id="chatMessages">
+                    <div class="message bot">
+                        <div class="message-bubble">
+                            Hola. He analizado el mapa <strong>MAPA_EMERG_INUND_20260728</strong>. El score global es <strong>93.8%</strong>. ¿Deseas redactar el informe técnico o revisar la sugerencia sobre el contraste hídrico?
+                        </div>
+                        <span class="message-time">10:42:01 AM</span>
+                    </div>
+                </div>
 
-  // ── Revisar ──
-  btnRun.addEventListener('click', async () => {
-    if(modo === 'imagen' && !b64) return;
-    if(modo === 'json' && !jsonTexto) return;
+                <!-- Input area -->
+                <div class="chat-input-area">
+                    <input type="text" id="chatInput" class="chat-input" placeholder="Pregunta sobre la auditoría..." onkeydown="if(event.key==='Enter') sendMessage()">
+                    <button class="chat-send-btn" onclick="sendMessage()"><i class="fa-solid fa-paper-plane"></i></button>
+                </div>
+            </div>
 
-    btnRun.disabled = true;
-    results.classList.remove('visible');
-    procBar.classList.add('visible');
-    historial = [];
+            <!-- Quick Prompts Chips -->
+            <div class="quick-prompts">
+                <button class="prompt-chip" onclick="quickAsk('¿Por qué dio advertencia en el contraste?')">¿Por qué la advertencia?</button>
+                <button class="prompt-chip" onclick="quickAsk('Redacta observación oficial para el operador')">Redactar observación</button>
+                <button class="prompt-chip" onclick="quickAsk('Verificar Datum POSGAR 2007')">Verificar Datum</button>
+            </div>
 
-    const pasos = modo === 'json' ? PASOS_JSON : PASOS_IMG;
-    let p = 0;
-    const iv = setInterval(() => { if(p < pasos.length) procTxt.textContent = pasos[p++]; }, 900);
+            <button class="btn-action-main" style="background: linear-gradient(90deg, var(--cyan) 0%, #0099ff 100%); color: #000; box-shadow: 0 4px 15px var(--cyan-glow);" onclick="alert('Generando Informe Oficial de Calidad Cartográfica en PDF...')">
+                <i class="fa-solid fa-file-pdf"></i> EXPORTAR REPORTE DE CALIDAD (PDF)
+            </button>
+        </section>
 
-    const endpoint = modo === 'json' ? '/qa-json' : '/qa-mapa';
-    const payload  = modo === 'json'
-      ? {
-          contenido_json: jsonTexto,
-          nombre_archivo: fileName,
-          tipo_evento: $('evento').value,
-          descripcion: $('descripcion').value.trim()
+    </main>
+
+    <!-- ==========================================================================
+       JAVASCRIPT LOGIC (CHARTS, INTERACTION & CHATBOT)
+       ========================================================================== -->
+    <script>
+        // Initialize Chart.js when DOM is ready
+        document.addEventListener("DOMContentLoaded", () => {
+            initRadarChart();
+            initBarChart();
+        });
+
+        // 1. Radar Chart Configuration
+        function initRadarChart() {
+            const ctx = document.getElementById('radarChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'radar',
+                data: {
+                    labels: ['Cartografía', 'Normativa', 'Metadatos JSON', 'Consistencia Visual', 'Georreferencia'],
+                    datasets: [{
+                        label: 'Evaluación Mapa',
+                        data: [92, 100, 95, 88, 98],
+                        backgroundColor: 'rgba(0, 212, 255, 0.2)',
+                        borderColor: '#00d4ff',
+                        borderWidth: 2,
+                        pointBackgroundColor: '#ffb300',
+                        pointBorderColor: '#fff',
+                        pointHoverRadius: 6
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        r: {
+                            angleLines: { color: '#143258' },
+                            grid: { color: '#143258' },
+                            pointLabels: {
+                                color: '#9cbcdb',
+                                font: { family: 'Share Tech Mono', size: 10 }
+                            },
+                            ticks: { display: false, backdropColor: 'transparent' },
+                            min: 50,
+                            max: 100
+                        }
+                    },
+                    plugins: {
+                        legend: { display: false }
+                    }
+                }
+            });
         }
-      : {
-          imagen_base64: b64,
-          media_type: mtype,
-          tipo_evento: $('evento').value,
-          descripcion: $('descripcion').value.trim(),
-          organismo: 'CONAE'
-        };
 
-    try {
-      const res = await fetch(`${BACKEND}${endpoint}`, {
-        method: 'POST',
-        headers: {'Content-Type':'application/json'},
-        body: JSON.stringify(payload)
-      });
+        // 2. Bar Chart Configuration
+        function initBarChart() {
+            const ctx = document.getElementById('barChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Simbología', 'Datum', 'Membrete', 'Grilla', 'Escala'],
+                    datasets: [{
+                        label: 'Score %',
+                        data: [88, 100, 100, 95, 96],
+                        backgroundColor: [
+                            '#ffb300',
+                            '#00e5a0',
+                            '#00e5a0',
+                            '#00d4ff',
+                            '#00d4ff'
+                        ],
+                        borderRadius: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        x: {
+                            grid: { display: false },
+                            ticks: { color: '#9cbcdb', font: { family: 'Share Tech Mono', size: 10 } }
+                        },
+                        y: {
+                            grid: { color: '#143258' },
+                            ticks: { color: '#9cbcdb', font: { family: 'Share Tech Mono', size: 10 } },
+                            min: 60,
+                            max: 100
+                        }
+                    },
+                    plugins: {
+                        legend: { display: false }
+                    }
+                }
+            });
+        }
 
-      clearInterval(iv);
-      procBar.classList.remove('visible');
-      if(!res.ok) throw new Error((await res.json().catch(()=>({}))).detail || `HTTP ${res.status}`);
+        // 3. Rule Table Filter Logic
+        function filterRules(status) {
+            const buttons = document.querySelectorAll('.filter-btn');
+            buttons.forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
 
-      qaData = await res.json();
-      render(qaData);
+            const rows = document.querySelectorAll('#rulesTableBody tr');
+            rows.forEach(row => {
+                if (status === 'all') {
+                    row.style.display = '';
+                } else {
+                    if (row.getAttribute('data-status') === status) {
+                        row.style.display = '';
+                    } else {
+                        row.style.display = 'none';
+                    }
+                }
+            });
+        }
 
-    } catch(e) {
-      clearInterval(iv);
-      procBar.classList.remove('visible');
-      console.error(e);
-      alert(`Error en el control de calidad:\n${e.message}`);
-    }
-    btnRun.disabled = false;
-  });
+        // 4. Interactive Chatbot Engine
+        function sendMessage() {
+            const input = document.getElementById('chatInput');
+            const text = input.value.trim();
+            if (!text) return;
 
-  // ── Render ──
-  function color(n){ return n >= 80 ? 'g' : n >= 60 ? 'a' : 'r'; }
-  function hex(n){ return n >= 80 ? '#00e5a0' : n >= 60 ? '#ffb300' : '#ff3d3d'; }
+            addMessage(text, 'user');
+            input.value = '';
 
-  function render(d) {
-    const s = d.score || {};
-    $('trunc-warn').classList.toggle('visible', !!d._respuesta_truncada);
-    const sets = [
-      ['sc-global','fill-global', s.global],
-      ['sc-carto','fill-carto', s.cartografico],
-      ['sc-inst','fill-inst', s.institucional],
-      ['sc-red','fill-red', s.redaccion],
-      ['sc-coh','fill-coh', s.coherencia]
-    ];
-    sets.forEach(([idv, idf, val]) => {
-      const v = typeof val === 'number' ? val : 0;
-      const el = $(idv);
-      el.textContent = v;
-      el.className = 'score-val ' + color(v);
-      $(idf).style.width = v + '%';
-      $(idf).style.background = hex(v);
-    });
+            // Simulate intelligent bot response
+            setTimeout(() => {
+                generateBotResponse(text);
+            }, 600);
+        }
 
-    $('sc-tipo').textContent = d.tipo_producto || 'Producto cartográfico';
+        function quickAsk(promptText) {
+            document.getElementById('chatInput').value = promptText;
+            sendMessage();
+        }
 
-    // Veredicto
-    const apto = (d.apto_entrega || 'CON_CORRECCIONES').toUpperCase();
-    const vd = $('verdict');
-    vd.className = 'verdict ' + apto.toLowerCase();
-    $('verdict-val').textContent = apto === 'SI' ? 'APTO' : apto === 'NO' ? 'NO APTO' : 'CON\nCORRECCIONES';
+        function addMessage(text, sender) {
+            const chatMessages = document.getElementById('chatMessages');
+            const msgDiv = document.createElement('div');
+            msgDiv.className = `message ${sender}`;
 
-    // Mapa o panel estructural según formato
-    const est = d._analisis_estructural;
-    if (modo === 'json' && est) {
-      $('map-panel').style.display = 'none';
-      $('struct-panel').classList.add('visible');
-      renderEstructural(est, d);
-    } else {
-      $('map-panel').style.display = '';
-      $('struct-panel').classList.remove('visible');
-      $('map-img').src = imgDataUrl;
-      $('map-title').textContent = (d.titulo_detectado || 'Mapa sin título detectado').toUpperCase();
-      $('map-sub').textContent = fileName + ' · ' + new Date().toLocaleDateString('es-AR');
-    }
+            const now = new Date();
+            const timeStr = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
 
-    // Checklist
-    const icons = { ok:'ti-circle-check', falta:'ti-circle-x', revisar:'ti-alert-circle' };
-    $('check-body').innerHTML = (d.checklist||[]).map(c => `
-      <div class="check-row ${c.estado||'revisar'}">
-        <i class="ti ${icons[c.estado]||'ti-alert-circle'} check-icon"></i>
-        <div>
-          <div class="check-item">${c.item}</div>
-          <div class="check-obs">${c.obs||''}</div>
-        </div>
-      </div>`).join('') || '<div class="find-empty">Sin datos</div>';
+            msgDiv.innerHTML = `
+                <div class="message-bubble">${text}</div>
+                <span class="message-time">${timeStr}</span>
+            `;
 
-    // Críticos
-    $('criticos-body').innerHTML = (d.criticos||[]).length
-      ? d.criticos.map(c => `
-        <div class="find-item crit">
-          <div class="find-title">${c.titulo}</div>
-          <div class="find-desc">${c.desc}</div>
-          ${c.accion ? `<div class="find-action">→ ${c.accion}</div>` : ''}
-        </div>`).join('')
-      : '<div class="find-empty">✓ SIN ERRORES CRÍTICOS</div>';
+            chatMessages.appendChild(msgDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
 
-    // Advertencias
-    $('advert-body').innerHTML = (d.advertencias||[]).length
-      ? d.advertencias.map(a => `
-        <div class="find-item warn">
-          <div class="find-title">${a.titulo}</div>
-          <div class="find-desc">${a.desc}</div>
-          ${a.accion ? `<div class="find-action">→ ${a.accion}</div>` : ''}
-        </div>`).join('')
-      : '<div class="find-empty">✓ SIN ADVERTENCIAS</div>';
+        function generateBotResponse(userText) {
+            let response = "";
+            const lower = userText.toLowerCase();
 
-    // Texto
-    $('texto-body').innerHTML = (d.correcciones_texto||[]).length
-      ? d.correcciones_texto.map(t => `
-        <div class="find-item text">
-          <div class="txt-old">${t.encontrado}</div>
-          <div class="txt-new">→ ${t.sugerido}</div>
-          <div class="txt-motivo">${t.motivo||''}</div>
-        </div>`).join('')
-      : '<div class="find-empty">✓ SIN ERRORES DE REDACCIÓN</div>';
+            if (lower.includes('advertencia') || lower.includes('contraste')) {
+                response = "La regla <strong>REG-VIS-08</strong> detectó que la capa vectorial del cuerpo de agua utiliza una tonalidad azul (#0055ff) que difiere solo en un 12% del fondo de imagen satelital SAR. Se recomienda elevar la saturación al cian brillante (#00d4ff) para óptima visibilidad en impresión de campo.";
+            } else if (lower.includes('observacion') || lower.includes('redactar') || lower.includes('informe')) {
+                response = "<strong>Observación sugerida para el acta:</strong><br><em>'El producto cartográfico presenta total conformidad en metadatos georreferenciados (POSGAR 2007) y simetría institucional CONAE. Se autoriza la distribución condicionado a incrementar el contraste hídrico en la capa de inundación.'</em>";
+            } else if (lower.includes('datum') || lower.includes('posgar')) {
+                response = "El archivo <strong>MAPA_EMERG_INUND_20260728.json</strong> valida el parámetro <code>PROJCS['POSGAR_2007_Argentina_4']</code> sin desviaciones respecto a la retícula del mapa procesado.";
+            } else {
+                response = "Entendido. He auditado los parámetros del mapa respecto a los protocolos estándar de emergencias de la CONAE. ¿Deseas descargar la matriz de verificación o ajustar algún umbral de tolerancia?";
+            }
 
-    // Resumen
-    $('summary-body').textContent = d.resumen || '—';
+            addMessage(response, 'bot');
+        }
 
-    // Chat
-    chatBody.innerHTML = '';
-    const tipoTxt = modo === 'json' ? 'la configuración cartográfica' : 'el mapa';
-    addMsg('bot', `Control de calidad completado. Score global: ${s.global ?? '—'}/100.\n\n${d.resumen || ''}\n\nPodés consultarme sobre cualquier aspecto de ${tipoTxt}.`);
-
-    // Sugerencias según formato
-    const SUGG_IMG = [
-      ['Prioridad de corrección', '¿Qué debo corregir con más urgencia antes de entregar?'],
-      ['Revisar leyenda', '¿La leyenda está completa y es coherente con los símbolos del mapa?'],
-      ['Elementos faltantes', '¿Falta algún elemento cartográfico obligatorio?'],
-      ['Legibilidad', '¿El mapa es legible para un tomador de decisión sin formación técnica?']
-    ];
-    const SUGG_JSON = [
-      ['Prioridad de corrección', '¿Qué debo corregir con más urgencia antes de publicar esta configuración?'],
-      ['Créditos faltantes', '¿Por qué es crítico que las capas tengan créditos y atribución de fuente?'],
-      ['Servicios externos', '¿Qué riesgo operativo implica depender de servicios WMS externos durante una emergencia?'],
-      ['Capas visibles', '¿Es adecuada la cantidad de capas visibles al abrir el mapa para un operador en emergencia?']
-    ];
-    const sg = modo === 'json' ? SUGG_JSON : SUGG_IMG;
-    $('chat-sugg').innerHTML = sg.map(([t, q]) =>
-      `<div class="sugg" data-q="${q.replace(/"/g,'&quot;')}">${t}</div>`).join('');
-    $('chat-sugg').querySelectorAll('.sugg').forEach(s => {
-      s.addEventListener('click', () => { if(!chatInput.disabled) enviar(s.dataset.q); });
-    });
-
-    chatInput.disabled = false;
-    chatSend.disabled = false;
-
-    results.classList.add('visible');
-    results.scrollIntoView({ behavior:'smooth', block:'start' });
-  }
-
-
-  // ── Render panel estructural (modo JSON) ──
-  function renderEstructural(a, d) {
-    resumenEstructural = JSON.stringify(a, null, 2);
-    $('fmt-badge').textContent = a.formato || 'JSON';
-
-    const h = a.hallazgos || {};
-    const n = v => Array.isArray(v) ? v.length : (v && typeof v === 'object' ? Object.keys(v).length : (v || 0));
-    const cls = k => k === 0 ? 'g' : k > 20 ? 'r' : 'a';
-
-    let html = '';
-
-    if (a.formato === 'MapStore2') {
-      html += `
-        <div class="struct-kpis">
-          <div class="kpi"><div class="kpi-l">Capas</div><div class="kpi-v">${a.total_capas}</div></div>
-          <div class="kpi"><div class="kpi-l">Visibles</div><div class="kpi-v g">${a.capas_visibles}</div></div>
-          <div class="kpi"><div class="kpi-l">Grupos</div><div class="kpi-v">${a.total_grupos}</div></div>
-          <div class="kpi"><div class="kpi-l">Servicios</div><div class="kpi-v">${a.servicios_wms}</div></div>
-        </div>
-
-        <div class="struct-sec">Metadatos del proyecto</div>
-        <div>
-          <div class="meta-row"><span class="meta-k">Formato</span><span class="meta-v">${a.formato} v${a.version_config ?? '—'}</span></div>
-          <div class="meta-row"><span class="meta-k">Proyección</span><span class="meta-v">${a.proyeccion ?? '—'}</span></div>
-          <div class="meta-row"><span class="meta-k">CRS del centro</span><span class="meta-v">${a.crs_centro ?? '—'}</span></div>
-          <div class="meta-row"><span class="meta-k">Unidades</span><span class="meta-v">${a.unidades ?? '—'}</span></div>
-          <div class="meta-row"><span class="meta-k">Zoom inicial</span><span class="meta-v">${a.zoom ?? '—'}</span></div>
-        </div>
-
-        <div class="struct-sec">Validación determinística</div>
-        <div style="display:flex;flex-direction:column;gap:4px">
-          ${[
-            ['Capas sin créditos / atribución', n(h.sin_creditos)],
-            ['Capas sin descripción', n(h.sin_descripcion)],
-            ['Capas sin título', n(h.sin_titulo)],
-            ['Grupos vacíos (sin capas)', n(h.grupos_vacios)],
-            ['Títulos duplicados', n(h.titulos_duplicados)],
-            ['Integridad referencial rota', n(h.grupo_inexistente)],
-            ['URLs inseguras (http://)', n(h.url_insegura)],
-            ['Servicios externos a CONAE/IGN', n(a.servicios_externos)]
-          ].map(([t, k]) => `
-            <div class="issue-row ${k === 0 ? 'ok' : k > 20 ? 'crit' : 'hit'}">
-              <span class="issue-t">${t}</span>
-              <span class="issue-n ${cls(k)}">${k}</span>
-            </div>`).join('')}
-        </div>`;
-
-      if ((a.titulos_visibles || []).length) {
-        html += `<div class="struct-sec">Capas visibles al abrir</div><div>
-          ${a.titulos_visibles.map(t => `<span class="layer-chip">${t}</span>`).join('')}
-        </div>`;
-      }
-
-      if ((a.servicios_externos || []).length) {
-        html += `<div class="struct-sec">Servicios externos</div><div>
-          ${a.servicios_externos.map(u => `<div class="meta-row"><span class="meta-v" style="text-align:left;word-break:break-all;font-size:9px">${u}</span></div>`).join('')}
-        </div>`;
-      }
-
-    } else {
-      html += `
-        <div class="struct-kpis">
-          <div class="kpi"><div class="kpi-l">Features</div><div class="kpi-v">${a.total_features}</div></div>
-          <div class="kpi"><div class="kpi-l">Atributos</div><div class="kpi-v">${(a.atributos||[]).length}</div></div>
-          <div class="kpi"><div class="kpi-l">Sin geom.</div><div class="kpi-v ${cls(n(h.features_sin_geometria))}">${n(h.features_sin_geometria)}</div></div>
-          <div class="kpi"><div class="kpi-l">Sin props</div><div class="kpi-v ${cls(n(h.features_sin_propiedades))}">${n(h.features_sin_propiedades)}</div></div>
-        </div>
-
-        <div class="struct-sec">Metadatos</div>
-        <div>
-          <div class="meta-row"><span class="meta-k">Tipo</span><span class="meta-v">${a.tipo ?? '—'}</span></div>
-          <div class="meta-row"><span class="meta-k">CRS declarado</span><span class="meta-v">${a.crs_declarado ?? 'No declarado'}</span></div>
-          ${Object.entries(a.tipos_geometria||{}).map(([k,v]) =>
-            `<div class="meta-row"><span class="meta-k">${k}</span><span class="meta-v">${v}</span></div>`).join('')}
-        </div>
-
-        <div class="struct-sec">Atributos detectados</div>
-        <div>${(a.atributos||[]).map(t => `<span class="layer-chip">${t}</span>`).join('') || '<span style="color:var(--border-hi);font-size:9px">Sin atributos</span>'}</div>`;
-    }
-
-    $('struct-body').innerHTML = html;
-  }
-
-  // ── Chat ──
-  function addMsg(role, text) {
-    const div = document.createElement('div');
-    div.className = 'chat-msg ' + (role === 'user' ? 'user' : 'bot');
-    div.textContent = text;
-    chatBody.appendChild(div);
-    chatBody.scrollTop = chatBody.scrollHeight;
-    return div;
-  }
-
-  async function enviar(pregunta) {
-    if(!pregunta.trim()) return;
-    if(modo === 'imagen' && !b64) return;
-    if(modo === 'json' && !resumenEstructural) return;
-    addMsg('user', pregunta);
-    chatInput.value = '';
-    chatInput.disabled = true;
-    chatSend.disabled = true;
-
-    const typing = addMsg('bot', 'Analizando...');
-    typing.classList.add('typing');
-
-    try {
-      const endpoint = modo === 'json' ? '/qa-json-chat' : '/qa-chat';
-      const payload = modo === 'json'
-        ? {
-            resumen_estructural: resumenEstructural,
-            historial: historial,
-            pregunta: pregunta,
-            tipo_evento: $('evento').value
-          }
-        : {
-            imagen_base64: b64,
-            media_type: mtype,
-            historial: historial,
-            pregunta: pregunta,
-            tipo_evento: $('evento').value
-          };
-
-      const res = await fetch(`${BACKEND}${endpoint}`, {
-        method: 'POST',
-        headers: {'Content-Type':'application/json'},
-        body: JSON.stringify(payload)
-      });
-
-      if(!res.ok) throw new Error((await res.json().catch(()=>({}))).detail || `HTTP ${res.status}`);
-      const data = await res.json();
-
-      typing.remove();
-      addMsg('bot', data.respuesta);
-
-      historial.push({ role:'user', content: pregunta });
-      historial.push({ role:'assistant', content: data.respuesta });
-      if(historial.length > 12) historial = historial.slice(-12);
-
-    } catch(e) {
-      typing.remove();
-      addMsg('bot', `Error de conexión: ${e.message}`);
-      console.error(e);
-    }
-
-    chatInput.disabled = false;
-    chatSend.disabled = false;
-    chatInput.focus();
-  }
-
-  chatSend.addEventListener('click', () => enviar(chatInput.value));
-  chatInput.addEventListener('keydown', e => { if(e.key === 'Enter') enviar(chatInput.value); });
-  document.querySelectorAll('.sugg').forEach(s => {
-    s.addEventListener('click', () => { if(!chatInput.disabled) enviar(s.dataset.q); });
-  });
-
-  // ── Reporte imprimible ──
-  $('btn-report').addEventListener('click', () => {
-    if(!qaData) return;
-    const d = qaData, s = d.score || {};
-    const fecha = new Date().toLocaleString('es-AR');
-    const icon = e => e === 'ok' ? '✓' : e === 'falta' ? '✗' : '!';
-
-    const w = window.open('', '_blank');
-    w.document.write(`
-<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Reporte QA — ${fileName}</title>
-<style>
-  @page{size:A4;margin:15mm}
-  *{box-sizing:border-box;margin:0;padding:0}
-  body{font-family:system-ui,sans-serif;font-size:10pt;color:#1a1a1a;line-height:1.5}
-  .hdr{border-bottom:2px solid #0d2440;padding-bottom:10px;margin-bottom:16px;display:flex;justify-content:space-between;align-items:flex-end}
-  .hdr h1{font-size:15pt;color:#0d2440}
-  .hdr .sub{font-size:8.5pt;color:#666;margin-top:3px}
-  .hdr .meta{font-size:8pt;color:#666;text-align:right}
-  h2{font-size:10pt;color:#0d2440;margin:16px 0 7px;padding-bottom:3px;border-bottom:1px solid #ddd;text-transform:uppercase;letter-spacing:.5px}
-  .scores{display:flex;gap:8px;margin-bottom:6px}
-  .sc{flex:1;border:1px solid #ddd;border-radius:3px;padding:8px;text-align:center}
-  .sc .l{font-size:7pt;color:#666;text-transform:uppercase;letter-spacing:.5px}
-  .sc .v{font-size:19pt;font-weight:700;margin-top:2px}
-  .g{color:#0a8f5f}.a{color:#b37700}.r{color:#c92a2a}
-  .verdict{padding:9px 12px;border-radius:3px;font-weight:700;font-size:11pt;text-align:center;margin:10px 0}
-  .v-si{background:#e6f9f1;color:#0a8f5f;border:1px solid #0a8f5f}
-  .v-no{background:#fdeaea;color:#c92a2a;border:1px solid #c92a2a}
-  .v-cc{background:#fff6e0;color:#b37700;border:1px solid #b37700}
-  table{width:100%;border-collapse:collapse;font-size:9pt;margin-bottom:6px}
-  th{background:#f2f5f8;text-align:left;padding:5px 7px;font-size:8pt;text-transform:uppercase;letter-spacing:.4px;border:1px solid #ddd;color:#0d2440}
-  td{padding:5px 7px;border:1px solid #ddd;vertical-align:top}
-  .st{font-weight:700;text-align:center;width:28px}
-  .item{border-left:3px solid #ddd;padding:7px 10px;margin-bottom:6px;background:#fafbfc}
-  .item.c{border-left-color:#c92a2a}
-  .item.w{border-left-color:#b37700}
-  .item.t{border-left-color:#1971c2}
-  .item .t{font-weight:700;font-size:9.5pt;margin-bottom:2px}
-  .item .d{font-size:9pt;color:#444}
-  .item .a{font-size:8.5pt;color:#0a8f5f;font-style:italic;margin-top:3px}
-  .resumen{background:#f8f9fa;border:1px solid #ddd;border-radius:3px;padding:11px;font-size:9.5pt;line-height:1.7}
-  .img-box{text-align:center;margin:10px 0}
-  .img-box img{max-width:100%;max-height:150mm;border:1px solid #ccc}
-  .ft{margin-top:20px;padding-top:8px;border-top:1px solid #ddd;font-size:7.5pt;color:#888;display:flex;justify-content:space-between}
-  .none{color:#0a8f5f;font-size:9pt;padding:5px 0}
-  @media print{.noprint{display:none}}
-</style></head><body>
-
-<div class="hdr">
-  <div>
-    <h1>Reporte de Control de Calidad Cartográfica</h1>
-    <div class="sub">Vertech TdF · Asistente IA para Mapas de Emergencia · CONAE</div>
-  </div>
-  <div class="meta">
-    <div><strong>Archivo:</strong> ${fileName}</div>
-    <div><strong>Evento:</strong> ${$('evento').selectedOptions[0].text}</div>
-    <div><strong>Formato:</strong> ${modo === 'json' ? (qaData._analisis_estructural?.formato || 'JSON') : 'Imagen'}</div>
-    <div><strong>Fecha:</strong> ${fecha}</div>
-  </div>
-</div>
-
-<h2>Evaluación General</h2>
-<div class="scores">
-  <div class="sc"><div class="l">Global</div><div class="v ${color(s.global||0)}">${s.global ?? '—'}</div></div>
-  <div class="sc"><div class="l">Cartográfico</div><div class="v ${color(s.cartografico||0)}">${s.cartografico ?? '—'}</div></div>
-  <div class="sc"><div class="l">Institucional</div><div class="v ${color(s.institucional||0)}">${s.institucional ?? '—'}</div></div>
-  <div class="sc"><div class="l">Redacción</div><div class="v ${color(s.redaccion||0)}">${s.redaccion ?? '—'}</div></div>
-  <div class="sc"><div class="l">Coherencia</div><div class="v ${color(s.coherencia||0)}">${s.coherencia ?? '—'}</div></div>
-</div>
-
-<div class="verdict ${d.apto_entrega==='SI'?'v-si':d.apto_entrega==='NO'?'v-no':'v-cc'}">
-  APTO PARA ENTREGA: ${d.apto_entrega === 'SI' ? 'SÍ' : d.apto_entrega === 'NO' ? 'NO' : 'CON CORRECCIONES'}
-</div>
-
-<h2>Dictamen</h2>
-<div class="resumen">${d.resumen || '—'}</div>
-
-<h2>Checklist Cartográfico</h2>
-<table>
-  <thead><tr><th class="st">—</th><th style="width:32%">Elemento</th><th>Observación</th></tr></thead>
-  <tbody>
-    ${(d.checklist||[]).map(c => `<tr>
-      <td class="st ${c.estado==='ok'?'g':c.estado==='falta'?'r':'a'}">${icon(c.estado)}</td>
-      <td><strong>${c.item}</strong></td>
-      <td>${c.obs||'—'}</td>
-    </tr>`).join('')}
-  </tbody>
-</table>
-
-<h2>Errores Críticos</h2>
-${(d.criticos||[]).length ? d.criticos.map(c => `
-  <div class="item c">
-    <div class="t">${c.titulo}</div>
-    <div class="d">${c.desc}</div>
-    ${c.accion?`<div class="a">Corrección: ${c.accion}</div>`:''}
-  </div>`).join('') : '<div class="none">✓ No se detectaron errores críticos.</div>'}
-
-<h2>Advertencias</h2>
-${(d.advertencias||[]).length ? d.advertencias.map(a => `
-  <div class="item w">
-    <div class="t">${a.titulo}</div>
-    <div class="d">${a.desc}</div>
-    ${a.accion?`<div class="a">Sugerencia: ${a.accion}</div>`:''}
-  </div>`).join('') : '<div class="none">✓ No se detectaron advertencias.</div>'}
-
-<h2>Correcciones de Redacción</h2>
-${(d.correcciones_texto||[]).length ? `
-<table>
-  <thead><tr><th style="width:38%">Encontrado</th><th style="width:38%">Sugerido</th><th>Motivo</th></tr></thead>
-  <tbody>${d.correcciones_texto.map(t => `<tr>
-    <td style="color:#c92a2a">${t.encontrado}</td>
-    <td style="color:#0a8f5f"><strong>${t.sugerido}</strong></td>
-    <td style="font-size:8pt">${t.motivo||'—'}</td>
-  </tr>`).join('')}</tbody>
-</table>` : '<div class="none">✓ No se detectaron errores de redacción.</div>'}
-
-${modo === 'json' ? `
-<h2>Análisis Estructural</h2>
-<table>
-  <thead><tr><th style="width:55%">Verificación</th><th style="width:20%">Resultado</th><th>Estado</th></tr></thead>
-  <tbody>
-    ${(() => {
-      const a = qaData._analisis_estructural || {};
-      const h = a.hallazgos || {};
-      const n = v => Array.isArray(v) ? v.length : (v && typeof v === 'object' ? Object.keys(v).length : (v||0));
-      const filas = a.formato === 'MapStore2' ? [
-        ['Formato / versión', `${a.formato} v${a.version_config ?? '—'}`, 'info'],
-        ['Proyección declarada', a.proyeccion ?? 'No declarada', a.proyeccion ? 'ok' : 'err'],
-        ['CRS del centro', a.crs_centro ?? 'No declarado', a.crs_centro ? 'ok' : 'err'],
-        ['Total de capas', a.total_capas, 'info'],
-        ['Capas visibles al inicio', a.capas_visibles, 'info'],
-        ['Grupos temáticos', a.total_grupos, 'info'],
-        ['Servicios WMS distintos', a.servicios_wms, 'info'],
-        ['Capas sin créditos', n(h.sin_creditos), n(h.sin_creditos) ? 'err' : 'ok'],
-        ['Capas sin descripción', n(h.sin_descripcion), n(h.sin_descripcion) ? 'warn' : 'ok'],
-        ['Capas sin título', n(h.sin_titulo), n(h.sin_titulo) ? 'err' : 'ok'],
-        ['Grupos vacíos', n(h.grupos_vacios), n(h.grupos_vacios) ? 'warn' : 'ok'],
-        ['Títulos duplicados', n(h.titulos_duplicados), n(h.titulos_duplicados) ? 'warn' : 'ok'],
-        ['Integridad referencial rota', n(h.grupo_inexistente), n(h.grupo_inexistente) ? 'err' : 'ok'],
-        ['URLs inseguras (http://)', n(h.url_insegura), n(h.url_insegura) ? 'err' : 'ok'],
-        ['Servicios externos', n(a.servicios_externos), n(a.servicios_externos) ? 'warn' : 'ok']
-      ] : [
-        ['Formato', a.formato ?? '—', 'info'],
-        ['Tipo GeoJSON', a.tipo ?? '—', 'info'],
-        ['CRS declarado', a.crs_declarado ?? 'No declarado', a.crs_declarado ? 'ok' : 'err'],
-        ['Total de features', a.total_features ?? 0, 'info'],
-        ['Atributos distintos', (a.atributos||[]).length, 'info'],
-        ['Features sin geometría', n(h.features_sin_geometria), n(h.features_sin_geometria) ? 'err' : 'ok'],
-        ['Features sin propiedades', n(h.features_sin_propiedades), n(h.features_sin_propiedades) ? 'err' : 'ok'],
-        ['Features con atributos vacíos', n(h.features_con_atributos_vacios), n(h.features_con_atributos_vacios) ? 'warn' : 'ok']
-      ];
-      const ico = { ok:'✓', err:'✗', warn:'!', info:'·' };
-      const col = { ok:'g', err:'r', warn:'a', info:'' };
-      return filas.map(([t,v,e]) =>
-        `<tr><td><strong>${t}</strong></td><td>${v}</td><td class="st ${col[e]}">${ico[e]}</td></tr>`).join('');
-    })()}
-  </tbody>
-</table>` : `
-<h2>Mapa Revisado</h2>
-<div class="img-box"><img src="${imgDataUrl}"></div>`}
-
-<div class="ft">
-  <span>Vertech TdF · Río Grande, Tierra del Fuego, Argentina</span>
-  <span>Documento generado por asistente IA — No reemplaza el criterio técnico del operador</span>
-</div>
-
-<script>window.onload=()=>setTimeout(()=>window.print(),400)<\/script>
-</body></html>`);
-    w.document.close();
-  });
-</script>
+        // Drag and drop visual feedback simulation
+        const dropzone = document.getElementById('dropzone');
+        dropzone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            dropzone.style.borderColor = 'var(--cyan)';
+            dropzone.style.background = 'rgba(0, 212, 255, 0.1)';
+        });
+        dropzone.addEventListener('dragleave', () => {
+            dropzone.style.borderColor = 'var(--border-bright)';
+            dropzone.style.background = 'rgba(13, 32, 56, 0.4)';
+        });
+        dropzone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropzone.style.borderColor = 'var(--green)';
+            dropzone.style.background = 'rgba(0, 229, 160, 0.1)';
+            alert('Archivos recibidos. Procesando ingesta en el nodo CONAE...');
+        });
+    </script>
 </body>
 </html>
