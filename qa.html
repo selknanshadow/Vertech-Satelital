@@ -741,6 +741,70 @@
             box-shadow: 0 6px 20px rgba(255, 179, 0, 0.4);
         }
 
+        /* Toast Notifications */
+        .toast-container {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .toast {
+            background-color: var(--bg-card);
+            border: 1px solid var(--cyan);
+            color: var(--text-bright);
+            padding: 12px 18px;
+            border-radius: 6px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-family: var(--font-mono);
+            font-size: 12px;
+            animation: slideIn 0.3s ease;
+        }
+
+        .toast.success { border-color: var(--green); color: var(--green); }
+        .toast.amber { border-color: var(--amber); color: var(--amber); }
+
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        /* Modal Preview PDF */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(3, 8, 18, 0.85);
+            backdrop-filter: blur(6px);
+            z-index: 2000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-bright);
+            border-radius: 8px;
+            width: 100%;
+            max-width: 680px;
+            max-height: 90vh;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 10px 40px rgba(0, 212, 255, 0.2);
+            overflow: hidden;
+        }
+
         /* Responsive Breakpoint */
         @media (max-width: 1200px) {
             .app-container {
@@ -794,15 +858,19 @@
                 <i class="fa-solid fa-ellipsis-vertical" style="color: var(--text-muted);"></i>
             </div>
 
-            <!-- Upload Dropzone -->
-            <div class="upload-dropzone" id="dropzone">
-                <i class="fa-solid fa-cloud-arrow-up"></i>
-                <p>Arrastre Mapas (PNG/JPG) + Metadata (JSON)</p>
-                <span>Formatos oficiales de la CONAE</span>
+            <!-- Upload Dropzone / Folder Picker -->
+            <div class="upload-dropzone" id="dropzone" onclick="document.getElementById('fileInput').click()">
+                <i class="fa-solid fa-folder-open"></i>
+                <p>Importar Archivos desde la Carpeta Local</p>
+                <span style="display: inline-block; margin-top: 6px; padding: 6px 14px; background: rgba(0, 212, 255, 0.12); border: 1px solid var(--cyan); border-radius: 4px; color: var(--cyan); font-weight: 600;">
+                    <i class="fa-solid fa-folder-plus"></i> Seleccionar desde carpeta...
+                </span>
+                <span style="margin-top: 8px; display: block; font-size: 10px; opacity: 0.7;">Soporta Mapas (PNG/JPG) + Metadata (JSON / GeoJSON)</span>
+                <input type="file" id="fileInput" style="display: none;" accept="image/*,.json,.geojson" multiple onchange="handleFileSelect(event)">
             </div>
 
             <!-- Loaded Files List -->
-            <div class="file-list">
+            <div class="file-list" id="fileList">
                 <div class="file-item">
                     <div class="file-info">
                         <i class="fa-solid fa-file-image"></i>
@@ -824,12 +892,12 @@
                 <span class="card-title"><i class="fa-solid fa-earth-americas"></i> Vista Previa Registrada</span>
             </div>
             <div class="preview-frame">
-                <img src="https://earth.esa.int/eogateway/documents/20142/4190972/Palermo-banner.jpg/9a2aa37f-a933-30b7-c335-39b2a9876ff0?t=1673866464055" alt="Satélite SAOCOM">
+                <img id="mapPreviewImage" src="https://earth.esa.int/eogateway/documents/20142/4190972/Palermo-banner.jpg/9a2aa37f-a933-30b7-c335-39b2a9876ff0?t=1673866464055" alt="Satélite SAOCOM">
                 <div class="grid-overlay"></div>
-                <div class="map-coords">POSGAR2007 | 34°36'S 58°22'W</div>
+                <div class="map-coords" id="mapCoords">POSGAR2007 | 34°36'S 58°22'W</div>
             </div>
 
-            <button class="btn-action-main">
+            <button class="btn-action-main" onclick="reRunAudit()">
                 <i class="fa-solid fa-microchip"></i> RE-EJECUTAR AUDITORÍA
             </button>
         </section>
@@ -1000,12 +1068,52 @@
                 <button class="prompt-chip" onclick="quickAsk('Verificar Datum POSGAR 2007')">Verificar Datum</button>
             </div>
 
-            <button class="btn-action-main" style="background: linear-gradient(90deg, var(--cyan) 0%, #0099ff 100%); color: #000; box-shadow: 0 4px 15px var(--cyan-glow);" onclick="alert('Generando Informe Oficial de Calidad Cartográfica en PDF...')">
+            <button class="btn-action-main" style="background: linear-gradient(90deg, var(--cyan) 0%, #0099ff 100%); color: #000; box-shadow: 0 4px 15px var(--cyan-glow);" onclick="openExportModal()">
                 <i class="fa-solid fa-file-pdf"></i> EXPORTAR REPORTE DE CALIDAD (PDF)
             </button>
         </section>
 
     </main>
+
+    <!-- Toast Notifications Container -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <!-- PDF Export Modal -->
+    <div class="modal-overlay" id="pdfModal">
+        <div class="modal-card">
+            <div class="card-header" style="padding: 16px 20px; background: var(--bg-tile);">
+                <span class="card-title"><i class="fa-solid fa-file-pdf"></i> Vista Previa de Reporte QA (PDF)</span>
+                <button onclick="closeExportModal()" style="background:none; border:none; color:var(--text-main); cursor:pointer; font-size:18px;"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div style="padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 14px; font-size: 13px;">
+                <div style="border-bottom: 1px solid var(--border-color); padding-bottom: 10px; display:flex; justify-content:space-between; align-items:center;">
+                    <div>
+                        <h3 style="font-family: var(--font-mono); color: var(--text-bright);">INFORME TÉCNICO DE CALIDAD CARTOGRÁFICA</h3>
+                        <span style="font-size: 11px; color: var(--text-muted); font-family: var(--font-mono);">CONAE — Misión SAOCOM / Emergencias Hídricas</span>
+                    </div>
+                    <span class="badge-conae">ID: QA-2026-0728-93</span>
+                </div>
+                
+                <div style="background: var(--bg-void); padding: 12px; border-radius: 6px; border: 1px solid var(--border-color); font-family: var(--font-mono); font-size: 11px;">
+                    <p style="color:var(--cyan);">[+] Archivo Evaluado: MAPA_EMERG_INUND_20260728.png</p>
+                    <p style="color:var(--amber);">[+] Puntuación Global: 93.8% (APROBADO CON OBSERVACIÓN)</p>
+                    <p style="color:var(--green);">[+] Datum: POSGAR 2007 (EPSG:5346)</p>
+                    <p style="color:var(--text-bright);">[+] Nodo Evaluador: Vertech TdF Node Tierra del Fuego</p>
+                </div>
+
+                <div>
+                    <h4 style="font-family: var(--font-mono); color: var(--amber); margin-bottom: 6px;">Dictamen Operativo Final</h4>
+                    <p style="color: var(--text-bright); line-height: 1.5;">El producto cartográfico presenta conformidad en metadatos georreferenciados (POSGAR 2007) y simetría institucional CONAE. Se autoriza la distribución condicionado a incrementar el contraste hídrico en la capa de inundación.</p>
+                </div>
+            </div>
+            <div style="padding: 14px 20px; background: var(--bg-tile); border-top: 1px solid var(--border-color); display:flex; justify-content:flex-end; gap: 10px;">
+                <button class="filter-btn" onclick="closeExportModal()">Cancelar</button>
+                <button class="btn-action-main" style="padding: 8px 18px; font-size: 12px;" onclick="triggerPdfDownload()">
+                    <i class="fa-solid fa-download"></i> DESCARGAR REPORTE PDF
+                </button>
+            </div>
+        </div>
+    </div>
 
     <!-- ==========================================================================
        JAVASCRIPT LOGIC (CHARTS, INTERACTION & CHATBOT)
@@ -1015,6 +1123,7 @@
         document.addEventListener("DOMContentLoaded", () => {
             initRadarChart();
             initBarChart();
+            setupDropzoneEvents();
         });
 
         // 1. Radar Chart Configuration
@@ -1174,23 +1283,103 @@
             addMessage(response, 'bot');
         }
 
-        // Drag and drop visual feedback simulation
-        const dropzone = document.getElementById('dropzone');
-        dropzone.addEventListener('dragover', (e) => {
-            e.preventDefault();
-            dropzone.style.borderColor = 'var(--cyan)';
-            dropzone.style.background = 'rgba(0, 212, 255, 0.1)';
-        });
-        dropzone.addEventListener('dragleave', () => {
-            dropzone.style.borderColor = 'var(--border-bright)';
-            dropzone.style.background = 'rgba(13, 32, 56, 0.4)';
-        });
-        dropzone.addEventListener('drop', (e) => {
-            e.preventDefault();
-            dropzone.style.borderColor = 'var(--green)';
-            dropzone.style.background = 'rgba(0, 229, 160, 0.1)';
-            alert('Archivos recibidos. Procesando ingesta en el nodo CONAE...');
-        });
+        // 5. File Ingestion & Drag-and-drop Handlers
+        function setupDropzoneEvents() {
+            const dropzone = document.getElementById('dropzone');
+            dropzone.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                dropzone.style.borderColor = 'var(--cyan)';
+                dropzone.style.background = 'rgba(0, 212, 255, 0.1)';
+            });
+            dropzone.addEventListener('dragleave', () => {
+                dropzone.style.borderColor = 'var(--border-bright)';
+                dropzone.style.background = 'rgba(13, 32, 56, 0.4)';
+            });
+            dropzone.addEventListener('drop', (e) => {
+                e.preventDefault();
+                dropzone.style.borderColor = 'var(--green)';
+                dropzone.style.background = 'rgba(0, 229, 160, 0.1)';
+                if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+                    processFiles(e.dataTransfer.files);
+                }
+            });
+        }
+
+        function handleFileSelect(event) {
+            if (event.target.files && event.target.files.length > 0) {
+                processFiles(event.target.files);
+            }
+        }
+
+        function processFiles(files) {
+            const fileList = document.getElementById('fileList');
+            fileList.innerHTML = '';
+
+            Array.from(files).forEach(file => {
+                const item = document.createElement('div');
+                item.className = 'file-item';
+                const isJson = file.name.endsWith('.json') || file.name.endsWith('.geojson');
+                const iconClass = isJson ? 'fa-file-code' : 'fa-file-image';
+                const iconColor = isJson ? 'color: var(--cyan);' : 'color: var(--amber);';
+                const sizeMb = (file.size / (1024 * 1024)).toFixed(2) + ' MB';
+
+                item.innerHTML = `
+                    <div class="file-info">
+                        <i class="fa-solid ${iconClass}" style="${iconColor}"></i>
+                        <span class="file-name" title="${file.name}">${file.name}</span>
+                    </div>
+                    <span class="file-status">${isJson ? 'OK (JSON)' : sizeMb}</span>
+                `;
+                fileList.appendChild(item);
+
+                // If image file, preview it on map
+                if (file.type.startsWith('image/')) {
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        document.getElementById('mapPreviewImage').src = e.target.result;
+                        document.getElementById('mapCoords').textContent = `POSGAR2007 | ${file.name}`;
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+
+            showToast('Archivos Procesados', `${files.length} archivo(s) cargado(s) e integrados al nodo CONAE.`, 'success');
+        }
+
+        function reRunAudit() {
+            showToast('Auditoría Re-ejecutada', 'Se han reevaluado los patrones visuales y JSON.', 'amber');
+        }
+
+        // 6. Modal PDF & Toast System
+        function openExportModal() {
+            document.getElementById('pdfModal').classList.add('active');
+        }
+
+        function closeExportModal() {
+            document.getElementById('pdfModal').classList.remove('active');
+        }
+
+        function triggerPdfDownload() {
+            closeExportModal();
+            showToast('Descargando PDF', 'Iniciando descarga de Informe_QA_CONAE_2026.pdf', 'success');
+        }
+
+        function showToast(title, message, type = 'success') {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.innerHTML = `
+                <i class="fa-solid ${type === 'success' ? 'fa-circle-check' : 'fa-triangle-exclamation'}"></i>
+                <div>
+                    <strong>${title}</strong>
+                    <div style="font-size:11px; opacity:0.85;">${message}</div>
+                </div>
+            `;
+            container.appendChild(toast);
+            setTimeout(() => {
+                toast.remove();
+            }, 3500);
+        }
     </script>
 </body>
 </html>
