@@ -167,6 +167,36 @@
     .btn-report:hover{background:var(--amber);color:var(--void)}
     .summary-body{padding:12px 14px;font-size:11px;color:var(--text-hi);line-height:1.8}
 
+
+    /* Badge de formato detectado */
+    .fmt-badge{font-family:var(--mono);font-size:8px;font-weight:700;padding:2px 7px;border-radius:2px;letter-spacing:.1em;text-transform:uppercase;white-space:nowrap}
+    .fmt-img{background:var(--blue-dim);color:var(--blue);border:1px solid rgba(33,150,243,.3)}
+    .fmt-json{background:var(--green-dim);color:var(--green);border:1px solid rgba(0,229,160,.3)}
+
+    /* Panel estructural (reemplaza el mapa cuando es JSON) */
+    .struct-panel{background:var(--card);border:1px solid var(--border);border-radius:4px;overflow:hidden;display:none;flex-direction:column;height:465px}
+    .struct-panel.visible{display:flex}
+    .struct-body{padding:10px;overflow-y:auto;display:flex;flex-direction:column;gap:10px}
+    .struct-kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+    .kpi{background:var(--panel);border:1px solid var(--border);border-radius:3px;padding:8px 9px}
+    .kpi-l{font-family:var(--mono);font-size:7.5px;color:var(--text);letter-spacing:.1em;text-transform:uppercase;margin-bottom:3px}
+    .kpi-v{font-family:var(--mono);font-size:17px;color:var(--white);line-height:1}
+    .kpi-v.g{color:var(--green)}.kpi-v.a{color:var(--amber)}.kpi-v.r{color:var(--red)}
+    .struct-sec{font-family:var(--mono);font-size:8.5px;color:var(--text);letter-spacing:.14em;text-transform:uppercase;display:flex;align-items:center;gap:8px;margin-top:2px}
+    .struct-sec::after{content:'';flex:1;height:1px;background:var(--border)}
+    .meta-row{display:flex;justify-content:space-between;font-size:10px;padding:3px 0;border-bottom:1px solid rgba(13,36,64,.6)}
+    .meta-row:last-child{border-bottom:none}
+    .meta-k{color:var(--text);font-family:var(--mono);font-size:9.5px}
+    .meta-v{color:var(--text-hi);font-family:var(--mono);font-size:9.5px;text-align:right}
+    .layer-chip{display:inline-block;font-size:9px;color:var(--text-hi);background:var(--panel);border:1px solid var(--border);border-radius:2px;padding:2px 6px;margin:2px 2px 0 0}
+    .issue-row{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:5px 8px;border-radius:3px;background:rgba(0,0,0,.25);border-left:2px solid var(--border)}
+    .issue-row.hit{border-left-color:var(--amber)}
+    .issue-row.crit{border-left-color:var(--red)}
+    .issue-row.ok{border-left-color:var(--green)}
+    .issue-n{font-family:var(--mono);font-size:12px;font-weight:700;color:var(--white);flex-shrink:0}
+    .issue-n.a{color:var(--amber)}.issue-n.r{color:var(--red)}.issue-n.g{color:var(--green)}
+    .issue-t{font-size:9.5px;color:var(--text-hi)}
+
     footer{background:var(--deep);border-top:1px solid var(--border);padding:.4rem 1.5rem;display:flex;justify-content:space-between;font-family:var(--mono);font-size:9px;color:var(--text);letter-spacing:.06em;flex-shrink:0}
 
     #results{display:none;flex-direction:column;gap:10px}
@@ -221,10 +251,10 @@
       <input type="text" id="descripcion" class="field-input" placeholder="Ej: Área quemada Parque Nacional Los Alerces — SAOCOM 1B, 18/06/2026">
     </div>
     <div class="field">
-      <label class="field-lbl">Mapa Temático</label>
+      <label class="field-lbl">Mapa Temático · Imagen o JSON</label>
       <div class="upload-btn" id="drop-zone">
-        <input type="file" id="file-input" accept="image/*">
-        <i class="ti ti-file-upload"></i> CARGAR MAPA
+        <input type="file" id="file-input" accept="image/*,.json,.geojson,application/json">
+        <i class="ti ti-file-upload"></i> CARGAR MAPA / JSON
       </div>
     </div>
     <div class="field">
@@ -290,12 +320,20 @@
     <!-- Grid principal -->
     <div class="qa-grid">
 
-      <div class="map-panel">
+      <div class="map-panel" id="map-panel">
         <div class="map-panel-hdr">
           <span class="map-panel-title" id="map-title">MAPA BAJO REVISIÓN</span>
           <span class="map-panel-sub" id="map-sub">—</span>
         </div>
         <img id="map-img" src="" alt="Mapa en revisión">
+      </div>
+
+      <div class="struct-panel" id="struct-panel">
+        <div class="panel-hdr">
+          <i class="ti ti-stack-2"></i> ANÁLISIS ESTRUCTURAL
+          <span class="fmt-badge fmt-json" id="fmt-badge" style="margin-left:auto">JSON</span>
+        </div>
+        <div class="struct-body" id="struct-body"></div>
       </div>
 
       <div class="check-panel">
@@ -358,6 +396,7 @@
   const BACKEND = 'https://vertech-backend.onrender.com';
   let b64 = null, mtype = 'image/jpeg', imgDataUrl = '';
   let historial = [], qaData = null, fileName = '';
+  let modo = 'imagen', jsonTexto = '', resumenEstructural = '';
 
   const $ = id => document.getElementById(id);
   const dropZone = $('drop-zone'), fileInput = $('file-input');
@@ -375,13 +414,43 @@
   fileInput.addEventListener('change', e => { if(e.target.files[0]) load(e.target.files[0]); });
   btnSwap.addEventListener('click', () => { fileInput.value = ''; fileInput.click(); });
 
+  const ICONO_JSON = "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='54' height='36'><rect width='54' height='36' fill='%230a1828'/><text x='50%' y='53%' fill='%2300e5a0' font-size='9' font-family='monospace' text-anchor='middle' dominant-baseline='middle'>JSON</text></svg>";
+
   function load(file) {
-    if(!file.type.startsWith('image/')) { alert('Seleccioná una imagen del mapa (PNG, JPEG).'); return; }
+    const esJson = file.type === 'application/json'
+                || /\.(json|geojson)$/i.test(file.name);
+
+    if (esJson) {
+      const r = new FileReader();
+      r.onload = e => {
+        jsonTexto = e.target.result;
+        try { JSON.parse(jsonTexto); }
+        catch(err) { alert('El archivo no es un JSON válido:\n' + err.message); return; }
+        modo = 'json';
+        b64 = null;
+        imgDataUrl = '';
+        fileName = file.name;
+        thumb.src = ICONO_JSON;
+        fname.textContent = file.name + '  ·  ' + (file.size/1024).toFixed(0) + ' KB';
+        strip.classList.add('visible');
+        btnRun.disabled = false;
+      };
+      r.readAsText(file);
+      return;
+    }
+
+    if (!file.type.startsWith('image/')) {
+      alert('Formato no admitido. Cargá una imagen del mapa (PNG, JPEG) o una configuración cartográfica (.json / .geojson).');
+      return;
+    }
+
     const r = new FileReader();
     r.onload = e => {
       imgDataUrl = e.target.result;
       b64 = imgDataUrl.split(',')[1];
       mtype = file.type || 'image/jpeg';
+      modo = 'imagen';
+      jsonTexto = '';
       fileName = file.name;
       thumb.src = imgDataUrl;
       fname.textContent = file.name;
@@ -391,7 +460,7 @@
     r.readAsDataURL(file);
   }
 
-  const PASOS = [
+  const PASOS_IMG = [
     'Verificando elementos cartográficos obligatorios...',
     'Analizando completitud y coherencia de la leyenda...',
     'Detectando identidad institucional y créditos de fuente...',
@@ -400,28 +469,50 @@
     'Generando dictamen de control de calidad...'
   ];
 
+  const PASOS_JSON = [
+    'Parseando configuración cartográfica...',
+    'Validando sistema de referencia y proyección...',
+    'Verificando integridad referencial capa-grupo...',
+    'Auditando créditos y atribución de fuentes...',
+    'Evaluando dependencia de servicios externos...',
+    'Generando dictamen de control de calidad...'
+  ];
+
   // ── Revisar ──
   btnRun.addEventListener('click', async () => {
-    if(!b64) return;
+    if(modo === 'imagen' && !b64) return;
+    if(modo === 'json' && !jsonTexto) return;
+
     btnRun.disabled = true;
     results.classList.remove('visible');
     procBar.classList.add('visible');
     historial = [];
 
+    const pasos = modo === 'json' ? PASOS_JSON : PASOS_IMG;
     let p = 0;
-    const iv = setInterval(() => { if(p < PASOS.length) procTxt.textContent = PASOS[p++]; }, 900);
+    const iv = setInterval(() => { if(p < pasos.length) procTxt.textContent = pasos[p++]; }, 900);
 
-    try {
-      const res = await fetch(`${BACKEND}/qa-mapa`, {
-        method: 'POST',
-        headers: {'Content-Type':'application/json'},
-        body: JSON.stringify({
+    const endpoint = modo === 'json' ? '/qa-json' : '/qa-mapa';
+    const payload  = modo === 'json'
+      ? {
+          contenido_json: jsonTexto,
+          nombre_archivo: fileName,
+          tipo_evento: $('evento').value,
+          descripcion: $('descripcion').value.trim()
+        }
+      : {
           imagen_base64: b64,
           media_type: mtype,
           tipo_evento: $('evento').value,
           descripcion: $('descripcion').value.trim(),
           organismo: 'CONAE'
-        })
+        };
+
+    try {
+      const res = await fetch(`${BACKEND}${endpoint}`, {
+        method: 'POST',
+        headers: {'Content-Type':'application/json'},
+        body: JSON.stringify(payload)
       });
 
       clearInterval(iv);
@@ -470,10 +561,19 @@
     vd.className = 'verdict ' + apto.toLowerCase();
     $('verdict-val').textContent = apto === 'SI' ? 'APTO' : apto === 'NO' ? 'NO APTO' : 'CON\nCORRECCIONES';
 
-    // Mapa
-    $('map-img').src = imgDataUrl;
-    $('map-title').textContent = (d.titulo_detectado || 'Mapa sin título detectado').toUpperCase();
-    $('map-sub').textContent = fileName + ' · ' + new Date().toLocaleDateString('es-AR');
+    // Mapa o panel estructural según formato
+    const est = d._analisis_estructural;
+    if (modo === 'json' && est) {
+      $('map-panel').style.display = 'none';
+      $('struct-panel').classList.add('visible');
+      renderEstructural(est, d);
+    } else {
+      $('map-panel').style.display = '';
+      $('struct-panel').classList.remove('visible');
+      $('map-img').src = imgDataUrl;
+      $('map-title').textContent = (d.titulo_detectado || 'Mapa sin título detectado').toUpperCase();
+      $('map-sub').textContent = fileName + ' · ' + new Date().toLocaleDateString('es-AR');
+    }
 
     // Checklist
     const icons = { ok:'ti-circle-check', falta:'ti-circle-x', revisar:'ti-alert-circle' };
@@ -521,12 +621,118 @@
 
     // Chat
     chatBody.innerHTML = '';
-    addMsg('bot', `Control de calidad completado. Score global: ${s.global ?? '—'}/100.\n\n${d.resumen || ''}\n\nPodés consultarme sobre cualquier aspecto del mapa.`);
+    const tipoTxt = modo === 'json' ? 'la configuración cartográfica' : 'el mapa';
+    addMsg('bot', `Control de calidad completado. Score global: ${s.global ?? '—'}/100.\n\n${d.resumen || ''}\n\nPodés consultarme sobre cualquier aspecto de ${tipoTxt}.`);
+
+    // Sugerencias según formato
+    const SUGG_IMG = [
+      ['Prioridad de corrección', '¿Qué debo corregir con más urgencia antes de entregar?'],
+      ['Revisar leyenda', '¿La leyenda está completa y es coherente con los símbolos del mapa?'],
+      ['Elementos faltantes', '¿Falta algún elemento cartográfico obligatorio?'],
+      ['Legibilidad', '¿El mapa es legible para un tomador de decisión sin formación técnica?']
+    ];
+    const SUGG_JSON = [
+      ['Prioridad de corrección', '¿Qué debo corregir con más urgencia antes de publicar esta configuración?'],
+      ['Créditos faltantes', '¿Por qué es crítico que las capas tengan créditos y atribución de fuente?'],
+      ['Servicios externos', '¿Qué riesgo operativo implica depender de servicios WMS externos durante una emergencia?'],
+      ['Capas visibles', '¿Es adecuada la cantidad de capas visibles al abrir el mapa para un operador en emergencia?']
+    ];
+    const sg = modo === 'json' ? SUGG_JSON : SUGG_IMG;
+    $('chat-sugg').innerHTML = sg.map(([t, q]) =>
+      `<div class="sugg" data-q="${q.replace(/"/g,'&quot;')}">${t}</div>`).join('');
+    $('chat-sugg').querySelectorAll('.sugg').forEach(s => {
+      s.addEventListener('click', () => { if(!chatInput.disabled) enviar(s.dataset.q); });
+    });
+
     chatInput.disabled = false;
     chatSend.disabled = false;
 
     results.classList.add('visible');
     results.scrollIntoView({ behavior:'smooth', block:'start' });
+  }
+
+
+  // ── Render panel estructural (modo JSON) ──
+  function renderEstructural(a, d) {
+    resumenEstructural = JSON.stringify(a, null, 2);
+    $('fmt-badge').textContent = a.formato || 'JSON';
+
+    const h = a.hallazgos || {};
+    const n = v => Array.isArray(v) ? v.length : (v && typeof v === 'object' ? Object.keys(v).length : (v || 0));
+    const cls = k => k === 0 ? 'g' : k > 20 ? 'r' : 'a';
+
+    let html = '';
+
+    if (a.formato === 'MapStore2') {
+      html += `
+        <div class="struct-kpis">
+          <div class="kpi"><div class="kpi-l">Capas</div><div class="kpi-v">${a.total_capas}</div></div>
+          <div class="kpi"><div class="kpi-l">Visibles</div><div class="kpi-v g">${a.capas_visibles}</div></div>
+          <div class="kpi"><div class="kpi-l">Grupos</div><div class="kpi-v">${a.total_grupos}</div></div>
+          <div class="kpi"><div class="kpi-l">Servicios</div><div class="kpi-v">${a.servicios_wms}</div></div>
+        </div>
+
+        <div class="struct-sec">Metadatos del proyecto</div>
+        <div>
+          <div class="meta-row"><span class="meta-k">Formato</span><span class="meta-v">${a.formato} v${a.version_config ?? '—'}</span></div>
+          <div class="meta-row"><span class="meta-k">Proyección</span><span class="meta-v">${a.proyeccion ?? '—'}</span></div>
+          <div class="meta-row"><span class="meta-k">CRS del centro</span><span class="meta-v">${a.crs_centro ?? '—'}</span></div>
+          <div class="meta-row"><span class="meta-k">Unidades</span><span class="meta-v">${a.unidades ?? '—'}</span></div>
+          <div class="meta-row"><span class="meta-k">Zoom inicial</span><span class="meta-v">${a.zoom ?? '—'}</span></div>
+        </div>
+
+        <div class="struct-sec">Validación determinística</div>
+        <div style="display:flex;flex-direction:column;gap:4px">
+          ${[
+            ['Capas sin créditos / atribución', n(h.sin_creditos)],
+            ['Capas sin descripción', n(h.sin_descripcion)],
+            ['Capas sin título', n(h.sin_titulo)],
+            ['Grupos vacíos (sin capas)', n(h.grupos_vacios)],
+            ['Títulos duplicados', n(h.titulos_duplicados)],
+            ['Integridad referencial rota', n(h.grupo_inexistente)],
+            ['URLs inseguras (http://)', n(h.url_insegura)],
+            ['Servicios externos a CONAE/IGN', n(a.servicios_externos)]
+          ].map(([t, k]) => `
+            <div class="issue-row ${k === 0 ? 'ok' : k > 20 ? 'crit' : 'hit'}">
+              <span class="issue-t">${t}</span>
+              <span class="issue-n ${cls(k)}">${k}</span>
+            </div>`).join('')}
+        </div>`;
+
+      if ((a.titulos_visibles || []).length) {
+        html += `<div class="struct-sec">Capas visibles al abrir</div><div>
+          ${a.titulos_visibles.map(t => `<span class="layer-chip">${t}</span>`).join('')}
+        </div>`;
+      }
+
+      if ((a.servicios_externos || []).length) {
+        html += `<div class="struct-sec">Servicios externos</div><div>
+          ${a.servicios_externos.map(u => `<div class="meta-row"><span class="meta-v" style="text-align:left;word-break:break-all;font-size:9px">${u}</span></div>`).join('')}
+        </div>`;
+      }
+
+    } else {
+      html += `
+        <div class="struct-kpis">
+          <div class="kpi"><div class="kpi-l">Features</div><div class="kpi-v">${a.total_features}</div></div>
+          <div class="kpi"><div class="kpi-l">Atributos</div><div class="kpi-v">${(a.atributos||[]).length}</div></div>
+          <div class="kpi"><div class="kpi-l">Sin geom.</div><div class="kpi-v ${cls(n(h.features_sin_geometria))}">${n(h.features_sin_geometria)}</div></div>
+          <div class="kpi"><div class="kpi-l">Sin props</div><div class="kpi-v ${cls(n(h.features_sin_propiedades))}">${n(h.features_sin_propiedades)}</div></div>
+        </div>
+
+        <div class="struct-sec">Metadatos</div>
+        <div>
+          <div class="meta-row"><span class="meta-k">Tipo</span><span class="meta-v">${a.tipo ?? '—'}</span></div>
+          <div class="meta-row"><span class="meta-k">CRS declarado</span><span class="meta-v">${a.crs_declarado ?? 'No declarado'}</span></div>
+          ${Object.entries(a.tipos_geometria||{}).map(([k,v]) =>
+            `<div class="meta-row"><span class="meta-k">${k}</span><span class="meta-v">${v}</span></div>`).join('')}
+        </div>
+
+        <div class="struct-sec">Atributos detectados</div>
+        <div>${(a.atributos||[]).map(t => `<span class="layer-chip">${t}</span>`).join('') || '<span style="color:var(--border-hi);font-size:9px">Sin atributos</span>'}</div>`;
+    }
+
+    $('struct-body').innerHTML = html;
   }
 
   // ── Chat ──
@@ -540,7 +746,9 @@
   }
 
   async function enviar(pregunta) {
-    if(!pregunta.trim() || !b64) return;
+    if(!pregunta.trim()) return;
+    if(modo === 'imagen' && !b64) return;
+    if(modo === 'json' && !resumenEstructural) return;
     addMsg('user', pregunta);
     chatInput.value = '';
     chatInput.disabled = true;
@@ -550,16 +758,26 @@
     typing.classList.add('typing');
 
     try {
-      const res = await fetch(`${BACKEND}/qa-chat`, {
+      const endpoint = modo === 'json' ? '/qa-json-chat' : '/qa-chat';
+      const payload = modo === 'json'
+        ? {
+            resumen_estructural: resumenEstructural,
+            historial: historial,
+            pregunta: pregunta,
+            tipo_evento: $('evento').value
+          }
+        : {
+            imagen_base64: b64,
+            media_type: mtype,
+            historial: historial,
+            pregunta: pregunta,
+            tipo_evento: $('evento').value
+          };
+
+      const res = await fetch(`${BACKEND}${endpoint}`, {
         method: 'POST',
         headers: {'Content-Type':'application/json'},
-        body: JSON.stringify({
-          imagen_base64: b64,
-          media_type: mtype,
-          historial: historial,
-          pregunta: pregunta,
-          tipo_evento: $('evento').value
-        })
+        body: JSON.stringify(payload)
       });
 
       if(!res.ok) throw new Error((await res.json().catch(()=>({}))).detail || `HTTP ${res.status}`);
@@ -644,6 +862,7 @@
   <div class="meta">
     <div><strong>Archivo:</strong> ${fileName}</div>
     <div><strong>Evento:</strong> ${$('evento').selectedOptions[0].text}</div>
+    <div><strong>Formato:</strong> ${modo === 'json' ? (qaData._analisis_estructural?.formato || 'JSON') : 'Imagen'}</div>
     <div><strong>Fecha:</strong> ${fecha}</div>
   </div>
 </div>
@@ -703,8 +922,50 @@ ${(d.correcciones_texto||[]).length ? `
   </tr>`).join('')}</tbody>
 </table>` : '<div class="none">✓ No se detectaron errores de redacción.</div>'}
 
+${modo === 'json' ? `
+<h2>Análisis Estructural</h2>
+<table>
+  <thead><tr><th style="width:55%">Verificación</th><th style="width:20%">Resultado</th><th>Estado</th></tr></thead>
+  <tbody>
+    ${(() => {
+      const a = qaData._analisis_estructural || {};
+      const h = a.hallazgos || {};
+      const n = v => Array.isArray(v) ? v.length : (v && typeof v === 'object' ? Object.keys(v).length : (v||0));
+      const filas = a.formato === 'MapStore2' ? [
+        ['Formato / versión', `${a.formato} v${a.version_config ?? '—'}`, 'info'],
+        ['Proyección declarada', a.proyeccion ?? 'No declarada', a.proyeccion ? 'ok' : 'err'],
+        ['CRS del centro', a.crs_centro ?? 'No declarado', a.crs_centro ? 'ok' : 'err'],
+        ['Total de capas', a.total_capas, 'info'],
+        ['Capas visibles al inicio', a.capas_visibles, 'info'],
+        ['Grupos temáticos', a.total_grupos, 'info'],
+        ['Servicios WMS distintos', a.servicios_wms, 'info'],
+        ['Capas sin créditos', n(h.sin_creditos), n(h.sin_creditos) ? 'err' : 'ok'],
+        ['Capas sin descripción', n(h.sin_descripcion), n(h.sin_descripcion) ? 'warn' : 'ok'],
+        ['Capas sin título', n(h.sin_titulo), n(h.sin_titulo) ? 'err' : 'ok'],
+        ['Grupos vacíos', n(h.grupos_vacios), n(h.grupos_vacios) ? 'warn' : 'ok'],
+        ['Títulos duplicados', n(h.titulos_duplicados), n(h.titulos_duplicados) ? 'warn' : 'ok'],
+        ['Integridad referencial rota', n(h.grupo_inexistente), n(h.grupo_inexistente) ? 'err' : 'ok'],
+        ['URLs inseguras (http://)', n(h.url_insegura), n(h.url_insegura) ? 'err' : 'ok'],
+        ['Servicios externos', n(a.servicios_externos), n(a.servicios_externos) ? 'warn' : 'ok']
+      ] : [
+        ['Formato', a.formato ?? '—', 'info'],
+        ['Tipo GeoJSON', a.tipo ?? '—', 'info'],
+        ['CRS declarado', a.crs_declarado ?? 'No declarado', a.crs_declarado ? 'ok' : 'err'],
+        ['Total de features', a.total_features ?? 0, 'info'],
+        ['Atributos distintos', (a.atributos||[]).length, 'info'],
+        ['Features sin geometría', n(h.features_sin_geometria), n(h.features_sin_geometria) ? 'err' : 'ok'],
+        ['Features sin propiedades', n(h.features_sin_propiedades), n(h.features_sin_propiedades) ? 'err' : 'ok'],
+        ['Features con atributos vacíos', n(h.features_con_atributos_vacios), n(h.features_con_atributos_vacios) ? 'warn' : 'ok']
+      ];
+      const ico = { ok:'✓', err:'✗', warn:'!', info:'·' };
+      const col = { ok:'g', err:'r', warn:'a', info:'' };
+      return filas.map(([t,v,e]) =>
+        `<tr><td><strong>${t}</strong></td><td>${v}</td><td class="st ${col[e]}">${ico[e]}</td></tr>`).join('');
+    })()}
+  </tbody>
+</table>` : `
 <h2>Mapa Revisado</h2>
-<div class="img-box"><img src="${imgDataUrl}"></div>
+<div class="img-box"><img src="${imgDataUrl}"></div>`}
 
 <div class="ft">
   <span>Vertech TdF · Río Grande, Tierra del Fuego, Argentina</span>
